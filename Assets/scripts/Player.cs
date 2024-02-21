@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviourPun
 {
-    string name_;
+    public string name_;
     public PhotonView pv;
     public float moveSpeed;
     public Rigidbody2D rb;
@@ -155,6 +155,7 @@ public class Player : MonoBehaviourPun
 
             hprate.value = health / maxHealth;
             nametag.text = name_;
+            background.transform.localScale = new Vector3(name_.Length + 0.4f, 1);
 
             ch.animator.SetBool("isMoving", isMoving);
             if (running) {
