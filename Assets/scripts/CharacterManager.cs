@@ -8,7 +8,6 @@ public class CharacterManager : MonoBehaviour
     public List<Character> list;
 
     private void Awake() {
-        list = new();
         instance = this;
     }
 

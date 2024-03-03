@@ -2,21 +2,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
-public class Player : MonoBehaviourPun
+public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
+    public static List<Player> players = new();
     public string name_;
     public PhotonView pv;
     public float moveSpeed;
     public Rigidbody2D rb;
     public BoxCollider2D col;
+    public string character;
     public Character ch = null;
     public Slider hprate;
     public Image background;
     public Text nametag;
+    Vector3 curPos;
     [SerializeField]
     Vector2 center;
     [SerializeField]
@@ -35,10 +40,36 @@ public class Player : MonoBehaviourPun
 
     public int maxHealth = 1000, health;
 
+    public static List<Player> Convert(RaycastHit2D[] casts, Player not = null) {
+        List<Player> result = new();
+
+        for (int i = 0; i < casts.Length; i++) {
+            var cast = casts[i];
+
+            var pl = cast.transform.GetComponent<Player>();
+            if (pl != null) {
+                if (not != null && not == pl) {
+                    continue;
+                }
+
+                result.Add(pl);
+            }
+        }
+
+        return result;
+    }
+
     public string GetName() {
         return name_;
     }
     public void SetName(string str) {
+        object[] obj = {
+            str
+        };
+        pv.RPC("setName", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    public void setName(string str) {
         name_ = str;
     }
     void Start()
@@ -51,6 +82,42 @@ public class Player : MonoBehaviourPun
         width = height * Screen.width / Screen.height;
 
         health = maxHealth;
+
+        players.Add(this);
+
+        if (pv.IsMine) {
+            SetCharacter("samurai");
+            SetName(PhotonNetwork.LocalPlayer.NickName);
+        }
+    }
+
+    public void RpcAnimateBool(string name, bool val) {
+        object[] param = {
+            name, val,
+        };
+
+        pv.RPC("_animateBool", RpcTarget.All, param);
+    }
+
+    [PunRPC]
+    void _animateBool(string name, bool val) {
+        if (ch != null) {
+            ch.animator.SetBool(name, val);
+        }
+    }
+    public void RpcAnimateTrigger(string name) {
+        object[] param = {
+            name,
+        };
+
+        pv.RPC("_animateTrigger", RpcTarget.All, param);
+    }
+
+    [PunRPC]
+    void _animateTrigger(string name) {
+        if (ch != null) {
+            ch.animator.SetTrigger(name);
+        }
     }
 
     private void Update() {
@@ -144,16 +211,19 @@ public class Player : MonoBehaviourPun
                     if (runTime <= 0) {
                         running = false;
 
-                        ch.animator.SetBool("isRunning", false);
+                        RpcAnimateBool("isRunning", false);
                     }
                 }
 
                 if (stopMove > 0) {
                     stopMove -= Time.deltaTime;
                 }
+            }else {
+                rb.gravityScale = 0;
+                rb.velocity = Vector2.zero;
             }
 
-            hprate.value = health / maxHealth;
+            hprate.value = (float)health / maxHealth;
             nametag.text = name_;
             background.transform.localScale = new Vector3(name_.Length + 0.4f, 1);
 
@@ -161,28 +231,93 @@ public class Player : MonoBehaviourPun
             if (running) {
                 ch.animator.SetBool("isRunning", isMoving);
             }
+
             ch.animator.SetBool("onGround", onGround);
 
             if (dashing) {
                 float dashD = Mathf.Floor(dashTime * 100) / 100;
                 if (dashD != dashData) {
                     if (dashD % 0.02f == 0 && dashD != 0) {
-                        var obj = Instantiate(ch, ch.transform.position, quaternion.identity);
-
-                        obj.animator.SetBool("isRunning", true);
-
-                        obj.animator.speed = 0.1f;
-                        Color col = obj.render.color;
-                        col.a = 0.2f;
-
-                        obj.render.color = col;
-
-                        Destroy(obj.gameObject, 0.4f);
+                        pv.RPC("dashEffect", RpcTarget.All, null);
                     } 
                     dashData = dashD;
                 }
             }
         }
+    }
+
+    public void Damage(int damage) {
+        pv.RPC("hurt", RpcTarget.All, new object[]{damage});
+    }
+
+    [PunRPC]
+    void hurt(int damage) {
+        health -= damage;
+
+        StartCoroutine(hurtEff());
+    }
+
+    IEnumerator hurtEff() {
+        var img = hprate.transform.Find("Fill Area").Find("Fill").GetComponent<Image>();
+        
+        img.color = Color.white;
+
+        yield return new WaitForSeconds(0.2f);
+
+        img.color = Color.red;
+    }
+
+    [PunRPC]
+    void dashEffect() {
+        var obj = Instantiate(ch, ch.transform.position, quaternion.identity);
+
+        obj.animator.SetBool("isRunning", true);
+
+        obj.animator.speed = 0.1f;
+        Color col = obj.render.color;
+        col.a = 0.2f;
+
+        obj.render.color = col;
+
+        Destroy(obj.gameObject, 0.4f);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+            if (stream.IsWriting)
+            {
+                stream.SendNext(name_);
+                stream.SendNext(health);
+                stream.SendNext(isMoving);
+                stream.SendNext(running);
+                stream.SendNext(onGround);
+                stream.SendNext(jumping);
+                stream.SendNext(dashing);
+                stream.SendNext(ch != null ? ch.render.flipX : false);
+                stream.SendNext(character);
+            }
+            else
+            {
+                name_ = (string)stream.ReceiveNext();
+                health = (int)stream.ReceiveNext();
+                isMoving = (bool)stream.ReceiveNext();
+                running = (bool)stream.ReceiveNext();
+                onGround = (bool)stream.ReceiveNext();
+                jumping = (bool)stream.ReceiveNext();
+                dashing = (bool)stream.ReceiveNext();
+
+                var flip = (bool)stream.ReceiveNext();
+                if (ch != null) {
+                    ch.render.flipX = flip;
+                }
+
+                string chId = (string)stream.ReceiveNext();
+                Debug.Log(chId);
+                if (chId != character) {
+                    _setCh(chId);
+                }
+            }
+        
     }
 
     public void Dash() {
@@ -207,7 +342,7 @@ public class Player : MonoBehaviourPun
                 rb.velocity = new Vector2(rb.velocity.x, 10);
             }
 
-            ch.animator.SetTrigger("jump");
+            RpcAnimateTrigger("jump");
 
             jumping = true;
             jumpTime = 0;
@@ -259,20 +394,22 @@ public class Player : MonoBehaviourPun
         return false;
     }
 
-    public void SetCharacter(Character c) {
+    public void SetCharacter(string id) {
         object[] param = {
-            c
+            id
         };
         pv.RPC("_setCh", RpcTarget.All, param);
     }
 
     [PunRPC]
-    void _setCh(Character c) {
+    void _setCh(string id) {
         if (ch != null) {
-            Destroy(c);
+            Destroy(ch);
         }
 
-        ch = Instantiate(c);
+        character = id;
+
+        ch = Instantiate(CharacterManager.instance.Get(id));
 
         ch.transform.SetParent(transform);
         ch.transform.localPosition = new Vector3(0, 1.36f);
@@ -298,5 +435,7 @@ public class Player : MonoBehaviourPun
 
         Gizmos.DrawLine(transform.position + new Vector3(0.3f, -0.5f), transform.position + new Vector3(0.3f, -0.6f));
         Gizmos.DrawLine(transform.position + new Vector3(-0.3f, -0.5f), transform.position + new Vector3(-0.3f, -0.6f));
+
+        Gizmos.DrawWireCube(transform.position + new Vector3(1 * facing, 0.5f), new Vector2(2, 2));
     }
 }

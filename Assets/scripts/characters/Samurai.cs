@@ -25,7 +25,7 @@ public class Samurai : Character
     }
 
     private void Update() {
-        animator.SetBool("shielding", shielding);
+        if (pl.pv.IsMine) pl.RpcAnimateBool("shielding", shielding);
 
         if (shielding) {
             pl.stopMove = 0.2f;
@@ -48,7 +48,7 @@ public class Samurai : Character
         }
 
         if (atkType == 0) {
-            animator.SetTrigger("attack1");
+            pl.RpcAnimateTrigger("attack1");
 
             pl.stopMove = 0.4f;
             atkCool = 0.3f;
@@ -60,7 +60,7 @@ public class Samurai : Character
             yield return new WaitForSeconds(0.2f);
             pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
         } else {
-            animator.SetTrigger("attack2");
+            pl.RpcAnimateTrigger("attack2");
 
             pl.stopMove = 0.5f;
             atkCool = 0.35f;
@@ -73,11 +73,19 @@ public class Samurai : Character
             pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
         }
 
+        var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2, 2), 0, Vector2.right * pl.facing, 1), pl);
+
+        for (int i = 0; i < targets.Count; i++) {
+            var target = targets[i];
+
+            target.Damage(50);
+        }
+
         routine = null;
     }
 
     IEnumerator jumpAtk() {
-        animator.SetTrigger("attack3");
+        pl.RpcAnimateTrigger("attack3");
 
         pl.stopMove = 0.6f;
         atkCool = 0.3f;

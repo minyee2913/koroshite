@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 369908764293495028}
   - component: {fileID: 369908764293495031}
-  - component: {fileID: 369908764293495030}
   - component: {fileID: 6644328224278150471}
   - component: {fileID: 342023893568335683}
+  - component: {fileID: 4822816244824215886}
+  - component: {fileID: -8127880383721265189}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -48,10 +49,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab0ea98a65a4f5649b1e38d8f74685f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  name_: 
   pv: {fileID: 0}
   moveSpeed: 6
   rb: {fileID: 0}
   col: {fileID: 342023893568335683}
+  character: 
   ch: {fileID: 0}
   hprate: {fileID: 2070711716312376822}
   background: {fileID: 4602946195238979550}
@@ -72,28 +75,6 @@ MonoBehaviour:
   facing: 1
   maxHealth: 1000
   health: 0
---- !u!114 &369908764293495030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 369908764293495025}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!50 &6644328224278150471
 Rigidbody2D:
   serializedVersion: 4
@@ -141,6 +122,47 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 2.460577}
   m_EdgeRadius: 0
+--- !u!114 &4822816244824215886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369908764293495025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 369908764293495031}
+  - {fileID: -8127880383721265189}
+  - {fileID: 0}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &-8127880383721265189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369908764293495025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &2321614310749825227
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,7 +491,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0.0256, y: -0.01}
-  m_SizeDelta: {x: 2.0754, y: 0.4306}
+  m_SizeDelta: {x: 0.16, y: 0.4306}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3017518839877544307
 CanvasRenderer:
@@ -666,8 +688,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 180
+    m_Font: {fileID: 12800000, guid: 05d512dac29205345a12944278a23e36, type: 3}
+    m_FontSize: 130
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
