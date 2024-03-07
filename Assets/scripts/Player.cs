@@ -11,6 +11,7 @@ using Unity.VisualScripting;
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
     public static List<Player> players = new();
+    public static Player Local;
     public string name_;
     public PhotonView pv;
     public float moveSpeed;
@@ -32,7 +33,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     float height;
     float width;
 
-    public bool isMoving, onGround, jumping, dashing, running;
+    public bool isMoving, onGround, jumping, dashing, running, isDeath;
     public int jumpCount = 0;
     public float jumpTime = 0, dashTime = 0, runTime = 0, stopMove = 0;
     float dashData = 0;
@@ -86,6 +87,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         players.Add(this);
 
         if (pv.IsMine) {
+            Local = this;
+
             SetCharacter("samurai");
             SetName(PhotonNetwork.LocalPlayer.NickName);
         }
@@ -254,7 +257,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void hurt(int damage) {
         health -= damage;
 
-        StartCoroutine(hurtEff());
+        if (health <= 0) {
+            isDeath = true;
+        } else StartCoroutine(hurtEff());
     }
 
     IEnumerator hurtEff() {
@@ -293,6 +298,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 stream.SendNext(onGround);
                 stream.SendNext(jumping);
                 stream.SendNext(dashing);
+                stream.SendNext(isDeath);
                 stream.SendNext(ch != null ? ch.render.flipX : false);
                 stream.SendNext(character);
             }
@@ -305,6 +311,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 onGround = (bool)stream.ReceiveNext();
                 jumping = (bool)stream.ReceiveNext();
                 dashing = (bool)stream.ReceiveNext();
+                isDeath = (bool)stream.ReceiveNext();
 
                 var flip = (bool)stream.ReceiveNext();
                 if (ch != null) {
@@ -404,7 +411,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void _setCh(string id) {
         if (ch != null) {
-            Destroy(ch);
+            Destroy(ch.gameObject);
         }
 
         character = id;

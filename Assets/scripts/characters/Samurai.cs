@@ -25,11 +25,13 @@ public class Samurai : Character
     }
 
     private void Update() {
-        if (pl.pv.IsMine) pl.RpcAnimateBool("shielding", shielding);
+        if (pl != null) {
+            if (pl.pv.IsMine) pl.RpcAnimateBool("shielding", shielding);
 
-        if (shielding) {
-            pl.stopMove = 0.2f;
-            atkCool = 0.2f;
+            if (shielding) {
+                pl.stopMove = 0.2f;
+                atkCool = 0.2f;
+            }
         }
     }
 

@@ -67,6 +67,7 @@ MonoBehaviour:
   jumping: 0
   dashing: 0
   running: 0
+  isDeath: 0
   jumpCount: 0
   jumpTime: 0
   dashTime: 0
