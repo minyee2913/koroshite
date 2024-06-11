@@ -23,6 +23,7 @@ public class Character : MonoBehaviour
     public virtual void Skill1Up() {}
     public virtual void Skill2() {}
     public virtual void Skill2Up() {}
+    public virtual void OnHurt(int damage, Player attacker) {}
 
     private void FixedUpdate() {
         if (atkCool > 0) {

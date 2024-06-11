@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppSettings:
-    AppIdRealtime: 261eb66e-b222-40f9-ad51-3aec305f5fd4
+    AppIdRealtime: 6246ff5b-1eab-4c06-949e-7e7d7d8cb872
     AppIdFusion: 
-    AppIdChat: 
+    AppIdChat: e875cdf4-7b16-4bda-8d3b-d23eb43ea6ec
     AppIdVoice: 
-    AppVersion: 
+    AppVersion: 0.0.2
     UseNameServer: 1
-    FixedRegion: 
+    FixedRegion: jp
     Server: 
     Port: 0
     ProxyServer: 
@@ -28,7 +28,7 @@ MonoBehaviour:
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  DevRegion: kr
+  DevRegion: jp
   PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
@@ -45,6 +45,7 @@ MonoBehaviour:
   - _animateTrigger
   - dashEffect
   - hurt
+  - _knockback
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
+  ShowSettings: 1
   DevRegionSetOnce: 1

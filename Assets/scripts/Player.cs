@@ -22,9 +22,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public Slider hprate;
     public Image background;
     public Text nametag;
-    Vector3 curPos;
+    private Vector3 curPos;
     [SerializeField]
-    Vector2 center;
+    private Vector2 center;
     [SerializeField]
     Vector2 mapSize;
 
@@ -123,9 +123,28 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    public void Knockback(Vector2 force) {
+        object[] param = {
+            force,
+        };
+
+        pv.RPC("_knockback", RpcTarget.All, param);
+    }
+
+    [PunRPC]
+    void _knockback(Vector2 force) {
+        rb.velocity += force;
+
+        Invoke("afterKnock", 0.3f);
+    }
+
+    void afterKnock() {
+        rb.velocity = new Vector2(rb.velocity.x / 2, rb.velocity.y / 2);
+    }
+
     private void Update() {
         if (ch != null) {
-            if (pv.IsMine) {
+            if (pv.IsMine && !isDeath && GameManager.Instance.applyPlayerInput) {
                 isMoving = false;
 
                 LimitedCamera();
@@ -236,6 +255,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
 
             ch.animator.SetBool("onGround", onGround);
+            ch.animator.SetBool("isDead", isDeath);
 
             if (dashing) {
                 float dashD = Mathf.Floor(dashTime * 100) / 100;
@@ -249,13 +269,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
-    public void Damage(int damage) {
-        pv.RPC("hurt", RpcTarget.All, new object[]{damage});
+    public void Damage(int damage, string plName = null) {
+        pv.RPC("hurt", RpcTarget.All, new object[]{damage, plName});
     }
 
+    
+
     [PunRPC]
-    void hurt(int damage) {
+    void hurt(int damage, string plName) {
         health -= damage;
+
+        Player attacker = players.Find((p)=>p.name_ == plName);
+
+        if (ch != null) {
+            ch.OnHurt(damage, attacker);
+        }
 
         if (health <= 0) {
             isDeath = true;

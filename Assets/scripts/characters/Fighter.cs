@@ -5,6 +5,7 @@ using UnityEngine;
 public class Fighter : Character
 {
     bool shielding;
+    float time;
 
     public override void Attack()
     {
@@ -33,6 +34,13 @@ public class Fighter : Character
                 atkCool = 0.2f;
             }
         }
+
+        time += Time.deltaTime;
+
+        if (time > 1) {
+            time = 0;
+            if (pl) Attack();
+        }
     }
 
     IEnumerator _attack() {
@@ -50,10 +58,10 @@ public class Fighter : Character
 
             atkType++;
 
-            pl.rb.velocity = new Vector2(6 * pl.facing, pl.rb.velocity.y);
+            // pl.rb.velocity = new Vector2(6 * pl.facing, pl.rb.velocity.y);
 
-            yield return new WaitForSeconds(0.2f);
-            pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+            // yield return new WaitForSeconds(0.2f);
+            // pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
         } else {
             pl.RpcAnimateTrigger("attack2");
 
@@ -62,10 +70,10 @@ public class Fighter : Character
 
             atkType = 0;
 
-            pl.rb.velocity = new Vector2(10 * pl.facing, pl.rb.velocity.y);
+            // pl.rb.velocity = new Vector2(10 * pl.facing, pl.rb.velocity.y);
 
-            yield return new WaitForSeconds(0.2f);
-            pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+            // yield return new WaitForSeconds(0.2f);
+            // pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
         }
 
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2, 2), 0, Vector2.right * pl.facing, 1), pl);
@@ -73,7 +81,7 @@ public class Fighter : Character
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
 
-            target.Damage(50);
+            target.Damage(50, pl.name_);
         }
 
         routine = null;
