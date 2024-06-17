@@ -28,8 +28,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     public override void OnConnectedToMaster() {
-        PhotonNetwork.NickName = "test" + UnityEngine.Random.Range(1, 1000);
-        PhotonNetwork.JoinOrCreateRoom("a", new RoomOptions { MaxPlayers = 10 }, null);
+        GameObject startObj = GameObject.Find("StartManager");
+
+        if (startObj != null) {
+            StartManager start = startObj.GetComponent<StartManager>();
+
+            start.Connected();
+        } else {
+            PhotonNetwork.NickName = "test" + UnityEngine.Random.Range(1, 1000);
+            PhotonNetwork.JoinOrCreateRoom("그녀는 그녀를 그녀했어", new RoomOptions { MaxPlayers = 8 }, null);
+        }
+        // PhotonNetwork.NickName = "test" + UnityEngine.Random.Range(1, 1000);
+        // PhotonNetwork.JoinOrCreateRoom("그녀는 그녀를 그녀했어", new RoomOptions { MaxPlayers = 8 }, null);
     }
 
     public override void OnJoinedRoom()

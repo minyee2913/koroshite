@@ -45,7 +45,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     private float balloon_time;
 
-    public int maxHealth = 1000, health;
+    public int maxHealth = 1000, health, coin;
     public Color hpColor = Color.red;
     public string state = "room";
 
@@ -262,6 +262,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                         dashing = false;
 
                         rb.velocity = new Vector2(0, rb.velocity.y);
+                        CamManager.main.CloseOut(0.25f);
 
                         dashDelay = 0.5f;
                     }
@@ -336,8 +337,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [PunRPC]
     void hurt(int damage, string plName) {
-        health -= damage;
-
         Player attacker = players.Find((p)=>p.name_ == plName);
         bool cancel = false;
 
@@ -345,7 +344,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             ch.OnHurt(damage, attacker, ref cancel);
         }
 
-        if (cancel && state == "room")
+        if (cancel && state != "room")
             return;
 
         health -= damage;
@@ -421,6 +420,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void Dash() {
+        if (dashDelay > 0) return;
+
+        CamManager.main.CloseUp(5.9f, 0, 0.25f);
+
         dashing = true;
         dashTime = 0.25f;
 
