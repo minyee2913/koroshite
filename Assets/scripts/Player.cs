@@ -35,11 +35,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public bool isMoving, onGround, jumping, dashing, running, isDeath;
     public int jumpCount = 0;
-    public float jumpTime = 0, dashTime = 0, runTime = 0, stopMove = 0;
+    public float jumpTime = 0, dashTime = 0, runTime = 0, stopMove = 0, dashDelay = 0;
     float dashData = 0;
     public int facing = 1;
+    [SerializeField]
+    private Image balloon;
+    [SerializeField]
+    private Text balloon_Text;
+    [SerializeField]
+    private float balloon_time;
 
     public int maxHealth = 1000, health;
+    public Color hpColor = Color.red;
+    public string state = "room";
 
     public static List<Player> Convert(RaycastHit2D[] casts, Player not = null) {
         List<Player> result = new();
@@ -73,6 +81,23 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public void setName(string str) {
         name_ = str;
     }
+    public void SetBalloon(string text) {
+        object[] obj = {
+            text
+        };
+        pv.RPC("_setBalloon", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    public void _setBalloon(string text) {
+        balloon_time = 0f;
+        balloon.gameObject.SetActive(true);
+        balloon_Text.gameObject.SetActive(true);
+
+        balloon.color = Color.white;
+        balloon_Text.color = Color.black;
+
+        balloon_Text.text = text;
+    }
     void Start()
     {
         pv = GetComponent<PhotonView>();
@@ -88,6 +113,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (pv.IsMine) {
             Local = this;
+
+            hprate.transform.Find("Fill Area").GetComponentInChildren<Image>().color = hpColor = new Color(85/256f, 255/256f, 11/256f);
 
             SetCharacter("samurai");
             SetName(PhotonNetwork.LocalPlayer.NickName);
@@ -144,10 +171,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private void Update() {
         if (ch != null) {
-            if (pv.IsMine && !isDeath && GameManager.Instance.applyPlayerInput) {
+            if (pv.IsMine) {
                 isMoving = false;
 
-                LimitedCamera();
+                if (state == "ingame")
+                    LimitedCamera();
 
                 bool left = Input.GetKey(KeyCode.A);
                 bool right = Input.GetKey(KeyCode.D);
@@ -156,6 +184,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 if (running) {
                     speed *= 1.6f;
+                }
+
+                if (!GameManager.Instance.applyPlayerInput || isDeath) {
+                    speed *= 0;
                 }
 
                 if (left) {
@@ -189,32 +221,38 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     }
                 }
 
-                if (Input.GetKeyDown(KeyCode.Space)) {
-                    Jump();
+                if (GameManager.Instance.applyPlayerInput || isDeath) {
+                    if (Input.GetKeyDown(KeyCode.Space)) {
+                        Jump();
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.LeftShift)) {
+                        Dash();
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.J)) {
+                        ch.Attack();
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.K)) {
+                        ch.Skill1();
+                    }
+
+                    if (Input.GetKeyUp(KeyCode.K)) {
+                        ch.Skill1Up();
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.L)) {
+                        ch.Skill2();
+                    }
+
+                    if (Input.GetKeyUp(KeyCode.L)) {
+                        ch.Skill2Up();
+                    }
                 }
 
-                if (Input.GetKeyDown(KeyCode.LeftShift)) {
-                    Dash();
-                }
-
-                if (Input.GetKeyDown(KeyCode.J)) {
-                    ch.Attack();
-                }
-
-                if (Input.GetKeyDown(KeyCode.K)) {
-                    ch.Skill1();
-                }
-
-                if (Input.GetKeyUp(KeyCode.K)) {
-                    ch.Skill1Up();
-                }
-
-                if (Input.GetKeyDown(KeyCode.L)) {
-                    ch.Skill2();
-                }
-
-                if (Input.GetKeyUp(KeyCode.L)) {
-                    ch.Skill2Up();
+                if (dashDelay > 0) {
+                    dashDelay -= Time.deltaTime;
                 }
 
                 if (dashing) {
@@ -224,6 +262,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                         dashing = false;
 
                         rb.velocity = new Vector2(0, rb.velocity.y);
+
+                        dashDelay = 0.5f;
                     }
                 }
 
@@ -267,6 +307,25 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
         }
+
+        if (balloon.gameObject.activeSelf) {
+            balloon_time += Time.deltaTime;
+
+            if (balloon_time > 1.5f) {
+                Color col = Color.white;
+                col.a = 2.5f - balloon_time;
+
+                balloon.color = col;
+                balloon_Text.color = col;
+            }
+
+            if (balloon_time > 2.5f) {
+                balloon.gameObject.SetActive(false);
+                balloon_Text.gameObject.SetActive(false);
+
+                balloon_time = 0;
+            }
+        }
     }
 
     public void Damage(int damage, string plName = null) {
@@ -280,10 +339,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         health -= damage;
 
         Player attacker = players.Find((p)=>p.name_ == plName);
+        bool cancel = false;
 
         if (ch != null) {
-            ch.OnHurt(damage, attacker);
+            ch.OnHurt(damage, attacker, ref cancel);
         }
+
+        if (cancel && state == "room")
+            return;
+
+        health -= damage;
 
         if (health <= 0) {
             isDeath = true;
@@ -297,7 +362,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         yield return new WaitForSeconds(0.2f);
 
-        img.color = Color.red;
+        img.color = hpColor;
     }
 
     [PunRPC]

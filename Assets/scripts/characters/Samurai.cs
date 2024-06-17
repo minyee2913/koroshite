@@ -32,38 +32,47 @@ public class Samurai : Character
     }
 
     void Shielded(Player attacker) {
+        StartCoroutine(_shield(attacker));
+    }
+
+    IEnumerator _shield(Player attacker) {
         attacker.ch.CANCEL();
-        attacker.Knockback(Vector2.right * pl.facing * 8);
+        attacker.Knockback(Vector2.right * pl.facing * 8 + Vector2.up * 5);
+        pl.Knockback(Vector2.right * -pl.facing * 4);
 
-        CamManager.main.CloseUp(3.2f, -15, 0.1f);
-        CamManager.main.Shake(1, 0.8f);
+        CamManager.main.CloseUp(3.2f, -10, 0.01f);
+        CamManager.main.Shake(3, 0.5f);
 
-        pl.stopMove = 0.8f;
+        pl.stopMove = 0.5f;
 
         shieldSuccess = true;
 
-        Invoke("ShieldEnd", 0.8f);
-    }
+        yield return new WaitForSeconds(0.2f);
+        attacker.rb.velocity /= 2;
 
-    void ShieldEnd() {
+        yield return new WaitForSeconds(0.3f);
+
         CamManager.main.CloseOut(0.1f);
 
-        shielding = false;
-
         shieldSuccess = false;
+        shielding = false;
     }
 
-    public override void OnHurt(int damage, Player attacker)
+    public override void OnHurt(int damage, Player attacker, ref bool cancel)
     {
         if (shielding) {
             if (shieldTime < 0.3f) {
                 if (pl.facing > 0) {
                     if (pl.transform.position.x < attacker.transform.position.x) {
                         Shielded(attacker);
+
+                        cancel = true;
                     }
                 } else {
                     if (pl.transform.position.x > attacker.transform.position.x) {
                         Shielded(attacker);
+
+                        cancel = true;
                     }
                 }
             }

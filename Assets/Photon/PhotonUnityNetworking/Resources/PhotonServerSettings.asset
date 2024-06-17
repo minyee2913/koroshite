@@ -46,6 +46,8 @@ MonoBehaviour:
   - dashEffect
   - hurt
   - _knockback
+  - sendMessage
+  - _setBalloon
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

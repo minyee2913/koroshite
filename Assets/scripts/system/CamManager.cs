@@ -23,6 +23,13 @@ public class CamManager : MonoBehaviour
         dutch_d = cam.m_Lens.Dutch;
     }
 
+    private void Update() {
+        if (Player.Local != null && Player.Local.state == "room") {
+            float x = Mathf.Clamp(Player.Local.transform.position.x, -58f, -52f);
+            transform.position = new Vector3(x, -17.2f, -2f);
+        }
+    }
+
     void ClearRoutine() {
         if (routine != null) {
             StopCoroutine(routine);

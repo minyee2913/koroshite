@@ -9,5 +9,7 @@ public class SelectCharacter : MonoBehaviour
     public void Select() {
         Player.Local.SetCharacter(ch.id);
         GameManager.Instance.CharacterPanel.SetActive(false);
+
+        UIManager.Instance.face.sprite = Player.Local.ch.render.sprite;
     }
 }

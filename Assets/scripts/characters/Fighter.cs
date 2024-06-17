@@ -33,14 +33,14 @@ public class Fighter : Character
                 pl.stopMove = 0.2f;
                 atkCool = 0.2f;
             }
+
+            if (time > 1 && pl.pv.IsMine) {
+                time = 0;
+                if (pl) Attack();
+            }
         }
 
         time += Time.deltaTime;
-
-        if (time > 1) {
-            time = 0;
-            if (pl) Attack();
-        }
     }
 
     IEnumerator _attack() {

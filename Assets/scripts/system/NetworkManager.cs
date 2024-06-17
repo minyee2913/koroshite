@@ -8,6 +8,7 @@ using UnityEngine;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public static NetworkManager instance = null;
+    public Vector2 roomPos;
     private void Awake() {
         if (instance != null) {
             Destroy(this.gameObject);
@@ -34,6 +35,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("connected");
-        PhotonNetwork.Instantiate("Player", new Vector3(-0.554f, -3.37f), quaternion.identity);
+        //new Vector3(-0.554f, -3.37f)
+        PhotonNetwork.Instantiate("Player", roomPos, quaternion.identity);
     }
 }

@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public GameObject CharacterPanel;
 
+    public bool started;
+
     public bool applyPlayerInput;
     void Start()
     {

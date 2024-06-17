@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChatManager : MonoBehaviour
+public class ChatManager : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     GameObject panel;
@@ -15,9 +16,12 @@ public class ChatManager : MonoBehaviour
     [SerializeField]
     TMP_Text textData;
     [SerializeField]
+    GameObject outTextData;
+    [SerializeField]
     Canvas canvas;
     [SerializeField]
     Transform outChat;
+    private PhotonView pv;
 
     bool inChat;
     public bool scrollTo;
@@ -29,6 +33,8 @@ public class ChatManager : MonoBehaviour
         panel.SetActive(false);
 
         scrollTo = true;
+
+        pv = GetComponent<PhotonView>();
     }
 
     void UpdateMsg(bool forceScroll = false) {
@@ -69,20 +75,34 @@ public class ChatManager : MonoBehaviour
     }
 
     public void SendMessage() {
-        messages.Add(inp.text);
-        SendOutChat(inp.text);
-        
-        
+        SendComment(PhotonNetwork.LocalPlayer.NickName + ": " + inp.text);
+
+        Player.Local.SetBalloon(inp.text);
+
         inp.text = "";
 
         inp.ActivateInputField();
+    }
+
+    public void SendComment(string text) {
+        object[] param = {
+            text
+        };
+
+        pv.RPC("sendMessage", RpcTarget.All, param);
+    }
+
+    [PunRPC]
+    private void sendMessage(string text) {
+        messages.Add(text);
+        SendOutChat(text);
 
         UpdateMsg(true);
     }
 
     public void SendOutChat(string text) {
-        GameObject txt_obj = Instantiate(textData.gameObject, canvas.transform);
-        TMP_Text txt = txt_obj.GetComponent<TMP_Text>();
+        GameObject txt_obj = Instantiate(outTextData, canvas.transform);
+        TMP_Text txt = txt_obj.GetComponentInChildren<TMP_Text>();
         txt.text = text;
 
         txt_obj.transform.localPosition = Vector2.zero;
@@ -91,6 +111,7 @@ public class ChatManager : MonoBehaviour
 
         var oc = txt_obj.AddComponent<OutChat>();
         oc.chat = this;
+        oc.lifetime -= 1.5f * outs.Count;
         
         outs.Add(txt_obj);
     }
