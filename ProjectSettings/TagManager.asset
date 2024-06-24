@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Shield
+  - AttackCollider
   layers:
   - Default
   - TransparentFX
@@ -13,7 +15,7 @@ TagManager:
   - UI
   - player
   - ground
-  - 
+  - ladder
   - 
   - 
   - 
@@ -49,6 +51,9 @@ TagManager:
     locked: 0
   - name: fieldUI
     uniqueID: 264183927
+    locked: 0
+  - name: particle
+    uniqueID: 593575875
     locked: 0
   - name: ui
     uniqueID: 3298739479

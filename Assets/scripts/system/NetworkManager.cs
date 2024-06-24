@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using Unity.Mathematics;
@@ -9,6 +9,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public static NetworkManager instance = null;
     public Vector2 roomPos;
+    public int state = 0;
+    public string savedRoom;
     private void Awake() {
         if (instance != null) {
             Destroy(this.gameObject);
@@ -34,6 +36,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             StartManager start = startObj.GetComponent<StartManager>();
 
             start.Connected();
+
+            PhotonNetwork.JoinLobby();
         } else {
             PhotonNetwork.NickName = "test" + UnityEngine.Random.Range(1, 1000);
             PhotonNetwork.JoinOrCreateRoom("그녀는 그녀를 그녀했어", new RoomOptions { MaxPlayers = 8 }, null);
@@ -42,10 +46,40 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         // PhotonNetwork.JoinOrCreateRoom("그녀는 그녀를 그녀했어", new RoomOptions { MaxPlayers = 8 }, null);
     }
 
+    public void SetNickName() {
+        GameObject startObj = GameObject.Find("StartManager");
+
+        if (startObj != null) {
+            StartManager start = startObj.GetComponent<StartManager>();
+
+            PhotonNetwork.NickName = start.nametag.text;
+        }
+    }
+
+    public override void OnCreatedRoom()
+    {
+    }
+
     public override void OnJoinedRoom()
     {
+
+        state = 1;
+
         Debug.Log("connected");
-        //new Vector3(-0.554f, -3.37f)
-        PhotonNetwork.Instantiate("Player", roomPos, quaternion.identity);
+
+        GameObject Obj = GameObject.Find("GameManager");
+
+        if (Obj != null) {
+            GameManager gm = Obj.GetComponent<GameManager>();
+
+            gm.Spawn();
+        }
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        state = 0;
+
+        LoadingController.LoadScene("StartScene");
     }
 }

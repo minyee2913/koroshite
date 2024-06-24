@@ -48,6 +48,15 @@ MonoBehaviour:
   - _knockback
   - sendMessage
   - _setBalloon
+  - setPos
+  - setState
+  - setTitle
+  - setStarted
+  - heal
+  - callchFunc
+  - setFacing
+  - SendLocalComment
+  - setEnergy
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

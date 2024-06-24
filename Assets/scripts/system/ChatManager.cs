@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class ChatManager : MonoBehaviourPunCallbacks
 {
+    public static ChatManager Instance {get; private set;}
     [SerializeField]
     GameObject panel;
     [SerializeField]
@@ -35,6 +36,8 @@ public class ChatManager : MonoBehaviourPunCallbacks
         scrollTo = true;
 
         pv = GetComponent<PhotonView>();
+
+        Instance = this;
     }
 
     void UpdateMsg(bool forceScroll = false) {
@@ -89,11 +92,11 @@ public class ChatManager : MonoBehaviourPunCallbacks
             text
         };
 
-        pv.RPC("sendMessage", RpcTarget.All, param);
+        pv.RPC("SendLocalComment", RpcTarget.All, param);
     }
 
     [PunRPC]
-    private void sendMessage(string text) {
+    public void SendLocalComment(string text) {
         messages.Add(text);
         SendOutChat(text);
 

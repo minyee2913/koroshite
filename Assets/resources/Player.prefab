@@ -73,14 +73,14 @@ MonoBehaviour:
   dashTime: 0
   runTime: 0
   stopMove: 0
-  dashDelay: 0
   facing: 1
   balloon: {fileID: 6539094335617867682}
   balloon_Text: {fileID: 9210060167477984137}
   balloon_time: 0
-  maxHealth: 1000
+  maxHealth: 500
   health: 0
   coin: 0
+  energy: 0
   hpColor: {r: 1, g: 0, b: 0, a: 1}
   state: room
 --- !u!50 &6644328224278150471
@@ -128,7 +128,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 2.460577}
+  m_Size: {x: 0.8, y: 2.460577}
   m_EdgeRadius: 0
 --- !u!114 &4822816244824215886
 MonoBehaviour:

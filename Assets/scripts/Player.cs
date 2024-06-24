@@ -35,7 +35,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public bool isMoving, onGround, jumping, dashing, running, isDeath;
     public int jumpCount = 0;
-    public float jumpTime = 0, dashTime = 0, runTime = 0, stopMove = 0, dashDelay = 0;
+    public float jumpTime = 0, dashTime = 0, runTime = 0, stopMove = 0;
     float dashData = 0;
     public int facing = 1;
     [SerializeField]
@@ -45,9 +45,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     private float balloon_time;
 
-    public int maxHealth = 1000, health, coin;
+    public int maxHealth, health, coin, energy;
     public Color hpColor = Color.red;
     public string state = "room";
+    float realGravity;
+    Cooldown dashCool = new(1);
 
     public static List<Player> Convert(RaycastHit2D[] casts, Player not = null) {
         List<Player> result = new();
@@ -70,6 +72,26 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public string GetName() {
         return name_;
+    }
+    public void SetPos(Vector2 pos) {
+        object[] obj = {
+            pos
+        };
+        pv.RPC("setPos", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void setPos(Vector2 pos) {
+        transform.position = pos;
+    }
+    public void SetState(string str) {
+        object[] obj = {
+            str
+        };
+        pv.RPC("setState", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void setState(string str) {
+        state = str;
     }
     public void SetName(string str) {
         object[] obj = {
@@ -110,6 +132,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         health = maxHealth;
 
         players.Add(this);
+
+        realGravity = rb.gravityScale;
 
         if (pv.IsMine) {
             Local = this;
@@ -169,13 +193,53 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         rb.velocity = new Vector2(rb.velocity.x / 2, rb.velocity.y / 2);
     }
 
+    public void CallChFunc(string method) {
+        pv.RPC("callchFunc", RpcTarget.All, new object[]{method});
+    }
+
+    [PunRPC]
+    void callchFunc(string method) {
+        if (ch != null) {
+            ch.Callfunc(method);
+        }
+    }
+
+    public void SetFacing(int facing) {
+        pv.RPC("setFacing", RpcTarget.All, new object[]{facing});
+    }
+    [PunRPC]
+    void setFacing(int facing) {
+        this.facing = facing;
+        ch.render.flipX = facing == -1;
+    }
+
+    public void SetEnergy(int val) {
+        pv.RPC("setEnergy", RpcTarget.All, new object[]{val});
+    }
+    [PunRPC]
+    void setEnergy(int val) {
+        energy = val;
+    }
+
     private void Update() {
         if (ch != null) {
             if (pv.IsMine) {
                 isMoving = false;
 
-                if (state == "ingame")
+                if (state == "room")
+                    energy = 100;
+
+                if (state == "ingame" || state == "ready")
                     LimitedCamera();
+
+                if (health <= 0 && !isDeath) {
+                    isDeath = true;
+                    running = false;
+                    isMoving = false;
+                    dashing = false;
+
+                    UIManager.Instance.ShowDeathScreen();
+                }
 
                 bool left = Input.GetKey(KeyCode.A);
                 bool right = Input.GetKey(KeyCode.D);
@@ -186,7 +250,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     speed *= 1.6f;
                 }
 
-                if (!GameManager.Instance.applyPlayerInput || isDeath) {
+                if (!GameManager.Instance.applyPlayerInput || isDeath || state == "ready") {
                     speed *= 0;
                 }
 
@@ -221,7 +285,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     }
                 }
 
-                if (GameManager.Instance.applyPlayerInput || isDeath) {
+                if (GameManager.Instance.applyPlayerInput && !isDeath && state != "ready") {
                     if (Input.GetKeyDown(KeyCode.Space)) {
                         Jump();
                     }
@@ -251,10 +315,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     }
                 }
 
-                if (dashDelay > 0) {
-                    dashDelay -= Time.deltaTime;
-                }
-
                 if (dashing) {
                     dashTime -= Time.deltaTime;
 
@@ -263,8 +323,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                         rb.velocity = new Vector2(0, rb.velocity.y);
                         CamManager.main.CloseOut(0.25f);
-
-                        dashDelay = 0.5f;
                     }
                 }
 
@@ -280,6 +338,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 if (stopMove > 0) {
                     stopMove -= Time.deltaTime;
+                }
+
+                if (InLadder()) {
+                    rb.gravityScale = 0;
+                    rb.velocity = new Vector2(rb.velocity.x, 0);
+
+                    bool up = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space);
+                    bool down = Input.GetKey(KeyCode.S);
+
+                    if (up) 
+                        transform.Translate(Vector2.up * 6 * Time.deltaTime);
+                    else if (down) 
+                        transform.Translate(-Vector2.up * 6 * Time.deltaTime);
+                } else {
+                    rb.gravityScale = realGravity;
                 }
             }else {
                 rb.gravityScale = 0;
@@ -329,6 +402,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    public void Heal(int val) {
+        pv.RPC("heal", RpcTarget.All, new object[]{val});
+    }
+
+    
+
+    [PunRPC]
+    void heal(int val) {
+        health += val;
+
+        if (health > maxHealth)
+            health = maxHealth;
+    }
+
     public void Damage(int damage, string plName = null) {
         pv.RPC("hurt", RpcTarget.All, new object[]{damage, plName});
     }
@@ -341,16 +428,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         bool cancel = false;
 
         if (ch != null) {
-            ch.OnHurt(damage, attacker, ref cancel);
+            ch.OnHurt(ref damage, attacker, ref cancel);
         }
 
-        if (cancel && state != "room")
+        if (cancel || state == "room" || isDeath)
             return;
 
         health -= damage;
 
-        if (health <= 0) {
-            isDeath = true;
+        if (health <= 0 && !isDeath && this == Local) {
+            if (attacker != null) {
+                attacker.coin += 10;
+            }
         } else StartCoroutine(hurtEff());
     }
 
@@ -420,7 +509,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void Dash() {
-        if (dashDelay > 0) return;
+        if (dashCool.IsIn()) return;
+
+        dashCool.Start();
 
         CamManager.main.CloseUp(5.9f, 0, 0.25f);
 
@@ -433,6 +524,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         ch.animator.SetBool("isRunning", true);
 
         rb.velocity = new Vector2(facing * 14, 0);
+    }
+    public void Revive() {
+        isDeath = false;
+        health = maxHealth;
+
     }
 
     public void Jump() {
@@ -450,6 +546,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             jumping = true;
             jumpTime = 0;
         }
+    }
+
+    public bool InLadder() {
+        RaycastHit2D cast = Physics2D.BoxCast(transform.position, new Vector2(0.5f, 0.5f), 0, Vector2.down, 0.5f, LayerMask.GetMask("ladder"));
+
+        return cast;
     }
 
     public bool OnGround() {
@@ -521,17 +623,25 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     void LimitedCamera() {
+        CamManager.main.transform.position = Vector3.Lerp(CamManager.main.transform.position, 
+                                          transform.position, 
+                                          Time.deltaTime * cameraMoveSpeed);
+
         float lx = mapSize.x - width;
-        float clampX = Mathf.Clamp(transform.position.x, -lx + center.x, lx + center.x);
+        float clampX = Mathf.Clamp(CamManager.main.transform.position.x, -lx + center.x, lx + center.x);
 
         float ly = mapSize.y - height;
-        float clampY = Mathf.Clamp(transform.position.y, -ly + center.y, ly + center.y);
+        float clampY = Mathf.Clamp(CamManager.main.transform.position.y, -ly + center.y, ly + center.y);
 
         CamManager.main.transform.position = new Vector3(clampX, clampY, -10f);
     }
 
     private void OnDrawGizmos()
     {
+        //map size
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(center, mapSize * 2);
+
         Gizmos.color = Color.red;
 
         Gizmos.DrawLine(transform.position + new Vector3(0, -0.5f), transform.position + new Vector3(0, -0.6f));
@@ -539,6 +649,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         Gizmos.DrawLine(transform.position + new Vector3(0.3f, -0.5f), transform.position + new Vector3(0.3f, -0.6f));
         Gizmos.DrawLine(transform.position + new Vector3(-0.3f, -0.5f), transform.position + new Vector3(-0.3f, -0.6f));
 
-        Gizmos.DrawWireCube(transform.position + new Vector3(1 * facing, 0.5f), new Vector2(2, 2));
+        //samurai
+        Gizmos.DrawWireCube(transform.position + new Vector3(1 * facing, 0.5f), new Vector2(2, 2)); //attack
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(transform.position + new Vector3(0, 2f), new Vector2(14, 5)); //super
+        Gizmos.DrawWireCube(transform.position + new Vector3(0, 1f), new Vector2(14, 3)); //super
     }
 }

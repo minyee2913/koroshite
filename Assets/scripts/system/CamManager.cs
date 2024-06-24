@@ -25,7 +25,8 @@ public class CamManager : MonoBehaviour
 
     private void Update() {
         if (Player.Local != null && Player.Local.state == "room") {
-            float x = Mathf.Clamp(Player.Local.transform.position.x, -58f, -52f);
+            transform.position = Vector3.Lerp(transform.position, Player.Local.transform.position, 4 * Time.deltaTime);
+            float x = Mathf.Clamp(transform.position.x, -58f, -52f);
             transform.position = new Vector3(x, -17.2f, -2f);
         }
     }
