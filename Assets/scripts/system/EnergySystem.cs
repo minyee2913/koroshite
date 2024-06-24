@@ -4,7 +4,7 @@ class EnergySystem {
     }
 
     public static void WarnEnergy(Player pl, int val) {
-        ChatManager.Instance.SendLocalComment("<color=\"red\"> 에너지가 " + (val - pl.energy).ToString() + " 만큼 부족합니다.</color>");
+        ChatManager.Instance.comment("<color=\"red\"> 에너지가 " + (val - pl.energy).ToString() + " 만큼 부족합니다.</color>");
     }
 
     public static bool CheckNWarn(Player pl, int val) {

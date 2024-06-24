@@ -92,11 +92,11 @@ public class ChatManager : MonoBehaviourPunCallbacks
             text
         };
 
-        pv.RPC("SendLocalComment", RpcTarget.All, param);
+        pv.RPC("comment", RpcTarget.All, param);
     }
 
     [PunRPC]
-    public void SendLocalComment(string text) {
+    public void comment(string text) {
         messages.Add(text);
         SendOutChat(text);
 

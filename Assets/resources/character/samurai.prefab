@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 9064639451040775397}
   - component: {fileID: 9064639451040775395}
   - component: {fileID: 9064639451040775392}
+  - component: {fileID: 5053878463678115451}
+  - component: {fileID: 523646363514656859}
   m_Layer: 6
   m_Name: samurai
   m_TagString: Untagged
@@ -100,11 +102,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: samurai
   animator: {fileID: 0}
+  pv: {fileID: 0}
   render: {fileID: 0}
   pl: {fileID: 0}
   atkType: 0
   atkCool: 0
   atkCooling: 0
+  defaultScale: {x: 0, y: 0, z: 0}
   swordSlash: {fileID: 1872147318604286, guid: 5bea49531fc500c408823a2e2863106f, type: 3}
   swordStrike: {fileID: 7699698589382392644, guid: ce614ff6f5639fb4ab201b6b5b437127, type: 3}
   spatial: {fileID: 6810844234100877735, guid: 88dd9c4a8854b804186fda4318305ba0, type: 3}
@@ -129,3 +133,77 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5053878463678115451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9064639451040775399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 1
+    Name: isRunning
+  - Type: 4
+    SynchronizeType: 1
+    Name: isMoving
+  - Type: 9
+    SynchronizeType: 0
+    Name: jump
+  - Type: 9
+    SynchronizeType: 0
+    Name: jump2
+  - Type: 4
+    SynchronizeType: 1
+    Name: onGround
+  - Type: 9
+    SynchronizeType: 0
+    Name: attack1
+  - Type: 9
+    SynchronizeType: 0
+    Name: attack2
+  - Type: 9
+    SynchronizeType: 0
+    Name: attack3
+  - Type: 4
+    SynchronizeType: 1
+    Name: shielding
+  - Type: 4
+    SynchronizeType: 1
+    Name: isDead
+  - Type: 9
+    SynchronizeType: 0
+    Name: charge
+  m_SynchronizeLayers:
+  - SynchronizeType: 1
+    LayerIndex: 0
+--- !u!114 &523646363514656859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9064639451040775399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 5053878463678115451}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

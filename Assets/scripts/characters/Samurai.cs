@@ -48,9 +48,9 @@ public class Samurai : Character
         
         pl.Knockback(Vector2.right * -pl.facing * 4);
         pl.Heal(30);
-        pl.energy += 20;
+        pl.energy += 10;
 
-        CamManager.main.CloseUp(3.2f, -10, 0.01f);
+        CamManager.main.CloseUp(3.2f, -10 * pl.facing, 0.01f);
         CamManager.main.Shake(3, 0.5f);
 
         pl.stopMove = 0.5f;
@@ -93,7 +93,7 @@ public class Samurai : Character
 
     private void Update() {
         if (pl != null) {
-            if (pl.pv.IsMine) pl.RpcAnimateBool("shielding", shielding);
+            if (pl.pv.IsMine) animator.SetBool("shielding", shielding);
 
             if (shielding) {
                 pl.stopMove = 0.2f;

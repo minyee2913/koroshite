@@ -35,7 +35,6 @@ public class OutChat : MonoBehaviour
 
             Color colText = txt.color;
             colText.a = 1 * (FadeOutTime - alpha)/FadeOutTime;
-            Debug.Log((FadeOutTime - alpha)/FadeOutTime);
 
             txt.color = colText;
 

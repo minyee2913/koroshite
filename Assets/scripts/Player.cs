@@ -6,7 +6,7 @@ using Photon;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
-using Unity.VisualScripting;
+using Microsoft.Win32.SafeHandles;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -140,35 +140,35 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             hprate.transform.Find("Fill Area").GetComponentInChildren<Image>().color = hpColor = new Color(85/256f, 255/256f, 11/256f);
 
-            SetCharacter("samurai");
             SetName(PhotonNetwork.LocalPlayer.NickName);
+            SetCharacter("samurai");
         }
     }
 
-    public void RpcAnimateBool(string name, bool val) {
-        object[] param = {
-            name, val,
-        };
+    // public void RpcAnimateBool(string name, bool val) {
+    //     object[] param = {
+    //         name, val,
+    //     };
 
-        pv.RPC("_animateBool", RpcTarget.All, param);
-    }
+    //     pv.RpcSecure("_animBool", RpcTarget.All, true, param);
+    // }
 
-    [PunRPC]
-    void _animateBool(string name, bool val) {
-        if (ch != null) {
-            ch.animator.SetBool(name, val);
-        }
-    }
+    // [PunRPC]
+    // void _animBool(string name, bool val) {
+    //     if (ch != null) {
+    //         ch.animator.SetBool(name, val);
+    //     }
+    // }
     public void RpcAnimateTrigger(string name) {
         object[] param = {
             name,
         };
 
-        pv.RPC("_animateTrigger", RpcTarget.All, param);
+        pv.RpcSecure("_animTrig", RpcTarget.All, true, param);
     }
 
     [PunRPC]
-    void _animateTrigger(string name) {
+    void _animTrig(string name) {
         if (ch != null) {
             ch.animator.SetTrigger(name);
         }
@@ -194,30 +194,30 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void CallChFunc(string method) {
-        pv.RPC("callchFunc", RpcTarget.All, new object[]{method});
+        pv.RpcSecure("ccf", RpcTarget.All, true, new object[]{method});
     }
 
     [PunRPC]
-    void callchFunc(string method) {
+    void ccf(string method) {
         if (ch != null) {
             ch.Callfunc(method);
         }
     }
 
     public void SetFacing(int facing) {
-        pv.RPC("setFacing", RpcTarget.All, new object[]{facing});
+        pv.RpcSecure("setFac", RpcTarget.All, true, new object[]{facing});
     }
     [PunRPC]
-    void setFacing(int facing) {
+    void setFac(int facing) {
         this.facing = facing;
         ch.render.flipX = facing == -1;
     }
 
     public void SetEnergy(int val) {
-        pv.RPC("setEnergy", RpcTarget.All, new object[]{val});
+        pv.RPC("setEne", RpcTarget.All, new object[]{val});
     }
     [PunRPC]
-    void setEnergy(int val) {
+    void setEne(int val) {
         energy = val;
     }
 
@@ -332,7 +332,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     if (runTime <= 0) {
                         running = false;
 
-                        RpcAnimateBool("isRunning", false);
+                        ch.animator.SetBool("isRunning", false);
                     }
                 }
 
@@ -354,6 +354,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 } else {
                     rb.gravityScale = realGravity;
                 }
+
+                ch.animator.SetBool("isMoving", isMoving);
+                if (running) {
+                    ch.animator.SetBool("isRunning", isMoving);
+                } else {
+                    ch.animator.SetBool("isRunning", false);
+                }
+
+                ch.animator.SetBool("onGround", onGround);
+                ch.animator.SetBool("isDead", isDeath);
             }else {
                 rb.gravityScale = 0;
                 rb.velocity = Vector2.zero;
@@ -362,14 +372,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             hprate.value = (float)health / maxHealth;
             nametag.text = name_;
             background.transform.localScale = new Vector3(name_.Length + 0.4f, 1);
-
-            ch.animator.SetBool("isMoving", isMoving);
-            if (running) {
-                ch.animator.SetBool("isRunning", isMoving);
-            }
-
-            ch.animator.SetBool("onGround", onGround);
-            ch.animator.SetBool("isDead", isDeath);
 
             if (dashing) {
                 float dashD = Mathf.Floor(dashTime * 100) / 100;
@@ -455,6 +457,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [PunRPC]
     void dashEffect() {
+        if (ch == null) {
+            return;
+        }
         var obj = Instantiate(ch, ch.transform.position, quaternion.identity);
 
         obj.animator.SetBool("isRunning", true);
@@ -474,6 +479,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 stream.SendNext(name_);
                 stream.SendNext(health);
+                stream.SendNext(facing);
                 stream.SendNext(isMoving);
                 stream.SendNext(running);
                 stream.SendNext(onGround);
@@ -481,12 +487,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 stream.SendNext(dashing);
                 stream.SendNext(isDeath);
                 stream.SendNext(ch != null ? ch.render.flipX : false);
-                stream.SendNext(character);
             }
             else
             {
                 name_ = (string)stream.ReceiveNext();
                 health = (int)stream.ReceiveNext();
+                facing = (int)stream.ReceiveNext();
                 isMoving = (bool)stream.ReceiveNext();
                 running = (bool)stream.ReceiveNext();
                 onGround = (bool)stream.ReceiveNext();
@@ -497,12 +503,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 var flip = (bool)stream.ReceiveNext();
                 if (ch != null) {
                     ch.render.flipX = flip;
-                }
-
-                string chId = (string)stream.ReceiveNext();
-                Debug.Log(chId);
-                if (chId != character) {
-                    _setCh(chId);
                 }
             }
         
@@ -600,26 +600,25 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void SetCharacter(string id) {
-        object[] param = {
-            id
+        object[] data = {
+            name_,
         };
-        pv.RPC("_setCh", RpcTarget.All, param);
+        PhotonNetwork.Instantiate("character/" + id, transform.position, transform.rotation, 0, data);
     }
 
-    [PunRPC]
-    void _setCh(string id) {
-        if (ch != null) {
-            Destroy(ch.gameObject);
+    public void _setCh(Character chh) {
+        if (ch != null && pv.IsMine) {
+            PhotonNetwork.Destroy(ch.gameObject);
         }
 
-        character = id;
+        ch = chh;
 
-        ch = Instantiate(CharacterManager.instance.Get(id));
+        character = chh.id;
 
-        ch.transform.SetParent(transform);
-        ch.transform.localPosition = new Vector3(0, 1.36f);
+        chh.transform.SetParent(transform);
+        chh.transform.localPosition = new Vector3(0, 1.36f);
         
-        ch.pl = this;
+        chh.pl = this;
     }
 
     void LimitedCamera() {
@@ -650,9 +649,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         Gizmos.DrawLine(transform.position + new Vector3(-0.3f, -0.5f), transform.position + new Vector3(-0.3f, -0.6f));
 
         //samurai
-        Gizmos.DrawWireCube(transform.position + new Vector3(1 * facing, 0.5f), new Vector2(2, 2)); //attack
+        // Gizmos.DrawWireCube(transform.position + new Vector3(1 * facing, 0.5f), new Vector2(2, 2)); //attack
+        // Gizmos.color = Color.yellow;
+        // Gizmos.DrawWireCube(transform.position + new Vector3(0, 2f), new Vector2(14, 5)); //super
+        // Gizmos.DrawWireCube(transform.position + new Vector3(0, 1f), new Vector2(14, 3)); //super
+
+        //fighter
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(transform.position + new Vector3(0.5f * facing, 0.5f), new Vector2(1, 2)); //attack
+        Gizmos.DrawWireCube(transform.position + new Vector3(1.2f * facing, 0.5f), new Vector2(3.6f, 3)); //super kick
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position + new Vector3(0, 2f), new Vector2(14, 5)); //super
-        Gizmos.DrawWireCube(transform.position + new Vector3(0, 1f), new Vector2(14, 3)); //super
+        Gizmos.DrawWireCube(transform.position + new Vector3(0, 0f), new Vector2(6, 2)); //jumpAtk
+        // Gizmos.DrawWireCube(transform.position + new Vector3(0, 1f), new Vector2(14, 3)); //super
     }
 }

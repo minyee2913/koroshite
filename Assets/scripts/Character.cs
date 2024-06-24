@@ -7,6 +7,7 @@ public class Character : MonoBehaviour
 {
     public string id;
     public Animator animator;
+    public PhotonView pv;
     public SpriteRenderer render;
     [SerializeField]
     public Player pl = null;
@@ -15,12 +16,22 @@ public class Character : MonoBehaviour
     public float atkCool = 0;
     public bool atkCooling = false;
     public Vector3 defaultScale;
+    string ownerName = "";
     void Awake()
     {
+        pv = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
         render = GetComponent<SpriteRenderer>();
 
         defaultScale = transform.localScale;
+
+        if (pv.InstantiationData == null) {
+            return;
+        }
+
+        if (pv.InstantiationData.Length > 0) {
+            ownerName = (string)pv.InstantiationData[0];
+        }
     }
     public virtual void Attack() {}
     public virtual void Skill1() {}
@@ -42,6 +53,14 @@ public class Character : MonoBehaviour
             if (atkCool < -0.4f) {
                 atkType = 0;
                 atkCooling = false;
+            }
+        }
+
+        if (ownerName.Length > 0 && pl == null) {
+            Player pl = Player.players.Find((p)=>p.name_ == (string)pv.InstantiationData[0]);
+
+            if (pl != null) {
+                pl._setCh(this);
             }
         }
     }
