@@ -47,7 +47,7 @@ public class Samurai : Character
         attacker.ch.atkCool = 0.5f;
         
         pl.Knockback(Vector2.right * -pl.facing * 4);
-        pl.Heal(30);
+        pl.Heal(40);
         pl.energy += 10;
 
         CamManager.main.CloseUp(3.2f, -10 * pl.facing, 0.01f);
@@ -184,7 +184,7 @@ public class Samurai : Character
 
         yield return new WaitForSeconds(0.5f);
 
-        transform.localScale = Vector2.zero;
+        pl.SetChScale(Vector3.zero);
 
         CamManager.main.CloseUp(5f, 0, 0.1f);
 
@@ -208,7 +208,7 @@ public class Samurai : Character
 
         yield return new WaitForSeconds(0.3f);
 
-        transform.localScale = defaultScale;
+        pl.SetChScale(defaultScale);
 
         pl.RpcAnimateTrigger("attack2");
 
@@ -318,7 +318,7 @@ public class Samurai : Character
         yield return new WaitForSeconds(0.2f);
         pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
 
-        var targets = Player.Convert(Physics2D.BoxCastAll((p1 + transform.position) / 2, new Vector2(Mathf.Abs(transform.position.x - p1.x), Mathf.Abs(transform.position.y - p1.y)), 0, Vector2.zero), pl);
+        var targets = Player.Convert(Physics2D.BoxCastAll((p1 + pl.transform.position) / 2, new Vector2(Mathf.Abs(pl.transform.position.x - p1.x), Mathf.Abs(pl.transform.position.y - p1.y)), 0, Vector2.zero), pl);
 
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];

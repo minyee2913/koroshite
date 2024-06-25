@@ -19,10 +19,13 @@ public class SetLayer : MonoBehaviour
     void SetChild(Transform tr) {
         foreach (Transform child in tr) {
             Renderer mesh_ = child.GetComponent<Renderer>();
-            mesh_.sortingLayerName = sortingLayer;
-            mesh_.sortingOrder = sortingOrder;
+            
+            if (mesh_ != null) {
+                mesh_.sortingLayerName = sortingLayer;
+                mesh_.sortingOrder = sortingOrder;
 
-            SetChild(child);
+                SetChild(child);
+            }
         }
     }
 }

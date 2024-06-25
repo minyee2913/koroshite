@@ -121,6 +121,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         balloon_Text.text = text;
     }
+    public void SetChScale(Vector3 scale) {
+        object[] obj = {
+            scale.x, scale.y, scale.z,
+        };
+        pv.RpcSecure("setChScale", RpcTarget.All, true, obj);
+    }
+    [PunRPC]
+    void setChScale(float x, float y, float z) {
+        if (ch != null) {
+            ch.transform.localScale = new Vector3(x, y, z);
+        }
+    }
     void Start()
     {
         pv = GetComponent<PhotonView>();
@@ -658,11 +670,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // Gizmos.DrawWireCube(transform.position + new Vector3(0, 1f), new Vector2(14, 3)); //super
 
         //fighter
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position + new Vector3(0.5f * facing, 0.5f), new Vector2(1, 2)); //attack
-        Gizmos.DrawWireCube(transform.position + new Vector3(1.2f * facing, 0.5f), new Vector2(3.6f, 3)); //super kick
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position + new Vector3(0, 0f), new Vector2(6, 2)); //jumpAtk
+        // Gizmos.color = Color.red;
+        // Gizmos.DrawWireCube(transform.position + new Vector3(0.5f * facing, 0.5f), new Vector2(1, 2)); //attack
+        // Gizmos.DrawWireCube(transform.position + new Vector3(1.2f * facing, 0.5f), new Vector2(3.6f, 3)); //super kick
+        // Gizmos.color = Color.yellow;
+        // Gizmos.DrawWireCube(transform.position + new Vector3(0, 0f), new Vector2(6, 2)); //jumpAtk
         // Gizmos.DrawWireCube(transform.position + new Vector3(0, 1f), new Vector2(14, 3)); //super
+
+        //shinobi
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(transform.position + new Vector3(0.25f, 2f), new Vector2(10, 8)); //attack
     }
 }
