@@ -3,6 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using Unity.Mathematics;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class Shinobi : Character
 {
@@ -12,6 +13,16 @@ public class Shinobi : Character
     float hurtTime;
     float invTime;
     Cooldown jumpAtkCool = new(1.5f);
+    Cooldown invCool = new(3.5f);
+    Cooldown superCool = new(4.2f);
+    [SerializeField]
+    ParticleSystem slash1;
+    [SerializeField]
+    GameObject slash2;
+    [SerializeField]
+    GameObject sparks;
+    [SerializeField]
+    GameObject mist;
 
     public override void Callfunc(string method)
     {
@@ -19,6 +30,14 @@ public class Shinobi : Character
             SetInv();
         } else if (method == "inv_") {
             UnSetInv();
+        } else if (method == "atk1") {
+            atk1Effect();
+        } else if (method == "atk2") {
+            atk2Effect();
+        } else if (method == "JA") {
+            JAEffect();
+        } else if (method == "sp") {
+            SPEffect();
         }
     }
     void SetInv() {
@@ -26,6 +45,66 @@ public class Shinobi : Character
     }
     void UnSetInv() {
         invisible = false;
+    }
+
+    public void atk1Effect() {
+        var slash = Instantiate(slash1, pl.transform);
+        var main = slash.main;
+        main.startColor = Color.red;
+        slash.gameObject.AddComponent<SetLayer>().sortingLayer = "particle";
+
+        slash.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+
+        slash.transform.position = pl.transform.position + new Vector3(0.5f * pl.facing, 1);
+        slash.transform.rotation = Quaternion.Euler(15, 0, (pl.facing == 1) ? 0 : 180);
+
+        slash.transform.Find("Hit").gameObject.SetActive(false);
+        slash.transform.Find("Sparks").gameObject.SetActive(false);
+
+        Destroy(slash.gameObject, 1);
+    }
+
+    public void atk2Effect() {
+        var slash = Instantiate(slash1, pl.transform);
+        var main = slash.main;
+        main.startColor = Color.red;
+        slash.gameObject.AddComponent<SetLayer>().sortingLayer = "particle";
+        slash.transform.position = pl.transform.position + new Vector3(0.25f * pl.facing, 1);
+        slash.transform.rotation = Quaternion.Euler(0, 0, (pl.facing == -1) ? 0 : 180);
+
+        slash.transform.Find("Hit").gameObject.SetActive(false);
+        slash.transform.Find("Sparks").gameObject.SetActive(false);
+
+        Destroy(slash.gameObject, 1);
+    }
+
+    public void JAEffect() {
+        var slash = Instantiate(slash2, pl.transform);
+        slash.gameObject.AddComponent<SetLayer>().sortingLayer = "particle";
+        slash.transform.position = pl.transform.position + new Vector3(0.5f * pl.facing, 0.5f);
+        slash.transform.rotation = Quaternion.Euler(5, 0, (pl.facing == -1) ? 0 : 180);
+
+        Destroy(slash, 1);
+    }
+
+    public void SPEffect() {
+        var slash = Instantiate(mist, pl.transform);
+        slash.gameObject.AddComponent<SetLayer>().sortingLayer = "particle";
+        slash.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        slash.transform.position = pl.transform.position + new Vector3(1f * pl.facing, 1.5f);
+
+        SP2Effect();
+
+        Destroy(slash.gameObject, 1);
+    }
+
+    public void SP2Effect() {
+        var slash = Instantiate(slash2, pl.transform);
+        slash.gameObject.AddComponent<SetLayer>().sortingLayer = "particle";
+        slash.transform.position = pl.transform.position + new Vector3(0.5f * pl.facing, 1f);
+        slash.transform.rotation = Quaternion.Euler(0, (pl.facing == -1) ? 270 : 90, 90);
+
+        Destroy(slash, 1);
     }
 
     public override void Attack()
@@ -36,7 +115,9 @@ public class Shinobi : Character
 
     public override void Skill1()
     {
-        if (hurted) {
+        if (hurted && !invCool.IsIn()) {
+            invCool.Start();
+
             pl.Dash();
             pl.rb.velocity = new Vector2(-12 * pl.facing, pl.rb.velocity.y);
 
@@ -80,7 +161,7 @@ public class Shinobi : Character
 
                 col.a = 0.5f;
 
-                if (invTime > 2f) {
+                if (invTime > 2.5f) {
                     invisible = false;
                     pl.CallChFunc("inv_");
                     invTime = 0;
@@ -119,6 +200,8 @@ public class Shinobi : Character
             yield break;
         }
 
+        List<Player> targets;
+
         if (atkType == 0) {
             pl.RpcAnimateTrigger("attack1");
 
@@ -133,6 +216,17 @@ public class Shinobi : Character
 
             yield return new WaitForSeconds(0.2f);
             pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+
+            targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(1, 2), 0, Vector2.right * pl.facing, 0.5f), pl);
+
+            for (int i = 0; i < targets.Count; i++) {
+                var target = targets[i];
+
+                pl.energy += 2;
+
+                target.Damage(30, pl.name_);
+                target.Knockback(Vector2.right * pl.facing * 3 + Vector2.up * 6);
+            }
         } else {
             pl.RpcAnimateTrigger("attack2");
 
@@ -143,21 +237,25 @@ public class Shinobi : Character
 
             pl.CallChFunc("atk2");
 
+            Vector3 p1 = pl.transform.position + pl.transform.right * pl.facing * 2;
+
             pl.rb.velocity = new Vector2(-16 * pl.facing, pl.rb.velocity.y);
 
             yield return new WaitForSeconds(0.2f);
             pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
-        }
 
-        var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(1, 2), 0, Vector2.right * pl.facing, 0.5f), pl);
+            CamManager.main.Shake(2);
 
-        for (int i = 0; i < targets.Count; i++) {
-            var target = targets[i];
+            targets = Player.Convert(Physics2D.BoxCastAll((p1 + transform.position) / 2, new Vector2(Mathf.Abs(transform.position.x - p1.x), Mathf.Abs(transform.position.y - p1.y)), 0, Vector2.right * pl.facing), pl);
 
-            pl.energy += 5;
+            for (int i = 0; i < targets.Count; i++) {
+                var target = targets[i];
 
-            target.Damage(30, pl.name_);
-            target.Knockback(Vector2.right * pl.facing * 3 + Vector2.up * 6);
+                pl.energy += 5;
+
+                target.Damage(70, pl.name_);
+                target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
+            }
         }
 
         routine = null;
@@ -172,7 +270,9 @@ public class Shinobi : Character
 
         pl.rb.velocity = new Vector2(20 * pl.facing, -10);
 
-        transform.localScale = Vector3.zero;
+        pl.SetChScale(Vector3.zero);
+
+        Vector3 p1 = pl.transform.position;
 
         yield return new WaitForSeconds(0.26f);
 
@@ -184,13 +284,29 @@ public class Shinobi : Character
 
         yield return new WaitForSeconds(0.1f);
 
-        transform.localScale = defaultScale;
+        pl.SetChScale(defaultScale);
+
+        pl.CallChFunc("JA");
+
+        var targets = Player.Convert(Physics2D.BoxCastAll((p1 + transform.position) / 2, new Vector2(Mathf.Abs(transform.position.x - p1.x), Mathf.Abs(transform.position.y - p1.y)), 0, Vector2.right * pl.facing), pl);
+
+        for (int i = 0; i < targets.Count; i++) {
+            var target = targets[i];
+
+            pl.energy += 5;
+            pl.Heal(3);
+
+            target.Damage(80, pl.name_);
+            target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
+        }
 
         pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
 
         yield return new WaitForSeconds(0.4f);
 
         CamManager.main.CloseOut(0.2f);
+
+        routine = null;
     }
 
     public override void Skill2()
@@ -200,6 +316,50 @@ public class Shinobi : Character
     }
 
     IEnumerator super() {
+        if (superCool.IsIn() || !EnergySystem.CheckNWarn(pl, 80)) {
+            yield break;
+        }
+
+        superCool.Start();
+
+        pl.energy -= 80;
+        pl.RpcAnimateTrigger("shield1");
+
+        pl.stopMove = 1f;
+
+        CamManager.main.CloseUp(3.4f, 0, 0.1f);
+
+        yield return new WaitForSeconds(0.4f);
+
+        for (int i = 0; i < 6; i++) {
+            pl.RpcAnimateTrigger("spin");
+
+            yield return new WaitForSeconds(0.2f);
+            if (i > 0) CamManager.main.CloseUp(4.8f, 0, 0.1f);
+
+            yield return new WaitForSeconds(0.4f);
+
+            CamManager.main.Shake(8);
+            CamManager.main.CloseUp(3.4f, 10 * pl.facing, 0.05f);
+
+            var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 2f), new Vector2(10, 8), 0, Vector2.right * pl.facing, 0.25f), pl);
+
+            for (int j = 0; j < targets.Count; j++) {
+                var target = targets[j];
+
+                pl.Heal(10);
+
+                target.Damage(80, pl.name_);
+                target.Knockback(Vector2.up * 15);
+            }
+
+            pl.CallChFunc("sp");
+
+            pl.stopMove = 0.4f;
+        }
+
+        CamManager.main.CloseOut(0.2f);
+
         yield return null;
     }
 }

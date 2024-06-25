@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
@@ -17,7 +16,6 @@ public class Character : MonoBehaviour
     public bool atkCooling = false;
     public Vector3 defaultScale;
     string ownerName = "";
-    float r, g, b, a;
     void Awake()
     {
         pv = GetComponent<PhotonView>();

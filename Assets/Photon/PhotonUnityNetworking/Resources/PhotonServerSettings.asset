@@ -63,6 +63,7 @@ MonoBehaviour:
   - setEne
   - setFac
   - ccf
+  - setChScale
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

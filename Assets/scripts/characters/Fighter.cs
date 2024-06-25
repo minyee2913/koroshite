@@ -382,11 +382,11 @@ public class Fighter : Character
     }
 
     IEnumerator super() {
-        if (superCool.IsIn() || !EnergySystem.CheckNWarn(pl, 80)) {
+        if (superCool.IsIn() || !EnergySystem.CheckNWarn(pl, 90)) {
             yield break;
         }
 
-        pl.energy -= 80;
+        pl.energy -= 90;
 
         superCool.Start();
         CamManager.main.CloseUp(3.4f, 0, 0.1f);
