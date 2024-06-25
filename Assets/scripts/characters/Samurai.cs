@@ -47,7 +47,7 @@ public class Samurai : Character
         attacker.ch.atkCool = 0.5f;
         
         pl.Knockback(Vector2.right * -pl.facing * 4);
-        pl.Heal(30);
+        pl.Heal(40);
         pl.energy += 10;
 
         CamManager.main.CloseUp(3.2f, -10 * pl.facing, 0.01f);

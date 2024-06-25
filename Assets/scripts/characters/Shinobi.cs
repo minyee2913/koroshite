@@ -191,7 +191,7 @@ public class Shinobi : Character
             yield break;
         }
 
-        if (!pl.onGround && !jumpAtkCool.IsIn()) {
+        if (pl.jumpCount > 0 && !jumpAtkCool.IsIn()) {
             jumpAtkCool.Start();
 
             routine = jumpAtk();
@@ -222,7 +222,7 @@ public class Shinobi : Character
             for (int i = 0; i < targets.Count; i++) {
                 var target = targets[i];
 
-                pl.energy += 2;
+                if (i == 0) pl.energy += 2;
 
                 target.Damage(30, pl.name_);
                 target.Knockback(Vector2.right * pl.facing * 3 + Vector2.up * 6);
@@ -237,8 +237,6 @@ public class Shinobi : Character
 
             pl.CallChFunc("atk2");
 
-            Vector3 p1 = pl.transform.position + pl.transform.right * pl.facing * 2;
-
             pl.rb.velocity = new Vector2(-16 * pl.facing, pl.rb.velocity.y);
 
             yield return new WaitForSeconds(0.2f);
@@ -246,12 +244,12 @@ public class Shinobi : Character
 
             CamManager.main.Shake(2);
 
-            targets = Player.Convert(Physics2D.BoxCastAll((p1 + transform.position) / 2, new Vector2(Mathf.Abs(transform.position.x - p1.x), Mathf.Abs(transform.position.y - p1.y)), 0, Vector2.right * pl.facing), pl);
+            targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2, 2), 0, Vector2.right * pl.facing, 0f), pl);
 
             for (int i = 0; i < targets.Count; i++) {
                 var target = targets[i];
 
-                pl.energy += 5;
+                if (i == 0) pl.energy += 5;
 
                 target.Damage(70, pl.name_);
                 target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
@@ -272,8 +270,6 @@ public class Shinobi : Character
 
         pl.SetChScale(Vector3.zero);
 
-        Vector3 p1 = pl.transform.position;
-
         yield return new WaitForSeconds(0.26f);
 
         pl.RpcAnimateTrigger("attack3");
@@ -288,15 +284,17 @@ public class Shinobi : Character
 
         pl.CallChFunc("JA");
 
-        var targets = Player.Convert(Physics2D.BoxCastAll((p1 + transform.position) / 2, new Vector2(Mathf.Abs(transform.position.x - p1.x), Mathf.Abs(transform.position.y - p1.y)), 0, Vector2.right * pl.facing), pl);
+        var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(6f, 3), 0, Vector2.right * pl.facing, 0f), pl);
 
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
 
-            pl.energy += 5;
-            pl.Heal(3);
+            if (i == 0) {
+                pl.energy += 5;
+                pl.Heal(3);
+            }
 
-            target.Damage(80, pl.name_);
+            target.Damage(70, pl.name_);
             target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
         }
 
@@ -331,7 +329,7 @@ public class Shinobi : Character
 
         yield return new WaitForSeconds(0.4f);
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 4; i++) {
             pl.RpcAnimateTrigger("spin");
 
             yield return new WaitForSeconds(0.2f);
@@ -347,7 +345,7 @@ public class Shinobi : Character
             for (int j = 0; j < targets.Count; j++) {
                 var target = targets[j];
 
-                pl.Heal(10);
+                if (i == 0) pl.Heal(30);
 
                 target.Damage(80, pl.name_);
                 target.Knockback(Vector2.up * 15);

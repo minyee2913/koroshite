@@ -183,7 +183,7 @@ public class Fighter : Character
         if (shieldTime >= 0.5f) pl.CallChFunc("sk");
 
         if (targets.Count > 0) {
-            pl.Heal((int)(15 * shieldTime));
+            pl.Heal(30);
             pl.energy += (int)(10 * shieldTime);
         }
 
@@ -192,7 +192,7 @@ public class Fighter : Character
 
             target.ch.CANCEL();
 
-            target.Damage((int)(100 * shieldTime), pl.name_);
+            target.Damage((int)(200 * shieldTime), pl.name_);
             target.Knockback(Vector2.right * pl.facing * 16 * shieldTime + Vector2.up * 4);
         }
 
@@ -228,7 +228,7 @@ public class Fighter : Character
             target.ch.CANCEL();
             target.ch.atkCool = 0.8f;
 
-            target.Damage(80, pl.name_);
+            target.Damage(160, pl.name_);
             target.Knockback(Vector2.right * pl.facing * 4 + Vector2.up * 4);
         }
 
@@ -323,12 +323,16 @@ public class Fighter : Character
 
         CamManager.main.Shake();
 
+        pl.Heal(10);
+
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
 
-            pl.energy += 5;
+            if (i == 0) {
+                pl.energy += 5;
+            }
 
-            target.Damage(30, pl.name_);
+            target.Damage(80, pl.name_);
             target.Knockback(Vector2.right * pl.facing * 10 + Vector2.up * 2);
         }
 
@@ -365,7 +369,7 @@ public class Fighter : Character
 
             pl.energy += 7;
 
-            target.Damage(90, pl.name_);
+            target.Damage(210, pl.name_);
         }
 
         yield return new WaitForSeconds(0.3f);
@@ -382,11 +386,11 @@ public class Fighter : Character
     }
 
     IEnumerator super() {
-        if (superCool.IsIn() || !EnergySystem.CheckNWarn(pl, 90)) {
+        if (superCool.IsIn() || !EnergySystem.CheckNWarn(pl, 60)) {
             yield break;
         }
 
-        pl.energy -= 90;
+        pl.energy -= 60;
 
         superCool.Start();
         CamManager.main.CloseUp(3.4f, 0, 0.1f);
