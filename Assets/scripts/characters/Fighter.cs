@@ -182,11 +182,13 @@ public class Fighter : Character
 
         if (shieldTime >= 0.5f) pl.CallChFunc("sk");
 
+        if (targets.Count > 0) {
+            pl.Heal((int)(15 * shieldTime));
+            pl.energy += (int)(10 * shieldTime);
+        }
+
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
-
-            pl.Heal(15);
-            pl.energy += 10;
 
             target.ch.CANCEL();
 
@@ -218,16 +220,15 @@ public class Fighter : Character
         pl.CallChFunc("sk");
         pl.CallChFunc("sk2");
 
+        if (targets.Count > 0) pl.Heal(15);
+
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
-
-            pl.Heal(15);
-            pl.energy += 10;
 
             target.ch.CANCEL();
             target.ch.atkCool = 0.8f;
 
-            target.Damage(120, pl.name_);
+            target.Damage(80, pl.name_);
             target.Knockback(Vector2.right * pl.facing * 4 + Vector2.up * 4);
         }
 

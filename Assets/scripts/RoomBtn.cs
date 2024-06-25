@@ -10,9 +10,10 @@ public class RoomBtn : MonoBehaviour
     public TMP_Text playerCount, countShadow;
 
     public void CallJoinRoom() {
-        NetworkManager.instance.SetNickName();
-        NetworkManager.instance.savedRoom = mainName.text;
+        if (NetworkManager.instance.SetNickName()) {
+            NetworkManager.instance.savedRoom = mainName.text;
 
-        LoadingController.LoadScene("GameScene");
+            LoadingController.LoadScene("GameScene");
+        }
     }
 }

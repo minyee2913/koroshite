@@ -46,14 +46,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         // PhotonNetwork.JoinOrCreateRoom("그녀는 그녀를 그녀했어", new RoomOptions { MaxPlayers = 8 }, null);
     }
 
-    public void SetNickName() {
+    public bool SetNickName() {
         GameObject startObj = GameObject.Find("StartManager");
 
         if (startObj != null) {
             StartManager start = startObj.GetComponent<StartManager>();
 
+            if (start.nametag.text.Length <= 0) {
+                start.Error("이름을 먼저 입력하세요!");
+
+                return false;
+            }
+
             PhotonNetwork.NickName = start.nametag.text;
+
+            return true;
         }
+
+        return false;
     }
 
     public override void OnCreatedRoom()

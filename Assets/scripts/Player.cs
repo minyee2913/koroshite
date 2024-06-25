@@ -50,6 +50,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public string state = "room";
     float realGravity;
     Cooldown dashCool = new(1);
+    public Canvas infos;
 
     public static List<Player> Convert(RaycastHit2D[] casts, Player not = null) {
         List<Player> result = new();
@@ -461,6 +462,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
         var obj = Instantiate(ch, ch.transform.position, quaternion.identity);
+
+        obj.pl = null;
 
         obj.animator.SetBool("isRunning", true);
 
