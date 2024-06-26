@@ -2,7 +2,7 @@ using System.Collections;
 using Photon.Pun;
 using UnityEngine;
 
-public class Character : MonoBehaviour
+public abstract class Character : MonoBehaviour
 {
     public string id;
     public Animator animator;
@@ -16,6 +16,11 @@ public class Character : MonoBehaviour
     public bool atkCooling = false;
     public Vector3 defaultScale;
     string ownerName = "";
+    int ownerCode = 0;
+    public abstract string atkInfo {get;}
+    public abstract string atk2Info {get;}
+    public abstract string skill1Info {get;}
+    public abstract string skill2Info {get;}
     void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -30,6 +35,10 @@ public class Character : MonoBehaviour
 
         if (pv.InstantiationData.Length > 0) {
             ownerName = (string)pv.InstantiationData[0];
+
+            if (pv.InstantiationData.Length > 1) {
+                ownerCode = (int)pv.InstantiationData[1];
+            }
         }
     }
     public virtual void Attack() {}
@@ -56,7 +65,7 @@ public class Character : MonoBehaviour
         }
 
         if (ownerName.Length > 0 && pl == null) {
-            Player pl = Player.players.Find((p)=>p.name_ == (string)pv.InstantiationData[0]);
+            Player pl = Player.players.Find((p)=>p.name_ == ownerName && p.uniqueCode == ownerCode);
 
             if (pl != null) {
                 pl._setCh(this);

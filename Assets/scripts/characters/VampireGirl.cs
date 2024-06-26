@@ -8,6 +8,14 @@ public class VampireGirl : Character
 {
     bool shielding;
 
+    public override string atkInfo => "";
+
+    public override string atk2Info => "";
+
+    public override string skill1Info => "";
+
+    public override string skill2Info => "";
+
     public override void Callfunc(string method)
     {
     }

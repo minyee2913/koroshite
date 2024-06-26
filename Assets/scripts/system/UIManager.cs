@@ -26,6 +26,7 @@ public class UIManager : MonoBehaviour
     public Image face;
     public TMP_Text sectionTitle;
     [SerializeField] Button gameStart;
+    [SerializeField] TMP_Text killDeath;
     float dCount = 0;
 
     public static UIManager Instance {get; private set;}
@@ -49,23 +50,30 @@ public class UIManager : MonoBehaviour
 
             gameStart.gameObject.SetActive(PhotonNetwork.IsMasterClient && GameManager.Instance.state == "none");
 
-            if (Player.Local.isDeath && Player.Local.state == "ingame") {
-                dCount += Time.deltaTime;
+            if (Player.Local.isDeath) {
+                if (Player.Local.state == "ingame") {
+                    dCount += Time.deltaTime;
 
-                deathCount.text = "부활까지...\n" + (5 - (int)dCount).ToString();
+                    deathCount.text = "부활까지...\n" + (5 - (int)dCount).ToString();
 
-                if (dCount > 5) {
-                    dCount = 0;
+                    if (dCount > 5) {
+                        dCount = 0;
 
+                        Player.Local.Revive();
+
+                        Vector2 pos = GameManager.Instance.spawnPoses[Random.Range(0, GameManager.Instance.spawnPoses.Count - 1)];
+
+                        Player.Local.SetPos(pos);
+
+                        deathPanel.SetActive(false);
+                    }
+                } else {
                     Player.Local.Revive();
-
-                    Vector2 pos = GameManager.Instance.spawnPoses[Random.Range(0, GameManager.Instance.spawnPoses.Count - 1)];
-
-                    Player.Local.SetPos(pos);
-
                     deathPanel.SetActive(false);
                 }
             }
+
+            killDeath.text = Player.Local.kill.ToString() + "/" + Player.Local.death.ToString();
         }
     }
 

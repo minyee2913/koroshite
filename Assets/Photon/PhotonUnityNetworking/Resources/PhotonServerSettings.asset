@@ -64,6 +64,13 @@ MonoBehaviour:
   - setFac
   - ccf
   - setChScale
+  - addCoin
+  - addKill
+  - setCoin
+  - setDeath
+  - setKill
+  - FAKEnd
+  - setTimer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   name_: 
+  uniqueCode: 0
   pv: {fileID: 0}
   moveSpeed: 6
   rb: {fileID: 0}
@@ -81,6 +82,8 @@ MonoBehaviour:
   health: 0
   coin: 0
   energy: 0
+  kill: 0
+  death: 0
   hpColor: {r: 1, g: 0, b: 0, a: 1}
   state: room
   infos: {fileID: 0}

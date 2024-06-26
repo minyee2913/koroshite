@@ -13,6 +13,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public static List<Player> players = new();
     public static Player Local;
     public string name_;
+    public int uniqueCode;
     public PhotonView pv;
     public float moveSpeed;
     public Rigidbody2D rb;
@@ -45,7 +46,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     private float balloon_time;
 
-    public int maxHealth, health, coin, energy;
+    public int maxHealth, health, coin, energy, kill, death;
     public Color hpColor = Color.red;
     public string state = "room";
     float realGravity;
@@ -83,6 +84,56 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void setPos(Vector2 pos) {
         transform.position = pos;
+    }
+    public void SetCoin(int val) {
+        object[] obj = {
+            val
+        };
+        pv.RPC("setCoin", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void setCoin(int val) {
+        coin = val;
+    }
+    public void AddCoin(int val) {
+        object[] obj = {
+            val
+        };
+        pv.RPC("addCoin", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void addCoin(int val) {
+        coin += val;
+    }
+    public void AddKill(int val) {
+        object[] obj = {
+            val
+        };
+        pv.RPC("addKill", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void addKill(int val) {
+        kill += val;
+    }
+    public void SetKill(int val) {
+        object[] obj = {
+            val
+        };
+        pv.RPC("setKill", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void setKill(int val) {
+        kill = val;
+    }
+    public void SetDeath(int val) {
+        object[] obj = {
+            val
+        };
+        pv.RPC("setDeath", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void setDeath(int val) {
+        death = val;
     }
     public void SetState(string str) {
         object[] obj = {
@@ -144,18 +195,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         health = maxHealth;
 
-        players.Add(this);
-
         realGravity = rb.gravityScale;
 
         if (pv.IsMine) {
             Local = this;
 
+            uniqueCode = UnityEngine.Random.Range(-9999, 9999);
+
             hprate.transform.Find("Fill Area").GetComponentInChildren<Image>().color = hpColor = new Color(85/256f, 255/256f, 11/256f);
 
             SetName(PhotonNetwork.LocalPlayer.NickName);
+
             SetCharacter("samurai");
         }
+
+        players.Add(this);
     }
 
     // public void RpcAnimateBool(string name, bool val) {
@@ -237,6 +291,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private void Update() {
         if (ch != null) {
             if (pv.IsMine) {
+                if (PhotonNetwork.LocalPlayer.NickName == name_ && players.Find((pl)=>pl.name_ == name_ && pl.uniqueCode != uniqueCode) != null) {
+                    SetName("(" + uniqueCode.ToString() + ")" + PhotonNetwork.LocalPlayer.NickName);
+                }
                 isMoving = false;
 
                 if (state == "room")
@@ -427,6 +484,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void heal(int val) {
         health += val;
 
+        GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), val, Color.green);
+
         if (health > maxHealth)
             health = maxHealth;
     }
@@ -451,9 +510,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         health -= damage;
 
+        if (this == Local) {
+            GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.red);
+        } else if (attacker == Local) {
+            GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.white);
+        } else {
+            GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.gray);
+        }
+
         if (health <= 0 && !isDeath && this == Local) {
+            death++;
             if (attacker != null) {
-                attacker.coin += 10;
+                attacker.AddCoin(10);
+                attacker.AddKill(1);
             }
         } else StartCoroutine(hurtEff());
     }
@@ -493,7 +562,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (stream.IsWriting)
             {
                 stream.SendNext(name_);
+                stream.SendNext(uniqueCode);
                 stream.SendNext(health);
+                stream.SendNext(kill);
+                stream.SendNext(death);
                 stream.SendNext(facing);
                 stream.SendNext(isMoving);
                 stream.SendNext(running);
@@ -506,7 +578,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             else
             {
                 name_ = (string)stream.ReceiveNext();
+                uniqueCode = (int)stream.ReceiveNext();
                 health = (int)stream.ReceiveNext();
+                kill = (int)stream.ReceiveNext();
+                death = (int)stream.ReceiveNext();
                 facing = (int)stream.ReceiveNext();
                 isMoving = (bool)stream.ReceiveNext();
                 running = (bool)stream.ReceiveNext();
@@ -617,6 +692,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public void SetCharacter(string id) {
         object[] data = {
             name_,
+            uniqueCode,
         };
         PhotonNetwork.Instantiate("character/" + id, transform.position, transform.rotation, 0, data);
     }
@@ -679,6 +755,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         //shinobi
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position + new Vector3(0.25f, 2f), new Vector2(10, 8)); //attack
+        Gizmos.DrawWireSphere(transform.position + new Vector3(0.25f, 1f), 5); //attack
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(transform.position + new Vector3(0f, 0.5f), new Vector2(8, 3)); //attack
     }
 }

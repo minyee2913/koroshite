@@ -38,6 +38,14 @@ public class Fighter : Character
     Cooldown superKickCool = new(0.5f);
     Cooldown superCool = new(1f);
 
+    public override string atkInfo => "전방으로 빠르게 이동하면서 적에게 <color=\"red\">80</color>의 피해를 입힙니다.";
+
+    public override string atk2Info => "2단 점프 후 일반 공격 발동시 땅으로 내리찍어 땅 위에 있는 적들에게 <color=\"red\">210</color>의 피해를 입힙니다.";
+
+    public override string skill1Info => "홀드시 자세를 잡습니다. 자세를 잡은 상태에서는 입는 피해가 <color=\"lightblue\">40%</color> 감소하며 발차기 게이지를 계속 충전합니다.\n\n홀드를 멈추거나 발차기 게이지가 가득차면 축적된 발차기 게이지에 따라서 적에게 최대 <color=\"red\">200</color>의 피해를 입히고 HP를 최대 30 회복하며 밀쳐냅니다.";
+
+    public override string skill2Info => "<color=\"yellow\">특수 스택</color>을 얻습니다. 발차기를 가할 때마다 <color=\"yellow\">특수 스택</color>을 소모하여 최대 게이지의 발차기를 즉시 발동합니다. <color=\"yellow\">특수 스택</color>으로 발동한 발차기는 입히는 피해가 <color=\"red\">160</color>, 회복하는 HP가 15로 제한됩니다. <color=\"yellow\">특수 스택</color>을 모두 소모하면 오의 상태가 종료됩니다.";
+
     public override void Callfunc(string method)
     {
         if (method == "atk1") {
@@ -183,7 +191,7 @@ public class Fighter : Character
         if (shieldTime >= 0.5f) pl.CallChFunc("sk");
 
         if (targets.Count > 0) {
-            pl.Heal(30);
+            pl.Heal((int)(30 * shieldTime));
             pl.energy += (int)(10 * shieldTime);
         }
 
@@ -249,7 +257,7 @@ public class Fighter : Character
                 if (inSuper) {
                     pl.CallChFunc("b1");
                     fill.color = superCol;
-                    stack.value = superCount / 6f;
+                    stack.value = superCount / 8f;
 
                     if (superCount <= 0) {
                         inSuper = false;
@@ -322,8 +330,6 @@ public class Fighter : Character
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(1, 2), 0, Vector2.right * pl.facing, 0.5f), pl);
 
         CamManager.main.Shake();
-
-        pl.Heal(10);
 
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
@@ -405,6 +411,6 @@ public class Fighter : Character
         CamManager.main.CloseOut(0.1f);
 
         inSuper = true;
-        superCount = 6;
+        superCount = 8;
     }
 }

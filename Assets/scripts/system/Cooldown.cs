@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 class Cooldown {
     bool isIn;

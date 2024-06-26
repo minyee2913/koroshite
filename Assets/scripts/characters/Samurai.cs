@@ -13,6 +13,14 @@ public class Samurai : Character
     public GameObject swordStrike;
     public GameObject spatial;
 
+    public override string atkInfo => "전방으로 이동하면서 적에게 <color=\"red\">50</color>의 피해를 입힙니다.";
+
+    public override string atk2Info => "2단 점프 후 일반 공격 발동시 낙하하면서 찌르기 공격으로 <color=\"red\">80</color>의 피해를 입힙니다.";
+
+    public override string skill1Info => "홀드시 방어 상태를 시작합니다. 방어 상태에서는 입는 피해가 <color=\"lightblue\">30%</color> 감소합니다.\n\n방어 상태를 시작하고 1s 이내에 피해를 입으면 해당 피해를 상쇄 시키고 공격을 가한 적을 튕겨냅니다. ";
+
+    public override string skill2Info => "공간을 베어서 넓은 범위 내의 적들에게 <color=\"red\">80</color>의 피해를 4번 입히고 마지막 일격으로 <color=\"red\">120</color>의 피해를 추가로 입힙니다.";
+
     public override void Attack()
     {
         routine = _attack();

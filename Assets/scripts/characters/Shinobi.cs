@@ -24,6 +24,14 @@ public class Shinobi : Character
     [SerializeField]
     GameObject mist;
 
+    public override string atkInfo => "1) 전방으로 이동하면서 적에게 <color=\"red\">30</color>의 피해를 입힙니다.\n2) 후방으로 이동하면서 적에게 <color=\"red\">70</color>의 피해를 입힙니다.";
+
+    public override string atk2Info => "점프 후 일반 공격 발동시 은신 후 전방으로 빠르게 돌진한 후 도달한 위치에서 검기를 휘둘러 <color=\"red\">80</color>의 피해를 입히고 HP를 10 회복합니다. (쿨타임 1.5s)";
+
+    public override string skill1Info => "피해를 입은 후 즉시 해당 스킬 사용시 2.5s 동안 무적 상태가 됩니다.";
+
+    public override string skill2Info => "쌍절곤을 휘두르며 넓은 범위의 적들에게 <color=\"red\">120</color>의 피해를 4번 입힙니다.";
+
     public override void Callfunc(string method)
     {
         if (method == "_inv") {
@@ -222,10 +230,10 @@ public class Shinobi : Character
             for (int i = 0; i < targets.Count; i++) {
                 var target = targets[i];
 
-                if (i == 0) pl.energy += 2;
+                if (i == 0) pl.energy += 5;
 
                 target.Damage(30, pl.name_);
-                target.Knockback(Vector2.right * pl.facing * 3 + Vector2.up * 6);
+                target.Knockback(Vector2.right * pl.facing * -4 + Vector2.up * 6);
             }
         } else {
             pl.RpcAnimateTrigger("attack2");
@@ -249,7 +257,7 @@ public class Shinobi : Character
             for (int i = 0; i < targets.Count; i++) {
                 var target = targets[i];
 
-                if (i == 0) pl.energy += 5;
+                if (i == 0) pl.energy += 8;
 
                 target.Damage(70, pl.name_);
                 target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
@@ -284,14 +292,14 @@ public class Shinobi : Character
 
         pl.CallChFunc("JA");
 
-        var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(6f, 3), 0, Vector2.right * pl.facing, 0f), pl);
+        var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(8f, 3), 0, Vector2.right * pl.facing, 0f), pl);
 
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
 
             if (i == 0) {
-                pl.energy += 5;
-                pl.Heal(3);
+                pl.energy += 10;
+                pl.Heal(10);
             }
 
             target.Damage(70, pl.name_);
@@ -340,14 +348,14 @@ public class Shinobi : Character
             CamManager.main.Shake(8);
             CamManager.main.CloseUp(3.4f, 10 * pl.facing, 0.05f);
 
-            var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 2f), new Vector2(10, 8), 0, Vector2.right * pl.facing, 0.25f), pl);
+            var targets = Player.Convert(Physics2D.CircleCastAll(transform.position + new Vector3(0, 1f), 5, Vector2.right * pl.facing, 0.25f), pl);
 
             for (int j = 0; j < targets.Count; j++) {
                 var target = targets[j];
 
                 if (i == 0) pl.Heal(30);
 
-                target.Damage(80, pl.name_);
+                target.Damage(120, pl.name_);
                 target.Knockback(Vector2.up * 15);
             }
 

@@ -78,7 +78,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
     }
 
     public void SendMessage() {
-        SendComment(PhotonNetwork.LocalPlayer.NickName + ": " + inp.text);
+        SendComment(Player.Local.GetName() + ": " + inp.text);
 
         Player.Local.SetBalloon(inp.text);
 
