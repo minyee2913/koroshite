@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     void StartFAK() {
-        SetTimer(8 * 60);
+        SetTimer(5 * 60);
         ChatManager.Instance.SendComment("<color=\"orange\">제한 시간 내에 가장 많은 플레이어를 처치하세요!</color>");
     }
 
