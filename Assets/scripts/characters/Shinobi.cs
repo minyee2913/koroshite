@@ -292,15 +292,14 @@ public class Shinobi : Character
 
         pl.CallChFunc("JA");
 
-        var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(8f, 3), 0, Vector2.right * pl.facing, 0f), pl);
+        var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(10f, 3), 0, Vector2.right * pl.facing, 0f), pl);
 
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
 
-            if (i == 0) {
-                pl.energy += 10;
-                pl.Heal(10);
-            }
+            
+            pl.energy += 6;
+            pl.Heal(18);
 
             target.Damage(70, pl.name_);
             target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
@@ -353,7 +352,7 @@ public class Shinobi : Character
             for (int j = 0; j < targets.Count; j++) {
                 var target = targets[j];
 
-                if (i == 0) pl.Heal(30);
+                if (i == 0) pl.Heal(80);
 
                 target.Damage(120, pl.name_);
                 target.Knockback(Vector2.up * 15);
