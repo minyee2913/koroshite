@@ -46,6 +46,9 @@ TagManager:
   - name: tile
     uniqueID: 1665429581
     locked: 0
+  - name: monster
+    uniqueID: 2540954265
+    locked: 0
   - name: character
     uniqueID: 795686427
     locked: 0
