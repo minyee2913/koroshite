@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     IEnumerator stgm() {
         SetState("starting");
+        SoundManager.Instance.StopToAll(4);
         foreach (Player pl in Player.players) {
             pl.SetState("ready");
             pl.SetEnergy(0);
@@ -145,6 +146,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     void StartFAK() {
         SetTimer(5 * 60);
         ChatManager.Instance.SendComment("<color=\"orange\">제한 시간 내에 가장 많은 플레이어를 처치하세요!</color>");
+
+        SoundManager.Instance.PlayToAll("crashingOut");
     }
 
     public void DisplayDamage(Vector2 pos, int damage, Color col = default) {
@@ -156,6 +159,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void Spawn() {
         PhotonNetwork.Instantiate("Player", spawnPos, quaternion.identity);
+
+        SoundManager.Instance.Play("phone");
     }
 
     public void ForceEnd() {
@@ -175,6 +180,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             pl.SetKill(0);
             pl.SetCoin(0);
         }
+
+        SoundManager.Instance.Play("phone");
 
         SetState("none");
     }

@@ -4903,7 +4903,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 795686427
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 1120302538, guid: 93be57c7c16d74843952382dc4638f1d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5035,6 +5035,7 @@ MonoBehaviour:
   atkCool: 0
   atkCooling: 0
   defaultScale: {x: 0, y: 0, z: 0}
+  icon: {fileID: 0}
   state: 
   slash1: {fileID: 198741542255655676, guid: 5bea49531fc500c408823a2e2863106f, type: 3}
   slash2: {fileID: 1236453127613114, guid: bfbc37d0bc0e8ff4082a8b2894b3a486, type: 3}

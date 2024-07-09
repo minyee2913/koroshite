@@ -73,6 +73,9 @@ MonoBehaviour:
   - setTimer
   - setPrevent
   - setStopMove
+  - _animTrigg
+  - Play
+  - Stop
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

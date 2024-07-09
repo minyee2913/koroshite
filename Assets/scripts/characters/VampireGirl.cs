@@ -168,7 +168,7 @@ public class VampireGirl : Character
             pl.energy += 20;
             pl.Heal(30);
         } else {
-            pl.energy -= 20;
+            pl.energy -= 10;
             pl.Damage(50, null, false);
         }
 
@@ -270,7 +270,6 @@ public class VampireGirl : Character
             var target = targets[i];
 
             if (i == 0) {
-                pl.energy -= 5;
                 pl.Damage(10, null, false);
             }
 
@@ -315,7 +314,7 @@ public class VampireGirl : Character
         shielding = false;
         pl.stopMove = 1f;
 
-        var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2.5f, 2), 0, Vector2.right * pl.facing, 0.9f), pl);
+        var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(5f, 3), 0, Vector2.right * pl.facing, 0.9f), pl);
 
         animator.SetBool("inSuper", true);
 

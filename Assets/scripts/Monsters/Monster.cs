@@ -3,18 +3,26 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public class Monster : MonoBehaviour
+public abstract class Monster : MonoBehaviour
 {
     public static List<Monster> monsters = new();
+    [SerializeField]
+    MonsterState state;
     public PhotonView pv;
+    public Animator animator;
     public BoxCollider2D col;
     public SpriteRenderer render;
+    public int uniqueId;
     public float speed;
-    public bool onGround;
+    public abstract float stateY {get;}
+    public abstract string Name {get;}
+    public bool onGround, isMoving;
     public string action, actionInfo;
     float actionTime;
     float stepTime;
-    int facing;
+    public float range, atkCool;
+    public int facing, health, maxHealth;
+    public Player target;
 
     public static List<Monster> Convert(RaycastHit2D[] casts, Monster not = null) {
         List<Monster> result = new();
@@ -42,9 +50,18 @@ public class Monster : MonoBehaviour
         pv = GetComponent<PhotonView>();
         col = GetComponent<BoxCollider2D>();
         render = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
 
         action = "idle";
         actionInfo = "stay";
+
+        state = Instantiate(state, transform);
+        state.transform.localPosition = new Vector3(0, stateY);
+
+        state.Name = Name;
+        health = maxHealth;
+
+        uniqueId = Random.Range(-9999, 9999);
     }
 
     void Update()
@@ -52,11 +69,27 @@ public class Monster : MonoBehaviour
         if (pv.IsMine) {
             onGround = OnGround(transform.position);
 
+            MobUpdate();
+
+            if (atkCool > 0) {
+                atkCool -= Time.deltaTime;
+            }
+
             if (action == "idle") {
                 idleState();
             }
+
+            animator.SetBool("isMoving", isMoving);
+
+            if (target != null) {
+                range = Vector2.Distance(new Vector2(target.transform.position.x, 0), new Vector2(transform.position.x, 0));
+            }
         }
+
+        state.hprate.value = (float)health / maxHealth;
     }
+
+    public virtual void MobUpdate() {}
 
     void idleState() {
         actionTime += Time.deltaTime;
@@ -74,15 +107,17 @@ public class Monster : MonoBehaviour
                 }
 
                 actionTime = 0;
-                stepTime = Random.Range(1f, 1.5f);
+                stepTime = Random.Range(0.6f, 2f);
             }
         } else {
+            isMoving = true;
+
             if (actionInfo == "left") {
-                if (HasObstacle(Vector2.left) || !OnGround(transform.position + Vector3.left * speed)) {
+                if (HasObstacle(Vector2.left) || !OnGround(transform.position + Vector3.left)) {
                     actionInfo = "right";
                 } else Move(Vector2.left);
             } else if (actionInfo == "right") {
-                if (HasObstacle(Vector2.right) || !OnGround(transform.position + Vector3.right * speed)) {
+                if (HasObstacle(Vector2.right) || !OnGround(transform.position + Vector3.right)) {
                     actionInfo = "left";
                 } else Move(Vector2.right);
             }
@@ -91,8 +126,45 @@ public class Monster : MonoBehaviour
 
                 actionTime = 0;
                 stepTime = Random.Range(1f, 2f);
+
+                isMoving = false;
             }
         }
+    }
+
+    public List<Player> Search(float distance) {
+        return Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(distance * 2, 2), 0, Vector2.zero, 0));
+    }
+
+    public void Chase(Player target) {
+        isMoving = false;
+        
+        if (transform.position.x > target.transform.position.x) {
+            if (!HasObstacle(Vector2.left) && OnGround(transform.position + Vector3.left * speed * Time.deltaTime)) {
+                Move(Vector2.left);
+
+                isMoving = true;
+            }
+        } else if (transform.position.x < target.transform.position.x) {
+            if (!HasObstacle(Vector2.right) && OnGround(transform.position + Vector3.right * speed * Time.deltaTime)) {
+                Move(Vector2.right);
+
+                isMoving = true;
+            }
+        }
+    }
+
+    public void RpcAnimateTrigger(string name) {
+        object[] param = {
+            name,
+        };
+
+        pv.RpcSecure("_animTrigg", RpcTarget.All, true, param);
+    }
+
+    [PunRPC]
+    public void _animTrigg(string name) {
+        animator.SetTrigger(name);
     }
 
     public bool OnGround(Vector3 point) {
@@ -136,11 +208,17 @@ public class Monster : MonoBehaviour
 
         if (!HasObstacle(direction)) {
             transform.Translate(direction * Time.deltaTime * speed);
+        } else {
+            Debug.Log("obstacle!");
         }
     }
 
     bool HasObstacle(Vector2 direction) {
         var casts = Physics2D.BoxCastAll(transform.position + (Vector3)col.offset, new Vector3(col.size.x / 2, col.size.y), 0, direction, 0.3f, LayerMask.GetMask("ground"));
+
+        if (casts.Length > 0) {
+            Debug.Log(casts[0].transform.name);
+        }
 
         return casts.Length > 0;
     }
@@ -155,5 +233,15 @@ public class Monster : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+        Gizmos.DrawLine(transform.position + new Vector3(0, -1.8f), transform.position + new Vector3(0, -2f));
+
+        Gizmos.DrawLine(transform.position + new Vector3(0.3f, -1.8f), transform.position + new Vector3(0.3f, -2f));
+        Gizmos.DrawLine(transform.position + new Vector3(-0.3f, -1.8f), transform.position + new Vector3(-0.3f, -2f));
     }
 }
