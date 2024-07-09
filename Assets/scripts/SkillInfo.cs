@@ -30,7 +30,7 @@ public class SkillInfo : MonoBehaviour
         skill1Info.text = ch.skill1Info;
         skill2Info.text = ch.skill2Info;
 
-        profile.sprite = ch.render.sprite;
+        profile.sprite = ch.icon;
 
         panel.SetActive(true);
     }

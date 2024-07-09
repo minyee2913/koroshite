@@ -178,6 +178,13 @@ public class Fighter : Character
         }
     }
 
+    public override void OnCancel()
+    {
+        if (state != "super") {
+            CamManager.main.CloseOut(0.1f);
+        }
+    }
+
     IEnumerator kick() {
         pl.RpcAnimateTrigger("attack3");
 
@@ -391,10 +398,22 @@ public class Fighter : Character
         StartCoroutine(routine);
     }
 
+    public override void OnForceCancel()
+    {
+        if (inSuper || state == "super") {
+            CamManager.main.CloseOut(0.1f);
+
+            inSuper = false;
+            superCount = 0;
+        }
+    }
+
     IEnumerator super() {
         if (superCool.IsIn() || !EnergySystem.CheckNWarn(pl, 60)) {
             yield break;
         }
+
+        state = "super";
 
         pl.energy -= 60;
 
@@ -412,5 +431,7 @@ public class Fighter : Character
 
         inSuper = true;
         superCount = 8;
+
+        state = null;
     }
 }

@@ -5035,6 +5035,7 @@ MonoBehaviour:
   atkCool: 0
   atkCooling: 0
   defaultScale: {x: 0, y: 0, z: 0}
+  state: 
   slash1: {fileID: 198741542255655676, guid: 5bea49531fc500c408823a2e2863106f, type: 3}
   slash2: {fileID: 1236453127613114, guid: bfbc37d0bc0e8ff4082a8b2894b3a486, type: 3}
   sparks: {fileID: 5017488834418990367}

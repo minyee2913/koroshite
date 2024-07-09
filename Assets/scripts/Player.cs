@@ -36,7 +36,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public bool isMoving, onGround, jumping, dashing, running, isDeath;
     public int jumpCount = 0;
-    public float jumpTime = 0, dashTime = 0, runTime = 0, stopMove = 0;
+    public float jumpTime = 0, dashTime = 0, runTime = 0, stopMove = 0, preventInput = 0;
     float dashData = 0;
     public int facing = 1;
     [SerializeField]
@@ -124,6 +124,26 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void setKill(int val) {
         kill = val;
+    }
+    public void SetPrevent(float val) {
+        object[] obj = {
+            val
+        };
+        pv.RPC("setPrevent", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void setPrevent(float val) {
+        preventInput = val;
+    }
+    public void SetStopMove(float val) {
+        object[] obj = {
+            val
+        };
+        pv.RPC("setStopMove", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void setStopMove(float val) {
+        stopMove = val;
     }
     public void SetDeath(int val) {
         object[] obj = {
@@ -355,7 +375,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     }
                 }
 
-                if (GameManager.Instance.applyPlayerInput && !isDeath && state != "ready") {
+                if (GameManager.Instance.applyPlayerInput && !isDeath && state != "ready" && preventInput <= 0) {
                     if (Input.GetKeyDown(KeyCode.Space)) {
                         Jump();
                     }
@@ -408,6 +428,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 if (stopMove > 0) {
                     stopMove -= Time.deltaTime;
+                }
+
+                if (preventInput > 0) {
+                    preventInput -= Time.deltaTime;
                 }
 
                 if (InLadder()) {
@@ -490,14 +514,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             health = maxHealth;
     }
 
-    public void Damage(int damage, string plName = null) {
-        pv.RPC("hurt", RpcTarget.All, new object[]{damage, plName});
+    public void Damage(int damage, string plName = null, bool display = true) {
+        pv.RPC("hurt", RpcTarget.All, new object[]{damage, plName, display});
     }
 
     
 
     [PunRPC]
-    void hurt(int damage, string plName) {
+    void hurt(int damage, string plName, bool display) {
         Player attacker = players.Find((p)=>p.name_ == plName);
         bool cancel = false;
 
@@ -510,16 +534,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         health -= damage;
 
-        if (this == Local) {
-            GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.red);
-        } else if (attacker == Local) {
-            GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.white);
-        } else {
-            GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.gray);
+        if (display) {
+            if (this == Local) {
+                GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.red);
+            } else if (attacker == Local) {
+                GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.white);
+            } else {
+                GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.gray);
+            }
         }
 
         if (health <= 0 && !isDeath && this == Local) {
             death++;
+            ch.ForceCANCEL();
+
             if (attacker != null) {
                 attacker.AddCoin(10);
                 attacker.AddKill(1);
@@ -754,9 +782,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // Gizmos.DrawWireCube(transform.position + new Vector3(0, 1f), new Vector2(14, 3)); //super
 
         //shinobi
+        // Gizmos.color = Color.red;
+        // Gizmos.DrawWireSphere(transform.position + new Vector3(0.25f, 1f), 5); //attack
+        // Gizmos.color = Color.yellow;
+        // Gizmos.DrawWireCube(transform.position + new Vector3(0f, 0.5f), new Vector2(8, 3)); //attack
+
+        //vampire girl
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position + new Vector3(0.25f, 1f), 5); //attack
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position + new Vector3(0f, 0.5f), new Vector2(8, 3)); //attack
+        Gizmos.DrawWireCube(transform.position + new Vector3(1f * facing, 0.5f), new Vector2(2.5f, 2)); //attack
     }
 }

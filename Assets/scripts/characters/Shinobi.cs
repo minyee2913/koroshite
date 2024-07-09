@@ -142,6 +142,15 @@ public class Shinobi : Character
         shielding = false;
     }
 
+    public override void OnCancel()
+    {
+        if (state != "super") {
+            pl.SetChScale(defaultScale);
+
+            CamManager.main.CloseOut(0.1f);
+        }
+    }
+
     public override void OnHurt(ref int damage, Player attacker, ref bool cancel)
     {
         if (invisible) {
@@ -321,10 +330,19 @@ public class Shinobi : Character
         StartCoroutine(routine);
     }
 
+    public override void OnForceCancel()
+    {
+        if (state == "super") {
+            CamManager.main.CloseOut(0.1f);
+        }
+    }
+
     IEnumerator super() {
         if (superCool.IsIn() || !EnergySystem.CheckNWarn(pl, 80)) {
             yield break;
         }
+
+        state = "super";
 
         superCool.Start();
 
@@ -366,6 +384,6 @@ public class Shinobi : Character
 
         CamManager.main.CloseOut(0.2f);
 
-        yield return null;
+        state = null;
     }
 }

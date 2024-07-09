@@ -76,6 +76,17 @@ public class Samurai : Character
         shielding = false;
     }
 
+    public override void OnCancel()
+    {
+        shielding = false;
+        shieldSuccess = false;
+        
+
+        if (state != "super") {
+            CamManager.main.CloseOut(0.1f);
+        }
+    }
+
     public override void OnHurt(ref int damage, Player attacker, ref bool cancel)
     {
         if (shielding) {
@@ -177,8 +188,18 @@ public class Samurai : Character
         StartCoroutine(super());
     }
 
+    public override void OnForceCancel()
+    {
+        if (state == "super") {
+            CamManager.main.CloseOut(0.1f);
+            pl.SetChScale(defaultScale);
+        } 
+    }
+
     IEnumerator super() {
         if (!EnergySystem.CheckNWarn(pl, 80) || superCool.IsIn()) yield break;
+        
+        state = "super";
 
         pl.energy -= 80;
         superCool.Start();
@@ -244,6 +265,8 @@ public class Samurai : Character
         yield return new WaitForSeconds(0.5f);
 
         CamManager.main.CloseOut(0.1f);
+
+        state = null;
     }
 
     IEnumerator _attack() {

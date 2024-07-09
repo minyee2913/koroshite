@@ -74,6 +74,7 @@ MonoBehaviour:
   dashTime: 0
   runTime: 0
   stopMove: 0
+  preventInput: 0
   facing: 1
   balloon: {fileID: 6539094335617867682}
   balloon_Text: {fileID: 9210060167477984137}

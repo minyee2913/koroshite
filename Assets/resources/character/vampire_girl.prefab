@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 9064639451040775396}
   - component: {fileID: 9064639451040775397}
-  - component: {fileID: 9064639451040775392}
   - component: {fileID: 5053878463678115451}
   - component: {fileID: 523646363514656859}
   - component: {fileID: -3398068232480659631}
+  - component: {fileID: 8573323755643458747}
   m_Layer: 6
   m_Name: vampire_girl
   m_TagString: Untagged
@@ -28,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9064639451040775399}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.3600001, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
@@ -88,27 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &9064639451040775392
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9064639451040775399}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b3f71b2145036f7419291305ea6b15d7, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &5053878463678115451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,15 +127,18 @@ MonoBehaviour:
   - Type: 9
     SynchronizeType: 0
     Name: attack3
+  - Type: 9
+    SynchronizeType: 0
+    Name: attack4
   - Type: 4
     SynchronizeType: 1
     Name: shielding
   - Type: 4
     SynchronizeType: 1
     Name: isDead
-  - Type: 9
-    SynchronizeType: 0
-    Name: charge
+  - Type: 4
+    SynchronizeType: 1
+    Name: inSuper
   m_SynchronizeLayers:
   - SynchronizeType: 1
     LayerIndex: 0
@@ -204,3 +186,30 @@ MonoBehaviour:
   atkCool: 0
   atkCooling: 0
   defaultScale: {x: 0, y: 0, z: 0}
+  icon: {fileID: 21300000, guid: 5e4d4008aa956be4bb43115c2654ffa9, type: 3}
+  state: 
+  slash1: {fileID: 1294101409476956, guid: 231e3be01ac50c047bb16d07fd8d2ba5, type: 3}
+  slash2: {fileID: 1919708242137258, guid: e60d36cff17a1ce4db49ef54f9e72f61, type: 3}
+  crit: {fileID: 6823302871133167919, guid: 3138a83bedbd6ad4481ba0b061da2eb6, type: 3}
+  explode: {fileID: 358637981425055526, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
+--- !u!95 &8573323755643458747
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9064639451040775399}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b3f71b2145036f7419291305ea6b15d7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

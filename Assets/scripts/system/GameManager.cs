@@ -89,6 +89,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             pl.SetDeath(0);
             pl.SetKill(0);
             pl.SetCoin(0);
+
+            pl.ch.ForceCANCEL();
         }
 
         List<Vector2> poses = spawnPoses;

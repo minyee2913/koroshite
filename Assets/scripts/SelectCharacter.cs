@@ -10,6 +10,6 @@ public class SelectCharacter : MonoBehaviour
         Player.Local.SetCharacter(ch.id);
         GameManager.Instance.CharacterPanel.SetActive(false);
 
-        UIManager.Instance.face.sprite = ch.render.sprite;
+        UIManager.Instance.face.sprite = ch.icon;
     }
 }

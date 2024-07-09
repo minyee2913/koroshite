@@ -15,7 +15,9 @@ public abstract class Character : MonoBehaviour
     public float atkCool = 0;
     public bool atkCooling = false;
     public Vector3 defaultScale;
+    public Sprite icon;
     string ownerName = "";
+    public string state = null;
     int ownerCode = 0;
     public abstract string atkInfo {get;}
     public abstract string atk2Info {get;}
@@ -28,6 +30,10 @@ public abstract class Character : MonoBehaviour
         render = GetComponent<SpriteRenderer>();
 
         defaultScale = transform.localScale;
+
+        if (icon == null) {
+            icon = render.sprite;
+        }
 
         if (pv.InstantiationData == null) {
             return;
@@ -46,6 +52,8 @@ public abstract class Character : MonoBehaviour
     public virtual void Skill1Up() {}
     public virtual void Skill2() {}
     public virtual void Skill2Up() {}
+    public virtual void OnCancel() {}
+    public virtual void OnForceCancel() {}
     public virtual void OnHurt(ref int damage, Player attacker, ref bool cancel) {}
 
     public virtual void Callfunc(string method) {}
@@ -76,8 +84,19 @@ public abstract class Character : MonoBehaviour
     public void CANCEL() {
         if (routine != null) {
             StopCoroutine(routine);
+            
 
             routine = null;
         }
+
+        OnCancel();
+    }
+
+    public void ForceCANCEL() {
+        CANCEL();
+
+        StopAllCoroutines();
+
+        OnForceCancel();
     }
 }

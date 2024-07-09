@@ -491,6 +491,7 @@ MonoBehaviour:
   atkCool: 0
   atkCooling: 0
   defaultScale: {x: 0, y: 0, z: 0}
+  state: 
   stack: {fileID: 4299386552497196502}
   impact: {fileID: 6192724089161036641, guid: e17d9a3f04750764c8c0a7a0461e4c3b, type: 3}
   impact2: {fileID: 8038344524183138613, guid: 0277167a12290af47801444830a2be97, type: 3}
