@@ -587,42 +587,42 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-            if (stream.IsWriting)
-            {
-                stream.SendNext(name_);
-                stream.SendNext(uniqueCode);
-                stream.SendNext(health);
-                stream.SendNext(kill);
-                stream.SendNext(death);
-                stream.SendNext(facing);
-                stream.SendNext(isMoving);
-                stream.SendNext(running);
-                stream.SendNext(onGround);
-                stream.SendNext(jumping);
-                stream.SendNext(dashing);
-                stream.SendNext(isDeath);
-                stream.SendNext(ch != null ? ch.render.flipX : false);
-            }
-            else
-            {
-                name_ = (string)stream.ReceiveNext();
-                uniqueCode = (int)stream.ReceiveNext();
-                health = (int)stream.ReceiveNext();
-                kill = (int)stream.ReceiveNext();
-                death = (int)stream.ReceiveNext();
-                facing = (int)stream.ReceiveNext();
-                isMoving = (bool)stream.ReceiveNext();
-                running = (bool)stream.ReceiveNext();
-                onGround = (bool)stream.ReceiveNext();
-                jumping = (bool)stream.ReceiveNext();
-                dashing = (bool)stream.ReceiveNext();
-                isDeath = (bool)stream.ReceiveNext();
+        if (stream.IsWriting)
+        {
+            stream.SendNext(name_);
+            stream.SendNext(uniqueCode);
+            stream.SendNext(health);
+            stream.SendNext(kill);
+            stream.SendNext(death);
+            stream.SendNext(facing);
+            stream.SendNext(isMoving);
+            stream.SendNext(running);
+            stream.SendNext(onGround);
+            stream.SendNext(jumping);
+            stream.SendNext(dashing);
+            stream.SendNext(isDeath);
+            stream.SendNext(ch != null ? ch.render.flipX : false);
+        }
+        else
+        {
+            name_ = (string)stream.ReceiveNext();
+            uniqueCode = (int)stream.ReceiveNext();
+            health = (int)stream.ReceiveNext();
+            kill = (int)stream.ReceiveNext();
+            death = (int)stream.ReceiveNext();
+            facing = (int)stream.ReceiveNext();
+            isMoving = (bool)stream.ReceiveNext();
+            running = (bool)stream.ReceiveNext();
+            onGround = (bool)stream.ReceiveNext();
+            jumping = (bool)stream.ReceiveNext();
+            dashing = (bool)stream.ReceiveNext();
+            isDeath = (bool)stream.ReceiveNext();
 
-                var flip = (bool)stream.ReceiveNext();
-                if (ch != null) {
-                    ch.render.flipX = flip;
-                }
+            var flip = (bool)stream.ReceiveNext();
+            if (ch != null) {
+                ch.render.flipX = flip;
             }
+        }
         
     }
 

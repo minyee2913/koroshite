@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public abstract class Monster : MonoBehaviour
+public abstract class Monster : MonoBehaviour, IPunObservable
 {
     public static List<Monster> monsters = new();
     [SerializeField]
@@ -243,5 +243,23 @@ public abstract class Monster : MonoBehaviour
 
         Gizmos.DrawLine(transform.position + new Vector3(0.3f, -1.8f), transform.position + new Vector3(0.3f, -2f));
         Gizmos.DrawLine(transform.position + new Vector3(-0.3f, -1.8f), transform.position + new Vector3(-0.3f, -2f));
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(health);
+            stream.SendNext(facing);
+            stream.SendNext(isMoving);
+            stream.SendNext(onGround);
+        }
+        else
+        {
+            health = (int)stream.ReceiveNext();
+            facing = (int)stream.ReceiveNext();
+            isMoving = (bool)stream.ReceiveNext();
+            onGround = (bool)stream.ReceiveNext();
+        }
     }
 }

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5330621977700602329}
   - component: {fileID: 5330621977700602328}
   - component: {fileID: 5330621977700602335}
+  - component: {fileID: 8310438914536059384}
   m_Layer: 9
   m_Name: skeleton
   m_TagString: Untagged
@@ -110,6 +111,8 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 5330621977700602326}
+  - {fileID: 5330621977700602335}
+  - {fileID: 8310438914536059384}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -222,6 +225,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   col: {fileID: 0}
   render: {fileID: 0}
+  uniqueId: 0
   speed: 3
   onGround: 0
   isMoving: 0
@@ -233,3 +237,19 @@ MonoBehaviour:
   health: 0
   maxHealth: 2000
   target: {fileID: 0}
+--- !u!114 &8310438914536059384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5330621977700602320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
