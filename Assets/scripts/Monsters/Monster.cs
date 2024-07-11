@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Monster : MonoBehaviour, IPunObservable
 {
@@ -10,19 +11,21 @@ public abstract class Monster : MonoBehaviour, IPunObservable
     MonsterState state;
     public PhotonView pv;
     public Animator animator;
+    public Rigidbody2D rb;
     public BoxCollider2D col;
     public SpriteRenderer render;
     public int uniqueId;
     public float speed;
     public abstract float stateY {get;}
     public abstract string Name {get;}
-    public bool onGround, isMoving;
+    public bool onGround, isMoving, isDeath;
     public string action, actionInfo;
     float actionTime;
     float stepTime;
     public float range, atkCool;
     public int facing, health, maxHealth;
     public Player target;
+    Color hpColor;
 
     public static List<Monster> Convert(RaycastHit2D[] casts, Monster not = null) {
         List<Monster> result = new();
@@ -51,6 +54,9 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         col = GetComponent<BoxCollider2D>();
         render = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+
+        hpColor = state.hprate.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color;
 
         action = "idle";
         actionInfo = "stay";
@@ -61,7 +67,7 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         state.Name = Name;
         health = maxHealth;
 
-        uniqueId = Random.Range(-9999, 9999);
+        uniqueId = Random.Range(-9999, 9999) * 100 + monsters.Count;
     }
 
     void Update()
@@ -107,7 +113,7 @@ public abstract class Monster : MonoBehaviour, IPunObservable
                 }
 
                 actionTime = 0;
-                stepTime = Random.Range(0.6f, 2f);
+                stepTime = Random.Range(1f, 4f);
             }
         } else {
             isMoving = true;
@@ -193,6 +199,18 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         return false;
     }
 
+    public void FaceTarget() {
+        if (target != null) {
+            if (target.transform.position.x > transform.position.x) {
+                facing = 1;
+                render.flipX = false;
+            } else {
+                facing = -1;
+                render.flipX = true;
+            }
+        }
+    }
+
     public void Move(Vector3 direction) {
         //if (!onGround) return;
 
@@ -233,6 +251,59 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         }
 
         return false;
+    }
+
+    public void Damage(int damage, string plName = null, bool display = true) {
+        pv.RPC("hurt", RpcTarget.All, new object[]{damage, plName, display});
+    }
+
+    
+
+    [PunRPC]
+    public void hurt(int damage, string plName, bool display) {
+        Player attacker = Player.players.Find((p)=>p.name_ == plName);
+        bool cancel = false;
+
+        if (cancel)
+            return;
+
+        health -= damage;
+
+        if (display) {
+            GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.white);
+        }
+
+        if (health <= 0 && !isDeath) {
+        } else StartCoroutine(hurtEff());
+    }
+
+    IEnumerator hurtEff() {
+        var img = state.hprate.transform.Find("Fill Area").Find("Fill").GetComponent<Image>();
+        
+        img.color = Color.white;
+
+        yield return new WaitForSeconds(0.2f);
+
+        img.color = hpColor;
+    }
+
+    public void Knockback(Vector2 force) {
+        object[] param = {
+            force,
+        };
+
+        pv.RPC("_knockback", RpcTarget.All, param);
+    }
+
+    [PunRPC]
+    public void _knockback(Vector2 force) {
+        rb.velocity += force;
+
+        Invoke("afterKnock", 0.3f);
+    }
+
+    void afterKnock() {
+        rb.velocity = new Vector2(rb.velocity.x / 2, rb.velocity.y / 2);
     }
 
     private void OnDrawGizmos()

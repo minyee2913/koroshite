@@ -518,7 +518,35 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         pv.RPC("hurt", RpcTarget.All, new object[]{damage, plName, display});
     }
 
-    
+    public void DamageByMob(int damage, int uniqueId, bool display = true) {
+        pv.RPC("hurtByMob", RpcTarget.All, new object[]{damage, uniqueId, display});
+    }
+
+        [PunRPC]
+    void hurtByMob(int damage, int uniqueId, bool display = true) {
+        Monster attacker = Monster.monsters.Find((v)=>v.uniqueId == uniqueId);
+        bool cancel = false;
+
+        if (ch != null) {
+            ch.OnHurt(ref damage, attacker.transform, ref cancel);
+        }
+
+        if (cancel || state == "room" || isDeath)
+            return;
+
+        health -= damage;
+
+        if (display) {
+            if (this == Local) {
+                GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.red);
+            }
+        }
+
+        if (health <= 0 && !isDeath && this == Local) {
+            death++;
+            ch.ForceCANCEL();
+        } else StartCoroutine(hurtEff());
+    }
 
     [PunRPC]
     void hurt(int damage, string plName, bool display) {
@@ -526,7 +554,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         bool cancel = false;
 
         if (ch != null) {
-            ch.OnHurt(ref damage, attacker, ref cancel);
+            ch.OnHurt(ref damage, attacker.transform, ref cancel);
         }
 
         if (cancel || state == "room" || isDeath)

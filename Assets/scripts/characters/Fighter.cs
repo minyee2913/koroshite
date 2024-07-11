@@ -170,7 +170,7 @@ public class Fighter : Character
         }
     }
 
-        public override void OnHurt(ref int damage, Player attacker, ref bool cancel)
+        public override void OnHurt(ref int damage, Transform attacker, ref bool cancel)
     {
         if (shielding) {
             damage -= (int)Mathf.Round(damage * 0.4f);

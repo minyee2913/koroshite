@@ -54,7 +54,7 @@ public abstract class Character : MonoBehaviour
     public virtual void Skill2Up() {}
     public virtual void OnCancel() {}
     public virtual void OnForceCancel() {}
-    public virtual void OnHurt(ref int damage, Player attacker, ref bool cancel) {}
+    public virtual void OnHurt(ref int damage, Transform attacker, ref bool cancel) {}
 
     public virtual void Callfunc(string method) {}
 

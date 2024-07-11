@@ -146,6 +146,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     void StartFAK() {
         SetTimer(5 * 60);
         ChatManager.Instance.SendComment("<color=\"orange\">제한 시간 내에 가장 많은 플레이어를 처치하세요!</color>");
+        ChatManager.Instance.SendComment("<color=\"white\">데스매치에서는 [F]플레이어 변경 사용 가능</color>");
 
         SoundManager.Instance.PlayToAll("crashingOut");
     }
@@ -238,16 +239,17 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (state == "none") {
+        if (Input.GetKeyDown(KeyCode.U) && !CharacterPanel.activeSelf) {
+            if (SkillInfo.Instance.panel.activeSelf) {
+                SkillInfo.Instance.Close();
+            } else {
+                SkillInfo.Instance.Open(Player.Local.ch);
+            }
+        }
+
+        if (state == "none" || mode == GameMode.FreeAllKill) {
             if (Input.GetKeyDown(KeyCode.F) && !SkillInfo.Instance.panel.activeSelf) {
                 CharacterPanel.SetActive(!CharacterPanel.activeSelf);
-            }
-            if (Input.GetKeyDown(KeyCode.U) && !CharacterPanel.activeSelf) {
-                if (SkillInfo.Instance.panel.activeSelf) {
-                    SkillInfo.Instance.Close();
-                } else {
-                    SkillInfo.Instance.Open(Player.Local.ch);
-                }
             }
         } else if (state == "started") {
             if (timer > 0) {

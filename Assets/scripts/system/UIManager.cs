@@ -40,8 +40,16 @@ public class UIManager : MonoBehaviour
 
             if (Player.Local.state == "room") {
                 sectionTitle.text = "대기중 - " + PhotonNetwork.CurrentRoom.Name + "\n(" + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + ")";
-            } else if (Player.Local.state == "ingame") {
-                sectionTitle.text = "파밍 라운드 - " + PhotonNetwork.CurrentRoom.Name + "\n(" + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + ")";
+            }
+
+            if (GameManager.Instance.mode == GameMode.FreeAllKill) {
+                if (Player.Local.state == "ingame") {
+                    sectionTitle.text = "데스매치 - " + PhotonNetwork.CurrentRoom.Name + "\n(" + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + ")";
+                }
+            } else if (GameManager.Instance.mode == GameMode.BattleRoyal) {
+                if (Player.Local.state == "ingame") {
+                    sectionTitle.text = "파밍 라운드 - " + PhotonNetwork.CurrentRoom.Name + "\n(" + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + ")";
+                }
             }
 
             hp.value = (float)Player.Local.health / Player.Local.maxHealth;

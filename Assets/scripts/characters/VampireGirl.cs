@@ -196,7 +196,7 @@ public class VampireGirl : Character
         shielding = false;
     }
 
-    public override void OnHurt(ref int damage, Player attacker, ref bool cancel)
+    public override void OnHurt(ref int damage, Transform attacker, ref bool cancel)
     {
     }
 

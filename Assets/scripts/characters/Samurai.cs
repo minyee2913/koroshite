@@ -45,6 +45,33 @@ public class Samurai : Character
         }
     }
 
+    void ShieldedMob(Monster attacker) {
+        StartCoroutine(_shieldMob(attacker));
+    }
+
+    IEnumerator _shieldMob(Monster attacker) {
+        attacker.Knockback(Vector2.right * pl.facing * 10 + Vector2.up * 5);
+        
+        pl.Knockback(Vector2.right * -pl.facing * 4);
+
+        CamManager.main.CloseUp(3.2f, -10 * pl.facing, 0.01f);
+        CamManager.main.Shake(3, 0.5f);
+
+        pl.stopMove = 0.5f;
+
+        shieldSuccess = true;
+
+        yield return new WaitForSeconds(0.2f);
+        attacker.rb.velocity /= 2;
+
+        yield return new WaitForSeconds(0.3f);
+
+        CamManager.main.CloseOut(0.1f);
+
+        shieldSuccess = false;
+        shielding = false;
+    }
+
     void Shielded(Player attacker) {
         StartCoroutine(_shield(attacker));
     }
@@ -87,26 +114,47 @@ public class Samurai : Character
         }
     }
 
-    public override void OnHurt(ref int damage, Player attacker, ref bool cancel)
+    public override void OnHurt(ref int damage, Transform attacker, ref bool cancel)
     {
+        if (attacker == null) {
+            return;
+        }
+
         if (shielding) {
+            Player p = attacker.GetComponent<Player>();
+            Monster m = attacker.GetComponent<Monster>();
             if (shieldTime < 0.5f) {
-                if (pl.facing > 0) {
-                    if (pl.transform.position.x < attacker.transform.position.x) {
-                        Shielded(attacker);
+                if (p != null) {
+                    if (pl.facing > 0) {
+                        if (pl.transform.position.x < attacker.position.x) {
+                            Shielded(p);
 
-                        cancel = true;
+                            cancel = true;
+                        }
+                    } else {
+                        if (pl.transform.position.x > attacker.position.x) {
+                            Shielded(p);
+
+                            cancel = true;
+                        }
                     }
-                } else {
-                    if (pl.transform.position.x > attacker.transform.position.x) {
-                        Shielded(attacker);
+                } else if (m != null) {
+                    if (pl.facing > 0) {
+                        if (pl.transform.position.x < attacker.position.x) {
+                            ShieldedMob(m);
 
-                        cancel = true;
+                            cancel = true;
+                        }
+                    } else {
+                        if (pl.transform.position.x > attacker.position.x) {
+                            ShieldedMob(m);
+
+                            cancel = true;
+                        }
                     }
                 }
-            } else {
-                damage -= (int)Mathf.Round(damage * 0.3f);
             }
+            damage -= (int)Mathf.Round(damage * 0.3f);
         }
     }
 
@@ -227,7 +275,17 @@ public class Samurai : Character
             for (int j = 0; j < targets.Count; j++) {
                 var target = targets[j];
 
-                pl.energy += 2;
+                target.Damage(80, pl.name_);
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        var targetMobs = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 2f), new Vector2(14, 5), 0, Vector2.right, 0));
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < targetMobs.Count; j++) {
+                var target = targetMobs[j];
 
                 target.Damage(80, pl.name_);
             }
@@ -257,7 +315,13 @@ public class Samurai : Character
         for (int j = 0; j < targets.Count; j++) {
             var target = targets[j];
 
-            pl.energy += 4;
+            target.Damage(120, pl.name_);
+        }
+
+        targetMobs = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 1f), new Vector2(14, 3), 0, Vector2.right, 0));
+
+        for (int j = 0; j < targetMobs.Count; j++) {
+            var target = targetMobs[j];
 
             target.Damage(120, pl.name_);
         }
@@ -324,6 +388,15 @@ public class Samurai : Character
             target.Knockback(Vector2.right * pl.facing * 6 + Vector2.up * 2);
         }
 
+        var targetMobs = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2, 2), 0, Vector2.right * pl.facing, 1));
+
+        for (int i = 0; i < targetMobs.Count; i++) {
+            var target = targetMobs[i];
+
+            target.Damage(50, pl.name_);
+            target.Knockback(Vector2.right * pl.facing * 2 + Vector2.up * 2);
+        }
+
         routine = null;
     }
 
@@ -355,6 +428,14 @@ public class Samurai : Character
             var target = targets[i];
 
             pl.energy += 7;
+
+            target.Damage(80, pl.name_);
+        }
+
+        var targetMobs = Monster.Convert(Physics2D.BoxCastAll((p1 + pl.transform.position) / 2, new Vector2(Mathf.Abs(pl.transform.position.x - p1.x), Mathf.Abs(pl.transform.position.y - p1.y)), 0, Vector2.zero));
+
+        for (int i = 0; i < targetMobs.Count; i++) {
+            var target = targetMobs[i];
 
             target.Damage(80, pl.name_);
         }
