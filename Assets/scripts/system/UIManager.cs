@@ -27,15 +27,45 @@ public class UIManager : MonoBehaviour
     public TMP_Text sectionTitle;
     [SerializeField] Button gameStart;
     [SerializeField] TMP_Text killDeath;
-    float dCount = 0;
+    [SerializeField] Button spectorBtn;
+    [SerializeField] TMP_Text spectortxt;
+    [SerializeField] TMP_Text spectortxb;
+    [SerializeField] SpectatorIcon spectatorIcon;
+    [SerializeField] Transform spectatorGroup;
+    [SerializeField] TMP_Text fps;
+    public Dictionary<Player, SpectatorIcon> specs = new();
+    float dCount = 0, specWait;
 
     public static UIManager Instance {get; private set;}
     void Awake() {
         Instance = this;
     }
 
-    void Update() {
+    public void ChangeSpectator() {
+        Player.Local.SetSpectator(!Player.Local.isSpectator);
+    }
+
+    void FixedUpdate() {
+        spectortxb.text = spectortxt.text;
+
+        fps.text = ((int)(1 / Time.fixedDeltaTime)).ToString() + "FPS";
+
         if (Player.Local != null) {
+            spectatorGroup.gameObject.SetActive(Player.Local.isSpectator && Player.Local.state != "room");
+            if (Player.Local.isSpectator) {
+                spectortxt.text = "관전취소";
+
+                specWait += Time.fixedDeltaTime;
+
+                if (specWait > 5) {
+                    UpdateSpectator();
+
+                    specWait = 0;
+                }
+            } else {
+                spectortxt.text = "관전하기";
+            }
+
             roomUI.SetActive(Player.Local.state == "room");
 
             if (Player.Local.state == "room") {
@@ -82,6 +112,34 @@ public class UIManager : MonoBehaviour
             }
 
             killDeath.text = Player.Local.kill.ToString() + "/" + Player.Local.death.ToString();
+        }
+    }
+
+    public void UpdateSpectator() {
+        foreach (Player pl in Player.players) {
+            if (!specs.ContainsKey(pl) && !pl.isSpectator) {
+                var icn = Instantiate(spectatorIcon, spectatorGroup);
+
+                icn.nameTag.text = pl.name_;
+                icn.target = pl;
+                
+                if (pl.ch != null) {
+                    icn.icon.sprite = pl.ch.icon;
+                }
+
+                specs[pl] = icn;
+            }
+        }
+
+        foreach (KeyValuePair<Player, SpectatorIcon> v in specs) {
+            if (!Player.players.Contains(v.Key) || v.Key.isSpectator) {
+                specs.Remove(v.Key);
+                Destroy(v.Value.gameObject);
+            }
+        }
+
+        if (CamManager.main.spectatorTarget == null && specs.Count > 0) {
+            CamManager.main.spectatorTarget = specs.First().Key;
         }
     }
 

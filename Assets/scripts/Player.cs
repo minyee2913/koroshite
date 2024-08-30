@@ -30,11 +30,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     Vector2 mapSize;
 
     [SerializeField]
-    float cameraMoveSpeed;
+    public float cameraMoveSpeed;
     float height;
     float width;
 
-    public bool isMoving, onGround, jumping, dashing, running, isDeath;
+    public bool isMoving, onGround, jumping, dashing, running, isDeath, isSpectator;
     public int jumpCount = 0;
     public float jumpTime = 0, dashTime = 0, runTime = 0, stopMove = 0, preventInput = 0;
     float dashData = 0;
@@ -52,6 +52,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     float realGravity;
     Cooldown dashCool = new(1);
     public Canvas infos;
+    bool flip;
 
     public static List<Player> Convert(RaycastHit2D[] casts, Player not = null) {
         List<Player> result = new();
@@ -65,6 +66,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     continue;
                 }
 
+                if (pl.isSpectator) {
+                    continue;
+                }
+
                 result.Add(pl);
             }
         }
@@ -74,6 +79,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public string GetName() {
         return name_;
+    }
+    public void SetSpectator(bool val) {
+        object[] obj = {
+            val
+        };
+        pv.RPC("setSpectator", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void setSpectator(bool val) {
+        isSpectator = val;
     }
     public void SetPos(Vector2 pos) {
         object[] obj = {
@@ -309,8 +324,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     private void Update() {
+        if (isSpectator) {
+            transform.localScale = Vector3.zero;
+        } else {
+            transform.localScale = Vector3.one;
+        }
+
         if (ch != null) {
-            if (pv.IsMine) {
+            if (pv.IsMine && !isSpectator) {
                 if (PhotonNetwork.LocalPlayer.NickName == name_ && players.Find((pl)=>pl.name_ == name_ && pl.uniqueCode != uniqueCode) != null) {
                     SetName("(" + uniqueCode.ToString() + ")" + PhotonNetwork.LocalPlayer.NickName);
                 }
@@ -550,11 +571,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [PunRPC]
     void hurt(int damage, string plName, bool display) {
+        if (isSpectator) {
+            return;
+        }
+
         Player attacker = players.Find((p)=>p.name_ == plName);
         bool cancel = false;
 
         if (ch != null) {
-            ch.OnHurt(ref damage, attacker.transform, ref cancel);
+            ch.OnHurt(ref damage, (attacker != null) ? attacker.transform : null, ref cancel);
         }
 
         if (cancel || state == "room" || isDeath)
@@ -646,7 +671,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             dashing = (bool)stream.ReceiveNext();
             isDeath = (bool)stream.ReceiveNext();
 
-            var flip = (bool)stream.ReceiveNext();
+            flip = (bool)stream.ReceiveNext();
             if (ch != null) {
                 ch.render.flipX = flip;
             }
@@ -670,6 +695,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         ch.animator.SetBool("isRunning", true);
 
         rb.velocity = new Vector2(facing * 14, 0);
+
+        SoundManager.Instance.Play("dash");
     }
     public void Revive() {
         isDeath = false;

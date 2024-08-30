@@ -39,6 +39,8 @@ public class Skeleton : Monster
     void Attack() {
         RpcAnimateTrigger("attack1");
 
+        SoundManager.Instance.PlayToDist("default_attack", transform.position, 8);
+
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2.5f, 2), 0, Vector2.right * facing, 0.9f), null);
 
         

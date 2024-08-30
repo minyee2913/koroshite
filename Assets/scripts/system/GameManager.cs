@@ -46,6 +46,16 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void StartGame() {
         StartCoroutine(stgm());
     }
+    public void SetMode(GameMode m) {
+        object[] obj = {
+            (int)m,
+        };
+        pv.RPC("setMode", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void setMode(int mod) {
+        mode = (GameMode)mod;
+    }
     public void SetTitle(string str) {
         object[] obj = {
             str,
@@ -84,6 +94,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         SoundManager.Instance.StopToAll(4);
         foreach (Player pl in Player.players) {
             pl.SetState("ready");
+            if (pl.isSpectator) continue;
+            
             pl.SetEnergy(0);
 
             pl.Heal(pl.maxHealth);
@@ -99,6 +111,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         for (int i = 0; i < shuffled.Count; i++) {
             if (i < Player.players.Count) {
+                if (Player.players[i].isSpectator) continue;
+
                 Player.players[i].SetPos(shuffled[i]);
             }
         }

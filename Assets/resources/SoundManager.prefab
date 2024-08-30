@@ -565,9 +565,10 @@ MonoBehaviour:
   Sounds:
   - id: mountain
     audioIn: {fileID: 0}
-    audio: {fileID: 8300000, guid: cf21cc2e2d18dc942a0352f78d00f7e6, type: 3}
+    audio: {fileID: 8300000, guid: 424d9de00888e4140bb9ab6e15bff9a9, type: 3}
     volume: 0.8
     pitch: 1
+    startTime: 0
     track: 4
     loop: 1
   - id: cavern
@@ -575,15 +576,113 @@ MonoBehaviour:
     audio: {fileID: 8300000, guid: 693dfe8d83615be4d831a6fde08979c7, type: 3}
     volume: 0.8
     pitch: 1
+    startTime: 0
     track: 4
     loop: 1
   - id: crashingOut
     audioIn: {fileID: 0}
     audio: {fileID: 8300000, guid: 2efe95484735821418fa22070576c25f, type: 3}
-    volume: 0.8
+    volume: 0.5
     pitch: 1
+    startTime: 0
     track: 4
     loop: 1
+  - id: phone
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: f224bc4e808aa524ea03aa6f4835471d, type: 3}
+    volume: 0.6
+    pitch: 1
+    startTime: 0
+    track: 4
+    loop: 1
+  - id: dash
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: e2cda5933c8d6ee4183d3d6983b54c8e, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.22
+    track: 1
+    loop: 0
+  - id: samurai_atk
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 70e2142fa1eb28742964e874444bb5bc, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: samurai_shield
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 034bffbaaabae2949a7f46de05388fd6, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: samurai_ja
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 91cf6338ef7249c4ea4ea2cc499b7643, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: samurai_super
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 6ac06d9e7c03c124da4021803804ffc8, type: 3}
+    volume: 1
+    pitch: 1.5
+    startTime: 0.5
+    track: 2
+    loop: 0
+  - id: samurai_super2
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: bc82d7ebfcefa2f4c8037ddd420f0273, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.5
+    track: 2
+    loop: 0
+  - id: shinobi_atk
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: fe5652f39fb3ed24989e2188bf674e91, type: 3}
+    volume: 0.8
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: shinobi_atk2
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: a8d7cc7066c6bce47ada0bcc3e45c48b, type: 3}
+    volume: 0.8
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: shinobi_ja
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: bf7997f0073dfc940a42e22569bdf75d, type: 3}
+    volume: 0.8
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: shinobi_hide
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 5c391854caf86e84baadad3197eb3d4a, type: 3}
+    volume: 0.8
+    pitch: 1
+    startTime: 0
+    track: 2
+    loop: 0
+  - id: shinobi_super
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 9c1c15af8658f3f47827b40e11ce2d96, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0
+    track: 2
+    loop: 0
   _tracks:
   - {fileID: 2363639697542510051}
   - {fileID: 2363639697281754276}

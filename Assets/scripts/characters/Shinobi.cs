@@ -131,6 +131,8 @@ public class Shinobi : Character
 
             pl.CallChFunc("_inv");
 
+            SoundManager.Instance.PlayToDist("shinobi_hide", transform.position, 15);
+
             pl.RpcAnimateTrigger("shield1");
         } else {
             shielding = true;
@@ -220,6 +222,7 @@ public class Shinobi : Character
         List<Player> targets;
 
         if (atkType == 0) {
+            SoundManager.Instance.PlayToDist("shinobi_atk", transform.position, 15);
             pl.RpcAnimateTrigger("attack1");
 
             pl.stopMove = 0.34f;
@@ -244,7 +247,17 @@ public class Shinobi : Character
                 target.Damage(30, pl.name_);
                 target.Knockback(Vector2.right * pl.facing * -4 + Vector2.up * 6);
             }
+
+            var targetMobs = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(1, 2), 0, Vector2.right * pl.facing, 0.5f));
+
+            for (int i = 0; i < targetMobs.Count; i++) {
+                var target = targetMobs[i];
+
+                target.Damage(30, pl.name_);
+                target.Knockback(Vector2.right * pl.facing * -4 + Vector2.up * 6);
+            }
         } else {
+            SoundManager.Instance.PlayToDist("shinobi_atk2", transform.position, 15);
             pl.RpcAnimateTrigger("attack2");
 
             pl.stopMove = 0.34f;
@@ -271,6 +284,15 @@ public class Shinobi : Character
                 target.Damage(70, pl.name_);
                 target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
             }
+
+            var targetMobs = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2, 2), 0, Vector2.right * pl.facing, 0f));
+
+            for (int i = 0; i < targetMobs.Count; i++) {
+                var target = targetMobs[i];
+
+                target.Damage(70, pl.name_);
+                target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
+            }
         }
 
         routine = null;
@@ -286,6 +308,8 @@ public class Shinobi : Character
         pl.rb.velocity = new Vector2(20 * pl.facing, -10);
 
         pl.SetChScale(Vector3.zero);
+
+        SoundManager.Instance.PlayToDist("shinobi_ja", transform.position, 15);
 
         yield return new WaitForSeconds(0.26f);
 
@@ -309,6 +333,15 @@ public class Shinobi : Character
             
             pl.energy += 6;
             pl.Heal(18);
+
+            target.Damage(70, pl.name_);
+            target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
+        }
+
+        var targetMobs = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(10f, 3), 0, Vector2.right * pl.facing, 0f));
+
+        for (int i = 0; i < targetMobs.Count; i++) {
+            var target = targetMobs[i];
 
             target.Damage(70, pl.name_);
             target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
@@ -357,6 +390,8 @@ public class Shinobi : Character
         for (int i = 0; i < 4; i++) {
             pl.RpcAnimateTrigger("spin");
 
+            SoundManager.Instance.PlayToDist("shinobi_super", transform.position, 15);
+
             yield return new WaitForSeconds(0.2f);
             if (i > 0) CamManager.main.CloseUp(4.8f, 0, 0.1f);
 
@@ -371,6 +406,15 @@ public class Shinobi : Character
                 var target = targets[j];
 
                 if (i == 0) pl.Heal(80);
+
+                target.Damage(120, pl.name_);
+                target.Knockback(Vector2.up * 15);
+            }
+
+            var targetMobs = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(10f, 3), 0, Vector2.right * pl.facing, 0f));
+
+            for (int j = 0; j < targetMobs.Count; j++) {
+                var target = targetMobs[j];
 
                 target.Damage(120, pl.name_);
                 target.Knockback(Vector2.up * 15);

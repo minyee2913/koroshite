@@ -54,6 +54,8 @@ public class Samurai : Character
         
         pl.Knockback(Vector2.right * -pl.facing * 4);
 
+        SoundManager.Instance.PlayToDist("samurai_shield", transform.position, 15);
+
         CamManager.main.CloseUp(3.2f, -10 * pl.facing, 0.01f);
         CamManager.main.Shake(3, 0.5f);
 
@@ -80,6 +82,8 @@ public class Samurai : Character
         attacker.ch.CANCEL();
         attacker.Knockback(Vector2.right * pl.facing * 10 + Vector2.up * 5);
         attacker.ch.atkCool = 0.5f;
+
+        SoundManager.Instance.PlayToDist("samurai_shield", transform.position, 15);
         
         pl.Knockback(Vector2.right * -pl.facing * 4);
         pl.Heal(40);
@@ -265,6 +269,8 @@ public class Samurai : Character
 
         CamManager.main.CloseUp(5f, 0, 0.1f);
 
+        SoundManager.Instance.PlayToDist("samurai_super", transform.position, 15);
+
         yield return new WaitForSeconds(0.3f);
 
         pl.stopMove = 1f;
@@ -292,6 +298,8 @@ public class Samurai : Character
 
             yield return new WaitForSeconds(0.1f);
         }
+
+        SoundManager.Instance.PlayToDist("samurai_super2", transform.position, 15);
 
         yield return new WaitForSeconds(0.3f);
 
@@ -346,6 +354,8 @@ public class Samurai : Character
 
             yield break;
         }
+
+        SoundManager.Instance.PlayToDist("samurai_atk", transform.position, 15);
 
         if (atkType == 0) {
             pl.RpcAnimateTrigger("attack1");
@@ -405,6 +415,7 @@ public class Samurai : Character
         jumpAtkCool.Start();
 
         pl.RpcAnimateTrigger("attack3");
+        SoundManager.Instance.PlayToDist("samurai_ja", transform.position, 15);
 
         pl.stopMove = 0.6f;
         atkCool = 0.3f;

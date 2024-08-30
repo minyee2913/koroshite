@@ -19,6 +19,12 @@ public class SelectMode : MonoBehaviour
 
     void Update() {
         btn.SetActive(PhotonNetwork.IsMasterClient);
+
+        if (GameManager.Instance.mode == GameMode.FreeAllKill) {
+            display.text = "> DEATH MATCH <";
+        } else if (GameManager.Instance.mode == GameMode.BattleRoyal) {
+            display.text = "> BATTLE ROYALE <";
+        }
     }
 
     public void Open() {
@@ -31,15 +37,17 @@ public class SelectMode : MonoBehaviour
         switch (mode)
         {
             case "fak":
-                GameManager.Instance.mode = GameMode.FreeAllKill;
+                GameManager.Instance.SetMode(GameMode.FreeAllKill);
                 
                 break;
             case "royale":
-                GameManager.Instance.mode = GameMode.BattleRoyal;
+                GameManager.Instance.SetMode(GameMode.BattleRoyal);
                 
                 break;
 
 
         }
+
+        Close();
     }
 }

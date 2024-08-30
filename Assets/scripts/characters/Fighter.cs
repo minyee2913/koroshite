@@ -189,6 +189,8 @@ public class Fighter : Character
         if (shieldTime <= 0.5f) yield break;
         pl.RpcAnimateTrigger("attack3");
 
+        SoundManager.Instance.PlayToDist("fighter_kick", transform.position, 15);
+
         yield return new WaitForSeconds(0.2f);
 
         CamManager.main.CloseUp(5.8f - 2.2f * shieldTime, 10 * shieldTime * pl.facing, 0.01f);
@@ -222,6 +224,8 @@ public class Fighter : Character
             yield break;
         }
         superKickCool.Start();
+
+        SoundManager.Instance.PlayToDist("fighter_kick2", transform.position, 15);
 
         pl.RpcAnimateTrigger("attack3");
         pl.stopMove = 0.3f;
@@ -305,6 +309,8 @@ public class Fighter : Character
             yield break;
         }
 
+        SoundManager.Instance.PlayToDist("fighter_atk", transform.position, 15);
+
         if (atkType == 0) {
             pl.RpcAnimateTrigger("attack1");
 
@@ -354,7 +360,7 @@ public class Fighter : Character
     }
 
     IEnumerator jumpAtk() {
-
+        SoundManager.Instance.PlayToDist("fighter_ja", transform.position, 15);
         pl.RpcAnimateTrigger("down");
 
         pl.stopMove = 0.6f;
@@ -427,6 +433,8 @@ public class Fighter : Character
         yield return new WaitForSeconds(0.8f);
 
         pl.CallChFunc("sp");
+
+        SoundManager.Instance.PlayToDist("fighter_super", transform.position, 15);
 
         CamManager.main.CloseOut(0.1f);
 

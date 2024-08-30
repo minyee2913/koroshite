@@ -11,6 +11,8 @@ public class CamManager : MonoBehaviour
     public CinemachineCameraOffset camOffset;
     float orSize_d;
     float dutch_d;
+    public Player spectatorTarget = null;
+    Vector3 spectatorCam = new Vector3(-55.28f, -17.2f, -2f);
 
     IEnumerator dutchRoutine = null;
     IEnumerator offRoutine = null;
@@ -27,10 +29,27 @@ public class CamManager : MonoBehaviour
     }
 
     private void Update() {
-        if (Player.Local != null && Player.Local.state == "room") {
-            transform.position = Vector3.Lerp(transform.position, Player.Local.transform.position, 4 * Time.deltaTime);
-            float x = Mathf.Clamp(transform.position.x, -58f, -52f);
-            transform.position = new Vector3(x, -17.2f, -2f);
+        if (Player.Local != null) {
+            if (Player.Local.state == "room") {
+                if (Player.Local.isSpectator) {
+                    transform.position = spectatorCam;
+                } else {
+                    transform.position = Vector3.Lerp(transform.position, Player.Local.transform.position, 4 * Time.deltaTime);
+                    float x = Mathf.Clamp(transform.position.x, -58f, -52f);
+                    transform.position = new Vector3(x, -17.2f, -2f);
+                }
+            }
+
+            if (Player.Local.state == "ingame" || Player.Local.state == "ready") {
+                if (Player.Local.isSpectator) {
+                    if (spectatorTarget != null) {
+                        Player.Local.transform.position = spectatorTarget.transform.position;
+                        
+                        var lerp = Vector2.Lerp(transform.position, new Vector3(spectatorTarget.transform.position.x, spectatorTarget.transform.position.y, -10), Time.smoothDeltaTime * 10);
+                        transform.position = new Vector3(lerp.x, lerp.y, -10);
+                    }
+                }
+            }
         }
     }
 

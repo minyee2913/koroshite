@@ -77,6 +77,9 @@ MonoBehaviour:
   - Play
   - Stop
   - hurtByMob
+  - setMode
+  - playTo
+  - setSpectator
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
