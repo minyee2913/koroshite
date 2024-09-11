@@ -73,9 +73,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
 
+        Invoke("OnJoin", 1);
+    }
+
+    void OnJoin() {
         state = 1;
 
-        Debug.Log("connected");
+        Debug.LogWarning("connected");
 
         GameObject Obj = GameObject.Find("GameManager");
 

@@ -24,7 +24,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public TMP_Text title;
     public readonly Vector3 spawnPos = new(-55.73f, -19.55f);
     [SerializeField] DamageInfo damInfo;
-    public float timer;
+    List<Player> removedPlayer = new();
+    public float timer, updateTick;
     public int timeCash;
     public GameObject rankPanel;
     public TMP_Text rankData;
@@ -92,6 +93,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     IEnumerator stgm() {
         SetState("starting");
         SoundManager.Instance.StopToAll(4);
+
         foreach (Player pl in Player.players) {
             pl.SetState("ready");
             if (pl.isSpectator) continue;
@@ -253,6 +255,23 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void Update()
     {
+        updateTick += Time.deltaTime;
+
+        if (updateTick > 2) {
+            foreach (Player player in Player.players) {
+                if (player == null) {
+                    removedPlayer.Add(player);
+                }
+            }
+
+            foreach (Player player in removedPlayer) {
+                Player.players.Remove(player);
+            }
+            removedPlayer.Clear();
+
+            updateTick = 0;
+        }
+
         if (Input.GetKeyDown(KeyCode.U) && !CharacterPanel.activeSelf) {
             if (SkillInfo.Instance.panel.activeSelf) {
                 SkillInfo.Instance.Close();
@@ -265,7 +284,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (Input.GetKeyDown(KeyCode.F) && !SkillInfo.Instance.panel.activeSelf) {
                 CharacterPanel.SetActive(!CharacterPanel.activeSelf);
             }
-        } else if (state == "started") {
+        }
+        if (state == "started") {
             if (timer > 0) {
                 timer -= Time.deltaTime;
             }
