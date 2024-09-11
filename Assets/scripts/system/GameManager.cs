@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject rankPanel;
     public TMP_Text rankData;
     [SerializeField] TMP_Text timerText;
+    bool inSudden;
+    float suddenTime;
     void Start()
     {
         pv = GetComponent<PhotonView>();
@@ -133,6 +135,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             pl.SetState("ingame");
         }
 
+        inSudden = false;
+
         switch (mode) {
             case GameMode.BattleRoyal:
                 StartRoyale();
@@ -164,7 +168,17 @@ public class GameManager : MonoBehaviourPunCallbacks
         ChatManager.Instance.SendComment("<color=\"orange\">제한 시간 내에 가장 많은 플레이어를 처치하세요!</color>");
         ChatManager.Instance.SendComment("<color=\"white\">데스매치에서는 [F]플레이어 변경 사용 가능</color>");
 
-        SoundManager.Instance.PlayToAll("crashingOut");
+        float soundCount = 3;
+
+        int rd = UnityEngine.Random.Range(0, 100);
+
+        if (rd <= 100 / soundCount) {
+            SoundManager.Instance.PlayToAll("crashingOut");
+        } else if (rd <= 200 / soundCount) {
+            SoundManager.Instance.PlayToAll("meltdown");
+        } else {
+            SoundManager.Instance.PlayToAll("cavern");
+        }
     }
 
     public void DisplayDamage(Vector2 pos, int damage, Color col = default) {
@@ -177,7 +191,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void Spawn() {
         PhotonNetwork.Instantiate("Player", spawnPos, quaternion.identity);
 
-        SoundManager.Instance.Play("phone");
+        SoundManager.Instance.Play("super_spiffy");
     }
 
     public void ForceEnd() {
@@ -198,7 +212,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             pl.SetCoin(0);
         }
 
-        SoundManager.Instance.Play("phone");
+        SoundManager.Instance.PlayToAll("super_spiffy");
 
         SetState("none");
     }
@@ -220,6 +234,40 @@ public class GameManager : MonoBehaviourPunCallbacks
     void FAKEnd() {
         StartCoroutine(fakEnd());
     }
+    void SetSudden(bool bol) {
+        pv.RpcSecure("setSudden", RpcTarget.All, true, new object[] { bol });
+    }
+    [PunRPC]
+    void setSudden(bool bol) {
+        inSudden = bol;
+        suddenTime = 0;
+    }
+
+    public void ShowRank() {
+        rankPanel.SetActive(true);
+        rankData.text = "";
+
+        var players = Player.players;
+        players.Sort((a, b)=>a.death - b.death);
+        players.Sort((a, b)=>b.kill - a.kill);
+
+        int ri = 0;
+        for (int i = 0; i < players.Count; i++) {
+            var pl = players[i];
+
+            if (pl.isSpectator) {
+                continue;
+            }
+
+            rankData.text += (ri+1).ToString() + ". " + pl.GetName() + "    " + pl.kill + "킬  " + pl.death + "데스\n";
+
+            ri++;
+        }
+    }
+
+    public void HideRank() {
+        rankPanel.SetActive(false);
+    }
 
     IEnumerator fakEnd() {
         state = "ending";
@@ -231,24 +279,13 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         title.text = "";
 
-        rankPanel.SetActive(true);
-        rankData.text = "";
-
-        var players = Player.players;
-        players.Sort((a, b)=>a.death - b.death);
-        players.Sort((a, b)=>b.kill - a.kill);
-
-        for (int i = 0; i < players.Count; i++) {
-            var pl = players[i];
-
-            rankData.text += (i+1).ToString() + ". " + pl.GetName() + "    " + pl.kill + "킬  " + pl.death + "데스\n";
-        }
+        ShowRank();
 
         yield return new WaitForSeconds(4f);
 
         applyPlayerInput = true;
 
-        rankPanel.SetActive(false);
+        HideRank();
 
         if (PhotonNetwork.IsMasterClient) GameEnd();
     }
@@ -272,11 +309,45 @@ public class GameManager : MonoBehaviourPunCallbacks
             updateTick = 0;
         }
 
+        if (Input.GetKeyDown(KeyCode.F5)) {
+            CamManager.main.autoSpector = !CamManager.main.autoSpector;
+        }
+
         if (Input.GetKeyDown(KeyCode.U) && !CharacterPanel.activeSelf) {
             if (SkillInfo.Instance.panel.activeSelf) {
                 SkillInfo.Instance.Close();
             } else {
                 SkillInfo.Instance.Open(Player.Local.ch);
+            }
+        }
+
+        if (mode == GameMode.FreeAllKill) {
+            if (Input.GetKeyDown(KeyCode.Tab)) {
+                ShowRank();
+            }
+            if (Input.GetKeyUp(KeyCode.Tab)) {
+                HideRank();
+            }
+
+            if (state == "started") {
+                if (inSudden) {
+                    suddenTime += Time.deltaTime;
+                    if (suddenTime > 1) {
+                        Player.Local.SetEnergy(Player.Local.energy + 2);
+
+                        suddenTime = 0;
+
+                        Debug.Log("add");
+                    }
+                }
+
+                if (PhotonNetwork.IsMasterClient) {
+                    if (!inSudden && timer <= 150) {
+                        inSudden = true;
+
+                        StartCoroutine(GoSudden());
+                    }
+                }
             }
         }
 
@@ -304,5 +375,16 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         timerText.text = ((timer / 60 < 10) ? "0" + ((int)(timer / 60)) : ((int)(timer / 60)).ToString()) + ":" + ((timer % 60 < 10) ? "0" + ((int)timer % 60) : ((int)timer % 60).ToString());
+    }
+
+    IEnumerator GoSudden() {
+        SetSudden(true);
+        SetTitle("<color=\"red\">남은 시간이 얼마 없어!!</color>\n이제 에너지가 자동으로 채워집니다.");
+        SoundManager.Instance.PlayToAll("sudden");
+
+        yield return new WaitForSeconds(6f);
+
+        SetTitle("");
+        
     }
 }

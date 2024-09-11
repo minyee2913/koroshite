@@ -33,8 +33,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] SpectatorIcon spectatorIcon;
     [SerializeField] Transform spectatorGroup;
     [SerializeField] TMP_Text fps;
+    [SerializeField] GameObject state;
+    [SerializeField] TMP_Text inAuto;
     public Dictionary<Player, SpectatorIcon> specs = new();
-    float dCount = 0, specWait;
+    float dCount = 0, specWait, specAuto, specAutoWait;
+    List<Player> autoPlayers = new();
+    Player RandPl;
 
     public static UIManager Instance {get; private set;}
     void Awake() {
@@ -54,6 +58,26 @@ public class UIManager : MonoBehaviour
             spectatorGroup.gameObject.SetActive(Player.Local.isSpectator && Player.Local.state != "room");
             if (Player.Local.isSpectator) {
                 spectortxt.text = "관전취소";
+                state.SetActive(false);
+
+                if (CamManager.main.autoSpector) {
+                    inAuto.color = Color.cyan;
+
+                    specAuto += Time.fixedDeltaTime;
+
+                    if (specAuto > specAutoWait) {
+                        specAutoWait = Random.Range(5, 8);
+                        specAuto = 0;
+
+                        autoPlayers.Clear();
+
+                        autoPlayers = Player.players.FindAll((p)=>!p.isSpectator && p != RandPl);
+
+                        CamManager.main.spectatorTarget = autoPlayers[Mathf.RoundToInt(Random.Range(0f, autoPlayers.Count-1))];
+                    }
+                } else {
+                    inAuto.color = Color.white;
+                }
 
                 specWait += Time.fixedDeltaTime;
 
@@ -64,6 +88,7 @@ public class UIManager : MonoBehaviour
                 }
             } else {
                 spectortxt.text = "관전하기";
+                state.SetActive(true);
             }
 
             roomUI.SetActive(Player.Local.state == "room");

@@ -662,7 +662,7 @@ MonoBehaviour:
   - id: shinobi_ja
     audioIn: {fileID: 0}
     audio: {fileID: 8300000, guid: bf7997f0073dfc940a42e22569bdf75d, type: 3}
-    volume: 0.8
+    volume: 0.6
     pitch: 1
     startTime: 0.2
     track: 2
@@ -683,6 +683,70 @@ MonoBehaviour:
     startTime: 0
     track: 2
     loop: 0
+  - id: fighter_atk
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: fe6468a8fda5bf04698d536b9acd4574, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 1
+  - id: fighter_ja
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 9c1c15af8658f3f47827b40e11ce2d96, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 1
+  - id: fighter_kick
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 91ecfec9c955f4249bb992c049b3db93, type: 3}
+    volume: 1
+    pitch: 0.8
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: fighter_kick2
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 3bb2404e8da397f4fa46b5ec60f7ec76, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: default_attack
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 9a7be07aa500c58449440ff658b9d2f6, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: sudden
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 780559d8f0f6c154792c8259d5253954, type: 3}
+    volume: 0.6
+    pitch: 1
+    startTime: 0
+    track: 4
+    loop: 1
+  - id: super_spiffy
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 81bfdd586b07cd3489759ce0674ad8c5, type: 3}
+    volume: 0.6
+    pitch: 1
+    startTime: 0
+    track: 4
+    loop: 1
+  - id: meltdown
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 8a9a634de63c0be449c2363008e5d1e8, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0
+    track: 4
+    loop: 1
   _tracks:
   - {fileID: 2363639697542510051}
   - {fileID: 2363639697281754276}

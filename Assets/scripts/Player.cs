@@ -321,6 +321,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void setEne(int val) {
         energy = val;
+
+        if (energy > 100) {
+            energy = 100;
+        }
     }
 
     private void Update() {
