@@ -11,7 +11,7 @@ public class VampireGirl : Character
     public GameObject explode;
 
     Cooldown superCool = new(4.2f);
-    public override int maxHealth => 940;
+    public override int maxHealth => 1200;
 
     public override string atkInfo => "전방으로 이동하면서 적에게 <color=\"red\">20</color>의 피해를 입힙니다.\n피격된 적이 존재하면 에너지가 5, 체력이 10 감소합니다.";
 

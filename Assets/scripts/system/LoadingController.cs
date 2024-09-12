@@ -8,6 +8,7 @@ public class LoadingController : MonoBehaviour
 {
     static string nextScene;
     public GameObject[] images;
+    public static bool loaded;
 
     [SerializeField]
     Slider progress;
@@ -25,6 +26,7 @@ public class LoadingController : MonoBehaviour
 
     IEnumerator SceneProcess()
     {
+        loaded = false;
         AsyncOperation load = SceneManager.LoadSceneAsync(nextScene);
         load.allowSceneActivation = false;
 
@@ -42,6 +44,7 @@ public class LoadingController : MonoBehaviour
                 progress.value = Mathf.Lerp(0.9f, 1f, timer);
                 if (progress.value >= 1f)
                 {
+                    loaded = true;
                     load.allowSceneActivation = true;
                     yield break;
                 }

@@ -50,10 +50,6 @@ public class CamManager : MonoBehaviour
                         var lerp = Vector2.Lerp(transform.position, new Vector3(spectatorTarget.transform.position.x, spectatorTarget.transform.position.y, -10), Time.smoothDeltaTime * 10);
                         transform.position = new Vector3(lerp.x, lerp.y, -10);
                     }
-
-                    if (autoSpector) {
-
-                    }
                 }
             }
         }

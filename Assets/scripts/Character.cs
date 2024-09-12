@@ -48,6 +48,8 @@ public abstract class Character : MonoBehaviour
             }
         }
     }
+    public virtual void OnStart() {}
+    public virtual void OnDash() {}
     public virtual void Attack() {}
     public virtual void Skill1() {}
     public virtual void Skill1Up() {}

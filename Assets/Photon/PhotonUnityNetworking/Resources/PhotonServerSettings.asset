@@ -81,6 +81,7 @@ MonoBehaviour:
   - playTo
   - setSpectator
   - setSudden
+  - setShi
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

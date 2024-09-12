@@ -747,6 +747,62 @@ MonoBehaviour:
     startTime: 0
     track: 4
     loop: 1
+  - id: vampire_girl_eat
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 6b405976230da1643bc1ab6bb4fbc222, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: vampire_girl_super
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 4a75d4da827043a46857ed59ec472482, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: vampire_girl_super_dot
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: d228d40a58175674baf4e96783bcbe3f, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: vampire_girl_atk
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 21e5f7f268edbcb4090a4566c98fc45a, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: vampire_girl_skill
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: e8420a8114704ce489b1e5d5b6339941, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: vampire_man_atk
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 70e2142fa1eb28742964e874444bb5bc, type: 3}
+    volume: 1
+    pitch: 1.25
+    startTime: 0.2
+    track: 2
+    loop: 0
+  - id: vampire_man_mark
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 21e5f7f268edbcb4090a4566c98fc45a, type: 3}
+    volume: 1
+    pitch: 1.25
+    startTime: 0.2
+    track: 2
+    loop: 0
   _tracks:
   - {fileID: 2363639697542510051}
   - {fileID: 2363639697281754276}

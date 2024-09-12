@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Photon.Pun;
@@ -73,21 +74,27 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
 
-        Invoke("OnJoin", 1);
+        StartCoroutine(OnJoin());
     }
 
-    void OnJoin() {
+    IEnumerator OnJoin() {
+        yield return new WaitForSeconds(1);
+        yield return null;
+
         state = 1;
+
+        GameObject Obj = GameObject.Find("GameManager");
+        while (Obj == null) {
+            Obj = GameObject.Find("GameManager");
+
+            yield return null;
+        }
 
         Debug.LogWarning("connected");
 
-        GameObject Obj = GameObject.Find("GameManager");
+        GameManager gm = Obj.GetComponent<GameManager>();
 
-        if (Obj != null) {
-            GameManager gm = Obj.GetComponent<GameManager>();
-
-            gm.Spawn();
-        }
+        gm.Spawn();
     }
 
     public override void OnDisconnected(DisconnectCause cause)

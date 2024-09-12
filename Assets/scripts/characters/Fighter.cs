@@ -42,7 +42,7 @@ public class Fighter : Character
 
     public override string atkInfo => "전방으로 빠르게 이동하면서 적에게 <color=\"red\">10</color>의 피해를 입힙니다.";
 
-    public override string atk2Info => "2단 점프 후 일반 공격 발동시 땅으로 내리찍어 땅 위에 있는 적들에게 <color=\"red\">100</color>의 피해를 입힙니다.";
+    public override string atk2Info => "X";
 
     public override string skill1Info => "홀드시 자세를 잡습니다. 자세를 잡은 상태에서는 입는 피해가 <color=\"lightblue\">40%</color> 감소하며 발차기 게이지를 계속 충전합니다.\n\n홀드를 멈추거나 발차기 게이지가 가득차면 축적된 발차기 게이지에 따라서 적에게 최대 <color=\"red\">120</color>의 피해를 입히고 HP를 최대 30 회복하며 밀쳐냅니다.";
 
@@ -304,13 +304,6 @@ public class Fighter : Character
             yield break;
         }
 
-        if (pl.jumpCount >= 2) {
-            routine = jumpAtk();
-            StartCoroutine(routine);
-
-            yield break;
-        }
-
         SoundManager.Instance.PlayToDist("fighter_atk", transform.position, 15);
 
         if (atkType == 0) {
@@ -351,52 +344,12 @@ public class Fighter : Character
             var target = targets[i];
 
             if (i == 0) {
-                pl.energy += 5;
+                pl.energy += 8;
             }
 
             target.Damage(10, pl.name_);
             target.Knockback(Vector2.right * pl.facing * 10 + Vector2.up * 2);
         }
-
-        routine = null;
-    }
-
-    IEnumerator jumpAtk() {
-        SoundManager.Instance.PlayToDist("fighter_ja", transform.position, 15);
-        pl.RpcAnimateTrigger("down");
-
-        pl.stopMove = 0.6f;
-        atkCool = 0.3f;
-
-        atkType = 0;
-
-        var p1 = pl.transform.position;
-
-        CamManager.main.CloseUp(4.2f, -pl.facing * 2, 0.1f);
-
-        pl.rb.velocity = new Vector2(10 * pl.facing, -30);
-
-        while (!pl.onGround) {
-            yield return new WaitForSeconds(0.05f);
-        }
-
-        pl.CallChFunc("JA");
-
-        pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
-
-        var targets = Player.Convert(Physics2D.BoxCastAll((p1 + transform.position) / 2, new Vector2(Mathf.Abs(transform.position.x - p1.x), Mathf.Abs(transform.position.y - p1.y)), 0, Vector2.zero), pl);
-
-        for (int i = 0; i < targets.Count; i++) {
-            var target = targets[i];
-
-            pl.energy += 7;
-
-            target.Damage(100, pl.name_);
-        }
-
-        yield return new WaitForSeconds(0.3f);
-
-        CamManager.main.CloseOut(0.1f);
 
         routine = null;
     }

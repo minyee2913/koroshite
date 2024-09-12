@@ -94,6 +94,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     IEnumerator stgm() {
         SetState("starting");
+        SetSudden(false);
         SoundManager.Instance.StopToAll(4);
 
         foreach (Player pl in Player.players) {
@@ -101,6 +102,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (pl.isSpectator) continue;
             
             pl.SetEnergy(0);
+            pl.SetShield(0);
 
             pl.Heal(pl.maxHealth);
             pl.SetDeath(0);
