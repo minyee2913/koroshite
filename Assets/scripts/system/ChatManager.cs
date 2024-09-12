@@ -78,6 +78,10 @@ public class ChatManager : MonoBehaviourPunCallbacks
     }
 
     public void SendMessage() {
+        if (inp.text.Trim() == "") {
+            return;
+        }
+        
         SendComment(Player.Local.GetName() + ": " + inp.text);
 
         Player.Local.SetBalloon(inp.text);
