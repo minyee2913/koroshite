@@ -17,7 +17,7 @@ public class VampireGirl : Character
 
     public override string atk2Info => "일반 공격 2연타 사용시 고유 스킬이 강화됩니다. 일반 공격을 다시 사용하면 강화가 종료됩니다.";
 
-    public override string skill1Info => "가드를 올려 모든 넉백 효과를 무시합니다.\n\n- 강화 스킬\n전방에 있는 적들을 할퀴어서 <color=\"red\">60</color>의 피해를 입힙니다.\n피격된 적이 존재하면 에너지를 20, 체력을 30 회복합니다.\n피격된 적이 존재하지 않으면 에너지가 20, 체력이 50 감소합니다.";
+    public override string skill1Info => "가드를 올려 모든 넉백 효과를 무시합니다.\n\n- 강화 스킬\n전방에 있는 적들을 할퀴어서 <color=\"red\">60</color>의 피해를 입힙니다.\n피격된 적이 존재하면 에너지를 35, 체력을 50 회복합니다.\n피격된 적이 존재하지 않으면 에너지가 20, 체력이 50 감소합니다.";
 
     public override string skill2Info => "전방에 있는 적 1명을 집어 삼켜서 행동 불능 상태로 만들고 <color=\"red\">40</color>의 피해를 7회 입히고 적을 뱉어내면서 추가로 <color=\"red\">100</color>의 피해를 입힙니다.";
 
@@ -158,6 +158,8 @@ public class VampireGirl : Character
         pl.RpcAnimateTrigger("attack3");
         CamManager.main.Shake(10);
 
+        SoundManager.Instance.PlayToDist("vampire_girl_skill", transform.position, 15);
+
         yield return new WaitForSeconds(0.1f);
 
         pl.CallChFunc("sk");
@@ -171,8 +173,8 @@ public class VampireGirl : Character
         List<Player> targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2.5f, 2.2f), 0, Vector2.right * pl.facing, 0.9f), pl);
 
         if (targets.Count > 0) {
-            pl.energy += 20;
-            pl.Heal(30);
+            pl.energy += 35;
+            pl.Heal(50);
         } else {
             pl.energy -= 10;
             pl.Damage(50, null, false);
@@ -234,6 +236,8 @@ public class VampireGirl : Character
 
             yield break;
         }
+
+        SoundManager.Instance.PlayToDist("vampire_girl_atk", transform.position, 15);
 
         if (atkType == 0) {
             skillOn = false;
@@ -298,7 +302,7 @@ public class VampireGirl : Character
     }
 
     IEnumerator super() {
-        if (superCool.IsIn() || !EnergySystem.CheckNWarn(pl, 100)) {
+        if (superCool.IsIn() || !EnergySystem.CheckNWarn(pl, 80)) {
             yield break;
         }
 
@@ -327,6 +331,8 @@ public class VampireGirl : Character
 
         animator.SetBool("inSuper", true);
 
+        SoundManager.Instance.PlayToDist("vampire_girl_eat", transform.position, 15);
+
         if (targets.Count > 0) {
             CamManager.main.CloseUp(3f, 0, 0.1f);
 
@@ -342,6 +348,8 @@ public class VampireGirl : Character
                 targets[0].Damage(100, pl.name_);
                 pl.Heal(60);
                 
+                SoundManager.Instance.PlayToDist("vampire_girl_super_dot", transform.position, 15);
+
                 yield return new WaitForSeconds(0.1f);
             }
 
@@ -351,6 +359,8 @@ public class VampireGirl : Character
 
             CamManager.main.Shake(20);
             targets[0].Damage(120, pl.name_);
+
+            SoundManager.Instance.PlayToDist("vampire_girl_super", transform.position, 15);
 
             pl.CallChFunc("explode");
 

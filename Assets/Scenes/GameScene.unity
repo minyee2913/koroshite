@@ -2095,7 +2095,7 @@ RectTransform:
   m_Children:
   - {fileID: 66139720}
   m_Father: {fileID: 482381525}
-  m_RootOrder: 6
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -5228,12 +5228,9 @@ RectTransform:
   - {fileID: 766111561}
   - {fileID: 1439320899}
   - {fileID: 1999396612}
-  - {fileID: 989277793}
-  - {fileID: 958881174}
-  - {fileID: 1977113175}
   - {fileID: 178684640}
   m_Father: {fileID: 1612733693}
-  m_RootOrder: 3
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -9892,19 +9889,19 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 958881173}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 0}
+  m_LocalScale: {x: -0.9390084, y: 0.9390084, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 707946859}
   - {fileID: 492561472}
-  m_Father: {fileID: 482381525}
+  m_Father: {fileID: 1612733693}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 458, y: 35}
+  m_AnchoredPosition: {x: 794.7899, y: 32.865322}
   m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &958881175
@@ -10244,19 +10241,19 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 989277792}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 0}
+  m_LocalScale: {x: -0.9390084, y: 0.9390084, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 86401830}
   - {fileID: 1984759025}
-  m_Father: {fileID: 482381525}
+  m_Father: {fileID: 1612733693}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 458, y: 76.92}
+  m_AnchoredPosition: {x: 794.7899, y: 72.22853}
   m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &989277794
@@ -18288,6 +18285,134 @@ PrefabInstance:
       propertyPath: m_Name
       value: SoundManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.size
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[23].id
+      value: vampire_girl_eat
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[24].id
+      value: vampire_girl_super
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[25].id
+      value: vampire_girl_super_dot
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[26].id
+      value: vampire_girl_atk
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[27].id
+      value: vampire_girl_skill
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[23].loop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[23].audio
+      value: 
+      objectReference: {fileID: 8300000, guid: 6b405976230da1643bc1ab6bb4fbc222, type: 3}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[23].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[23].track
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[24].audio
+      value: 
+      objectReference: {fileID: 8300000, guid: 4a75d4da827043a46857ed59ec472482, type: 3}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[24].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[24].track
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[25].audio
+      value: 
+      objectReference: {fileID: 8300000, guid: d228d40a58175674baf4e96783bcbe3f, type: 3}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[25].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[25].track
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[26].audio
+      value: 
+      objectReference: {fileID: 8300000, guid: 21e5f7f268edbcb4090a4566c98fc45a, type: 3}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[26].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[26].track
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[27].audio
+      value: 
+      objectReference: {fileID: 8300000, guid: e8420a8114704ce489b1e5d5b6339941, type: 3}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[27].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[27].track
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[23].volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[24].volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[25].volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[26].volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[27].volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[23].startTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[24].startTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[25].startTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[26].startTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
+      propertyPath: Sounds.Array.data[27].startTime
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 2363639698774442406, guid: f7a6815b83a93914281c9a745765acef, type: 3}
       propertyPath: m_RootOrder
       value: 13
@@ -22338,6 +22463,9 @@ RectTransform:
   - {fileID: 1827143212}
   - {fileID: 743274}
   - {fileID: 1969390651}
+  - {fileID: 989277793}
+  - {fileID: 958881174}
+  - {fileID: 1977113175}
   - {fileID: 482381525}
   m_Father: {fileID: 0}
   m_RootOrder: 8
@@ -119297,19 +119425,19 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1977113174}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 0}
+  m_LocalScale: {x: -0.9390084, y: 0.9390084, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1169872799}
   - {fileID: 1323249727}
-  m_Father: {fileID: 482381525}
+  m_Father: {fileID: 1612733693}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 458, y: -6.4}
+  m_AnchoredPosition: {x: 794.7899, y: -6.0096474}
   m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1977113176
