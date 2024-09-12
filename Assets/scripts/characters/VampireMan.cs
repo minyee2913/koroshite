@@ -135,7 +135,7 @@ public class VampireMan : Character
         if (running) {
             pl.rb.velocity = Vector2.zero;
         }
-        
+
         SkillEnd();
     }
 
@@ -207,6 +207,7 @@ public class VampireMan : Character
         if (targets.Count > 0) {
             pl.RpcAnimateTrigger("attack1");
             pl.energy += 2;
+            pl.shield += 2;
         }
 
         pl.CallChFunc("speedEnd");
@@ -260,7 +261,7 @@ public class VampireMan : Character
 
             if (i == 0) {
                 pl.energy += 2;
-                pl.shield += 15;
+                pl.shield += 20;
             }
 
             target.Damage(25, pl.name_);
