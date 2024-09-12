@@ -78,8 +78,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     IEnumerator OnJoin() {
-        yield return new WaitForSeconds(1);
-        yield return null;
+        yield return new WaitForSeconds(2);
 
         state = 1;
 

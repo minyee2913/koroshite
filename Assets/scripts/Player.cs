@@ -180,6 +180,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void setState(string str) {
         state = str;
+        vman_mark.SetActive(false);
     }
     public void SetName(string str) {
         object[] obj = {
@@ -745,6 +746,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void Jump() {
+        bool cancel = false;
+        if (ch != null) {
+            ch.OnJump(ref cancel);
+        }
+
+        if (cancel) {
+            return;
+        }
+
         jumpCount++;
         
         if (jumpCount <= 2) {

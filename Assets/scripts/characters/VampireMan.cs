@@ -132,6 +132,10 @@ public class VampireMan : Character
     }
 
     public override void OnDash() {
+        if (running) {
+            pl.rb.velocity = Vector2.zero;
+        }
+        
         SkillEnd();
     }
 
@@ -153,7 +157,7 @@ public class VampireMan : Character
                     pl.shield -= 30 * Time.deltaTime;
                 }
 
-                pl.moveSpeed = pl.moveSpeedDef * 3.5f;
+                pl.moveSpeed = pl.moveSpeedDef * 3f;
 
                 tt = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(1.5f, 2.2f), 0, Vector2.right, 0f), pl);
 
@@ -179,6 +183,13 @@ public class VampireMan : Character
                 pl.CallChFunc("bufOff");
                 pl.moveSpeed = pl.moveSpeedDef;
             }
+        }
+    }
+
+    public override void OnJump(ref bool cancel)
+    {
+        if (inSuper) {
+            cancel = true;
         }
     }
 
@@ -284,6 +295,7 @@ public class VampireMan : Character
         yield return new WaitForSeconds(0.4f);
 
         if (state != "super") {
+            ForceCANCEL();
             yield break;
         }
 
@@ -294,6 +306,8 @@ public class VampireMan : Character
         SoundManager.Instance.PlayToAll("vampire_man_run");
 
         targets.Clear();
+
+        Vector2 lastPos = pl.transform.position;
 
         for (int i = 0; i < 7; i++) {
             SendCrit(pl.transform.position + new Vector3(0, 1f));
@@ -306,7 +320,7 @@ public class VampireMan : Character
             foreach (Player target in targets) {
                 target.Damage(20, pl.name_);
 
-                target.SetPos(pl.transform.position);
+                target.SetPos(lastPos);
 
                 target.ch.CANCEL();
             }
@@ -318,9 +332,12 @@ public class VampireMan : Character
 
             SoundManager.Instance.PlayToAll("vampire_man_super");
 
+            lastPos = pl.transform.position;
+
             yield return new WaitForSeconds(0.3f);
 
             if (state != "super") {
+                ForceCANCEL();
                 yield break;
             }
         }
