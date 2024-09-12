@@ -49,6 +49,7 @@ public abstract class Character : MonoBehaviour
         }
     }
     public virtual void OnStart() {}
+    public virtual void OnRevive() {}
     public virtual void OnJump(ref bool cancel) {}
     public virtual void OnDash() {}
     public virtual void Attack() {}

@@ -109,7 +109,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             pl.SetKill(0);
             pl.SetCoin(0);
 
-            pl.ch.ForceCANCEL();
+            pl.CallCancelF();
+            pl.CallRevive();
         }
 
         List<Vector2> poses = spawnPoses;

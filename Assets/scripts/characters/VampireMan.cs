@@ -17,13 +17,13 @@ public class VampireMan : Character
 
     public override int maxHealth => 600;
 
-    public override string atkInfo => "";
+    public override string atkInfo => "전방으로 이동하면서 적에게 <color=\"red\">25</color>의 피해를 입히고 보호막을 20 획득합니다.";
 
-    public override string atk2Info => "";
+    public override string atk2Info => "X";
 
-    public override string skill1Info => "";
+    public override string skill1Info => "홀드시 보호막을 보유하고 있다면 보호막을 소모하며\n질주합니다.\n질주 도중 스친 적들에게 표식을 남기며 홀드를 끝내거나 보호막을 모두 소모하면\n 표식이 남겨진 적들에게 거리에 따라 최대 <color=\"red\">120</color>의 피해를 가합니다.";
 
-    public override string skill2Info => "";
+    public override string skill2Info => "더욱 빠르게 질주하며 스친 적들에게 표식을 남기고 표식이 남겨진 적들을 계속 끌어당깁니다.\n당겨진 적들에게 <color=\"red\">20</color>의 피해를 입히고\n자신의 체력을 80, 보호막을 100 회복합니다. 이것을 7회 반복하고 질주를 종료합니다.";
 
     public override void Callfunc(string method)
     {
@@ -110,6 +110,11 @@ public class VampireMan : Character
     public override void Skill1Up()
     {
         SkillEnd();
+    }
+
+    public override void OnRevive()
+    {
+        pl.shield = 100;
     }
 
     public override void OnHurt(ref int damage, Transform attacker, ref bool cancel)
@@ -323,7 +328,7 @@ public class VampireMan : Character
 
                 target.SetPos(lastPos);
 
-                target.ch.CANCEL();
+                target.CallCancel();
             }
 
             if (tt.Count > 0) {

@@ -235,6 +235,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         realGravity = rb.gravityScale;
 
         if (pv.IsMine) {
+            if (Local != null) {
+                PhotonNetwork.Destroy(Local.gameObject);
+            }
+
             Local = this;
 
             uniqueCode = UnityEngine.Random.Range(-9999, 9999);
@@ -739,10 +743,39 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         ch.OnDash();
     }
+    [PunRPC]
     public void Revive() {
         isDeath = false;
         health = maxHealth;
 
+        if (ch != null) {
+            ch.OnRevive();
+        }
+    }
+
+    public void CallRevive() {
+        pv.RPC("Revive", RpcTarget.All);
+    }
+
+    public void CallCancel() {
+        pv.RPC("cancel", RpcTarget.All);
+    }
+    [PunRPC]
+    void cancel() {
+        if (ch != null) {
+            ch.CANCEL();
+        }
+    }
+
+    public void CallCancelF() {
+        pv.RPC("cancelf", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void cancelf() {
+        if (ch != null) {
+            ch.ForceCANCEL();
+        }
     }
 
     public void Jump() {
