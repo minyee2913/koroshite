@@ -11,6 +11,7 @@ public class VampireGirl : Character
     public GameObject explode;
 
     Cooldown superCool = new(4.2f);
+    public override int maxHealth => 940;
 
     public override string atkInfo => "전방으로 이동하면서 적에게 <color=\"red\">20</color>의 피해를 입힙니다.\n피격된 적이 존재하면 에너지가 5, 체력이 10 감소합니다.";
 
@@ -129,6 +130,11 @@ public class VampireGirl : Character
             CamManager.main.CloseOut(0.1f);
 
             pl.SetChScale(defaultScale);
+        } else {
+            CamManager.main.Offset(Vector2.zero, 0f);
+            CamManager.main.CloseOut(0f);
+
+            animator.SetBool("inSuper", false);
         }
     }
 
@@ -198,6 +204,9 @@ public class VampireGirl : Character
 
     public override void OnHurt(ref int damage, Transform attacker, ref bool cancel)
     {
+        if (state == "super") {
+            cancel = true;
+        }
     }
 
     private void Update() {
@@ -330,7 +339,9 @@ public class VampireGirl : Character
             for (int i = 0; i < 7; i++) {
                 pl.CallChFunc("hit");
 
-                targets[0].Damage(40, pl.name_);
+                targets[0].Damage(100, pl.name_);
+                pl.Heal(60);
+                
                 yield return new WaitForSeconds(0.1f);
             }
 
@@ -339,7 +350,7 @@ public class VampireGirl : Character
             yield return new WaitForSeconds(0.3f);
 
             CamManager.main.Shake(20);
-            targets[0].Damage(100, pl.name_);
+            targets[0].Damage(120, pl.name_);
 
             pl.CallChFunc("explode");
 

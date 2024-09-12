@@ -23,12 +23,13 @@ public class Shinobi : Character
     GameObject sparks;
     [SerializeField]
     GameObject mist;
+    public override int maxHealth => 650;
 
     public override string atkInfo => "1) 전방으로 이동하면서 적에게 <color=\"red\">30</color>의 피해를 입힙니다.\n2) 후방으로 이동하면서 적에게 <color=\"red\">70</color>의 피해를 입힙니다.";
 
     public override string atk2Info => "점프 후 일반 공격 발동시 은신 후 전방으로 빠르게 돌진한 후 도달한 위치에서 검기를 휘둘러 <color=\"red\">80</color>의 피해를 입히고 HP를 10 회복합니다. (쿨타임 1.5s)";
 
-    public override string skill1Info => "피해를 입은 후 즉시 해당 스킬 사용시 2.5s 동안 무적 상태가 됩니다.";
+    public override string skill1Info => "피해를 입은 후 즉시 해당 스킬 사용시 0.8s 동안 무적 상태가 됩니다.";
 
     public override string skill2Info => "쌍절곤을 휘두르며 넓은 범위의 적들에게 <color=\"red\">120</color>의 피해를 4번 입힙니다.";
 
@@ -180,7 +181,7 @@ public class Shinobi : Character
 
                 col.a = 0.5f;
 
-                if (invTime > 2.5f) {
+                if (invTime > 0.8f) {
                     invisible = false;
                     pl.CallChFunc("inv_");
                     invTime = 0;
@@ -332,7 +333,7 @@ public class Shinobi : Character
 
             
             pl.energy += 6;
-            pl.Heal(18);
+            pl.Heal(15);
 
             target.Damage(70, pl.name_);
             target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
@@ -405,9 +406,9 @@ public class Shinobi : Character
             for (int j = 0; j < targets.Count; j++) {
                 var target = targets[j];
 
-                if (i == 0) pl.Heal(80);
+                if (i == 0) pl.Heal(60);
 
-                target.Damage(120, pl.name_);
+                target.Damage(90, pl.name_);
                 target.Knockback(Vector2.up * 15);
             }
 
@@ -416,7 +417,7 @@ public class Shinobi : Character
             for (int j = 0; j < targetMobs.Count; j++) {
                 var target = targetMobs[j];
 
-                target.Damage(120, pl.name_);
+                target.Damage(90, pl.name_);
                 target.Knockback(Vector2.up * 15);
             }
 

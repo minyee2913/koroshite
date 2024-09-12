@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class VampireMan : Character
 {
     bool shielding;
+    public override int maxHealth => 700;
 
     public override string atkInfo => "";
 

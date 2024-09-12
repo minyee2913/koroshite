@@ -35,8 +35,10 @@ public class Fighter : Character
     [SerializeField]
     Image fill;
 
-    Cooldown superKickCool = new(0.5f);
+    Cooldown superKickCool = new(0.3f);
     Cooldown superCool = new(1f);
+
+    public override int maxHealth => 1000;
 
     public override string atkInfo => "전방으로 빠르게 이동하면서 적에게 <color=\"red\">10</color>의 피해를 입힙니다.";
 
@@ -210,7 +212,7 @@ public class Fighter : Character
 
             target.ch.CANCEL();
 
-            target.Damage((int)(120 * shieldTime), pl.name_);
+            target.Damage((int)(180 * shieldTime), pl.name_);
             target.Knockback(Vector2.right * pl.facing * 16 * shieldTime + Vector2.up * 4);
         }
 
@@ -240,7 +242,7 @@ public class Fighter : Character
         pl.CallChFunc("sk");
         pl.CallChFunc("sk2");
 
-        if (targets.Count > 0) pl.Heal(15);
+        if (targets.Count > 0) pl.Heal(60);
 
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];

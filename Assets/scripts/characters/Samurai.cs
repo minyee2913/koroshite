@@ -12,6 +12,7 @@ public class Samurai : Character
     public GameObject swordSlash;
     public GameObject swordStrike;
     public GameObject spatial;
+    public override int maxHealth => 800;
 
     public override string atkInfo => "전방으로 이동하면서 적에게 <color=\"red\">50</color>의 피해를 입힙니다.";
 

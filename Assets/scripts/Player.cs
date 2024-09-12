@@ -795,6 +795,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         chh.transform.SetParent(transform);
         chh.transform.localPosition = new Vector3(0, 1.36f);
+
+        float rate = health / maxHealth;
+        maxHealth = chh.maxHealth;
+        health = (int)(maxHealth * rate);
         
         chh.pl = this;
     }
