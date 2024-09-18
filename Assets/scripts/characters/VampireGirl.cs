@@ -11,6 +11,7 @@ public class VampireGirl : Character
     public GameObject explode;
 
     Cooldown superCool = new(4.2f);
+    public override int maxHealth => 1200;
 
     public override string atkInfo => "전방으로 이동하면서 적에게 <color=\"red\">20</color>의 피해를 입힙니다.\n피격된 적이 존재하면 에너지가 5, 체력이 10 감소합니다.";
 
@@ -18,7 +19,7 @@ public class VampireGirl : Character
 
     public override string skill1Info => "가드를 올려 모든 넉백 효과를 무시합니다.\n\n- 강화 스킬\n전방에 있는 적들을 할퀴어서 <color=\"red\">60</color>의 피해를 입힙니다.\n피격된 적이 존재하면 에너지를 35, 체력을 50 회복합니다.\n피격된 적이 존재하지 않으면 에너지가 20, 체력이 50 감소합니다.";
 
-    public override string skill2Info => "전방에 있는 적 1명을 집어 삼켜서 행동 불능 상태로 만들고 <color=\"red\">40</color>의 피해를 7회 입히고 적을 뱉어내면서 추가로 <color=\"red\">100</color>의 피해를 입힙니다.";
+    public override string skill2Info => "전방에 있는 적 1명을 집어 삼켜서 행동 불능 상태로 만들고 <color=\"red\">100</color>의 피해를 7회 입히고 적을 뱉어내면서 추가로 <color=\"red\">100</color>의 피해를 입힙니다.";
 
     public override void Callfunc(string method)
     {
@@ -129,6 +130,11 @@ public class VampireGirl : Character
             CamManager.main.CloseOut(0.1f);
 
             pl.SetChScale(defaultScale);
+        } else {
+            CamManager.main.Offset(Vector2.zero, 0f);
+            CamManager.main.CloseOut(0f);
+
+            animator.SetBool("inSuper", false);
         }
     }
 
@@ -181,7 +187,7 @@ public class VampireGirl : Character
                 var target = targets[i];
 
                 target.Damage(60, pl.name_);
-                target.ch.CANCEL();
+                target.CallCancel();
             }
 
             yield return new WaitForSeconds(0.1f);
@@ -200,6 +206,9 @@ public class VampireGirl : Character
 
     public override void OnHurt(ref int damage, Transform attacker, ref bool cancel)
     {
+        if (state == "super") {
+            cancel = true;
+        }
     }
 
     private void Update() {
@@ -327,7 +336,7 @@ public class VampireGirl : Character
         if (targets.Count > 0) {
             CamManager.main.CloseUp(3f, 0, 0.1f);
 
-            targets[0].ch.ForceCANCEL();
+            targets[0].CallCancelF();
             targets[0].SetPrevent(0.5f);
             targets[0].SetStopMove(0.5f);
             targets[0].SetPos(transform.position);
@@ -336,7 +345,9 @@ public class VampireGirl : Character
             for (int i = 0; i < 7; i++) {
                 pl.CallChFunc("hit");
 
-                targets[0].Damage(40, pl.name_);
+                targets[0].Damage(100, pl.name_);
+                pl.Heal(60);
+                
                 SoundManager.Instance.PlayToDist("vampire_girl_super_dot", transform.position, 15);
 
                 yield return new WaitForSeconds(0.1f);
@@ -347,7 +358,7 @@ public class VampireGirl : Character
             yield return new WaitForSeconds(0.3f);
 
             CamManager.main.Shake(20);
-            targets[0].Damage(100, pl.name_);
+            targets[0].Damage(120, pl.name_);
 
             SoundManager.Instance.PlayToDist("vampire_girl_super", transform.position, 15);
 

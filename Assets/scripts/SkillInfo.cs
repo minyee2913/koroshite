@@ -24,7 +24,7 @@ public class SkillInfo : MonoBehaviour
     // Update is called once per frame
     public void Open(Character ch) {
         characterName.text = ch.id.ToUpper();
-        characterHp.text = "HP 800";
+        characterHp.text = "HP " + ch.maxHealth.ToString();
         atkInfo.text = ch.atkInfo;
         atk2Info.text = ch.atk2Info;
         skill1Info.text = ch.skill1Info;

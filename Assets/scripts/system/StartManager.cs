@@ -180,7 +180,7 @@ public class StartManager : MonoBehaviourPunCallbacks
     }
 
     public void UpdateRoom(List<RoomInfo> rooms) {
-        foreach (Transform child in transform) {
+        foreach (Transform child in scroll.content) {
             Destroy(child.gameObject);
         }
         foreach (RoomInfo rm in rooms) {

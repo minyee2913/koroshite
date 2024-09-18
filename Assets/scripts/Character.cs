@@ -10,6 +10,7 @@ public abstract class Character : MonoBehaviour
     public SpriteRenderer render;
     [SerializeField]
     public Player pl = null;
+    abstract public int maxHealth {get;}
     public IEnumerator routine = null;
     public int atkType = 0;
     public float atkCool = 0;
@@ -47,6 +48,10 @@ public abstract class Character : MonoBehaviour
             }
         }
     }
+    public virtual void OnStart() {}
+    public virtual void OnRevive() {}
+    public virtual void OnJump(ref bool cancel) {}
+    public virtual void OnDash() {}
     public virtual void Attack() {}
     public virtual void Skill1() {}
     public virtual void Skill1Up() {}

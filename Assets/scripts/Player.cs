@@ -6,7 +6,6 @@ using Photon;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
-using Microsoft.Win32.SafeHandles;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -15,12 +14,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public string name_;
     public int uniqueCode;
     public PhotonView pv;
-    public float moveSpeed;
+    public float moveSpeed, moveSpeedDef;
     public Rigidbody2D rb;
     public BoxCollider2D col;
     public string character;
     public Character ch = null;
-    public Slider hprate;
+    public Slider hprate, shieldRate;
     public Image background;
     public Text nametag;
     private Vector3 curPos;
@@ -33,6 +32,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public float cameraMoveSpeed;
     float height;
     float width;
+    public GameObject vman_mark;
 
     public bool isMoving, onGround, jumping, dashing, running, isDeath, isSpectator;
     public int jumpCount = 0;
@@ -47,6 +47,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private float balloon_time;
 
     public int maxHealth, health, coin, energy, kill, death;
+    public float shield;
     public Color hpColor = Color.red;
     public string state = "room";
     float realGravity;
@@ -80,7 +81,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public string GetName() {
         return name_;
     }
-    public void SetSpectator(bool val) {
+        public void SetSpectator(bool val) {
         object[] obj = {
             val
         };
@@ -179,6 +180,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void setState(string str) {
         state = str;
+        vman_mark.SetActive(false);
     }
     public void SetName(string str) {
         object[] obj = {
@@ -233,6 +235,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         realGravity = rb.gravityScale;
 
         if (pv.IsMine) {
+            if (Local != null) {
+                PhotonNetwork.Destroy(Local.gameObject);
+            }
+
             Local = this;
 
             uniqueCode = UnityEngine.Random.Range(-9999, 9999);
@@ -243,6 +249,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             SetCharacter("samurai");
         }
+
+        moveSpeedDef = moveSpeed;
 
         players.Add(this);
     }
@@ -325,6 +333,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (energy > 100) {
             energy = 100;
         }
+    }
+    public void SetShield(int val) {
+        pv.RPC("setShi", RpcTarget.All, new object[]{val});
+    }
+    [PunRPC]
+    void setShi(int val) {
+        shield = val;
     }
 
     private void Update() {
@@ -489,8 +504,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
 
             hprate.value = (float)health / maxHealth;
+            shieldRate.value = (float)shield / (maxHealth / 2);
             nametag.text = name_;
             background.transform.localScale = new Vector3(name_.Length + 0.4f, 1);
+
+            if (shield > maxHealth / 2) {
+                shield = maxHealth / 2;
+            }
 
             if (dashing) {
                 float dashD = Mathf.Floor(dashTime * 100) / 100;
@@ -559,7 +579,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (cancel || state == "room" || isDeath)
             return;
 
-        health -= damage;
+        if (shield > 0) {
+            shield -= damage;
+
+            if (shield < 0) {
+                health += (int)shield;
+                shield = 0;
+            }
+        } else {
+            health -= damage;
+        }
 
         if (display) {
             if (this == Local) {
@@ -589,7 +618,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (cancel || state == "room" || isDeath)
             return;
 
-        health -= damage;
+        if (shield > 0) {
+            shield -= damage;
+
+            if (shield < 0) {
+                health += (int)shield;
+                shield = 0;
+            }
+        } else {
+            health -= damage;
+        }
 
         if (display) {
             if (this == Local) {
@@ -649,6 +687,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(name_);
             stream.SendNext(uniqueCode);
             stream.SendNext(health);
+            stream.SendNext(shield);
             stream.SendNext(kill);
             stream.SendNext(death);
             stream.SendNext(facing);
@@ -665,6 +704,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             name_ = (string)stream.ReceiveNext();
             uniqueCode = (int)stream.ReceiveNext();
             health = (int)stream.ReceiveNext();
+            shield = (float)stream.ReceiveNext();
             kill = (int)stream.ReceiveNext();
             death = (int)stream.ReceiveNext();
             facing = (int)stream.ReceiveNext();
@@ -674,7 +714,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             jumping = (bool)stream.ReceiveNext();
             dashing = (bool)stream.ReceiveNext();
             isDeath = (bool)stream.ReceiveNext();
-
             flip = (bool)stream.ReceiveNext();
             if (ch != null) {
                 ch.render.flipX = flip;
@@ -701,14 +740,54 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         rb.velocity = new Vector2(facing * 14, 0);
 
         SoundManager.Instance.Play("dash");
+
+        ch.OnDash();
     }
+    [PunRPC]
     public void Revive() {
         isDeath = false;
         health = maxHealth;
 
+        if (ch != null) {
+            ch.OnRevive();
+        }
+    }
+
+    public void CallRevive() {
+        pv.RPC("Revive", RpcTarget.All);
+    }
+
+    public void CallCancel() {
+        pv.RPC("cancel", RpcTarget.All);
+    }
+    [PunRPC]
+    void cancel() {
+        if (ch != null) {
+            ch.CANCEL();
+        }
+    }
+
+    public void CallCancelF() {
+        pv.RPC("cancelf", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void cancelf() {
+        if (ch != null) {
+            ch.ForceCANCEL();
+        }
     }
 
     public void Jump() {
+        bool cancel = false;
+        if (ch != null) {
+            ch.OnJump(ref cancel);
+        }
+
+        if (cancel) {
+            return;
+        }
+
         jumpCount++;
         
         if (jumpCount <= 2) {
@@ -795,8 +874,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         chh.transform.SetParent(transform);
         chh.transform.localPosition = new Vector3(0, 1.36f);
+
+        float rate = health / maxHealth;
+        maxHealth = chh.maxHealth;
+        health = (int)(maxHealth * rate);
         
         chh.pl = this;
+
+        chh.OnStart();
     }
 
     void LimitedCamera() {
@@ -847,7 +932,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // Gizmos.DrawWireCube(transform.position + new Vector3(0f, 0.5f), new Vector2(8, 3)); //attack
 
         //vampire girl
+        // Gizmos.color = Color.red;
+        // Gizmos.DrawWireCube(transform.position + new Vector3(1f * facing, 0.5f), new Vector2(2.5f, 2)); //attack
+
+        //vampire man
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position + new Vector3(1f * facing, 0.5f), new Vector2(2.5f, 2)); //attack
+        //Gizmos.DrawWireCube(transform.position + new Vector3(2f * facing, 0.5f), new Vector2(4f, 2)); //attack
+        Gizmos.DrawWireCube(transform.position + new Vector3(0, 0.5f), new Vector2(1.5f, 2.2f)); //attack
     }
 }
