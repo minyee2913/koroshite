@@ -199,6 +199,7 @@ public class Fighter : Character
         CamManager.main.Shake(4 * shieldTime);
 
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(3.6f, 3), 0, Vector2.right * pl.facing, 1.2f), pl);
+        var targetMob = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(3.6f, 3), 0, Vector2.right * pl.facing, 1.2f));
 
         if (shieldTime >= 0.5f) pl.CallChFunc("sk");
 
@@ -211,6 +212,13 @@ public class Fighter : Character
             var target = targets[i];
 
             target.ch.CANCEL();
+
+            target.Damage((int)(180 * shieldTime), pl.name_);
+            target.Knockback(Vector2.right * pl.facing * 16 * shieldTime + Vector2.up * 4);
+        }
+
+        for (int i = 0; i < targetMob.Count; i++) {
+            var target = targetMob[i];
 
             target.Damage((int)(180 * shieldTime), pl.name_);
             target.Knockback(Vector2.right * pl.facing * 16 * shieldTime + Vector2.up * 4);
@@ -238,6 +246,7 @@ public class Fighter : Character
         CamManager.main.Shake(4);
 
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(4.2f, 4), 0, Vector2.right * pl.facing, 1.5f), pl);
+        var targetMob = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(4.2f, 4), 0, Vector2.right * pl.facing, 1.5f));
 
         pl.CallChFunc("sk");
         pl.CallChFunc("sk2");
@@ -249,6 +258,13 @@ public class Fighter : Character
 
             target.ch.CANCEL();
             target.ch.atkCool = 0.8f;
+
+            target.Damage(150, pl.name_);
+            target.Knockback(Vector2.right * pl.facing * 4 + Vector2.up * 4);
+        }
+
+        for (int i = 0; i < targetMob.Count; i++) {
+            var target = targetMob[i];
 
             target.Damage(150, pl.name_);
             target.Knockback(Vector2.right * pl.facing * 4 + Vector2.up * 4);
@@ -337,6 +353,7 @@ public class Fighter : Character
         }
 
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(1, 2), 0, Vector2.right * pl.facing, 0.5f), pl);
+        var targetMob = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(1, 2), 0, Vector2.right * pl.facing, 0.5f));
 
         CamManager.main.Shake();
 
@@ -346,6 +363,13 @@ public class Fighter : Character
             if (i == 0) {
                 pl.energy += 8;
             }
+
+            target.Damage(10, pl.name_);
+            target.Knockback(Vector2.right * pl.facing * 10 + Vector2.up * 2);
+        }
+
+        for (int i = 0; i < targetMob.Count; i++) {
+            var target = targetMob[i];
 
             target.Damage(10, pl.name_);
             target.Knockback(Vector2.right * pl.facing * 10 + Vector2.up * 2);

@@ -248,6 +248,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             SetName(PhotonNetwork.LocalPlayer.NickName);
 
             SetCharacter("samurai");
+
+            ChatManager.Instance.SendComment("<color=\"green\">" + name_ + "님이 게임에 접속했습니다.");
         }
 
         moveSpeedDef = moveSpeed;
