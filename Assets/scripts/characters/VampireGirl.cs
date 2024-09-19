@@ -171,9 +171,12 @@ public class VampireGirl : Character
         CamManager.main.Offset(new Vector3(pl.facing * 2, -0.5f), 0.1f);
 
         List<Player> targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2.5f, 2.2f), 0, Vector2.right * pl.facing, 0.9f), pl);
+        List<Monster> targetMob = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2.5f, 2.2f), 0, Vector2.right * pl.facing, 0.9f));
 
         if (targets.Count > 0) {
             pl.energy += 35;
+            pl.Heal(50);
+        } else if (targetMob.Count > 0) {
             pl.Heal(50);
         } else {
             pl.energy -= 10;
@@ -182,12 +185,19 @@ public class VampireGirl : Character
 
         for (int j = 0; j < 4; j++) {
             targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2.5f, 2.2f), 0, Vector2.right * pl.facing, 0.9f), pl);
+            targetMob = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2.5f, 2.2f), 0, Vector2.right * pl.facing, 0.9f));
 
             for (int i = 0; i < targets.Count; i++) {
                 var target = targets[i];
 
                 target.Damage(60, pl.name_);
                 target.CallCancel();
+            }
+
+            for (int i = 0; i < targetMob.Count; i++) {
+                var target = targetMob[i];
+
+                target.Damage(60, pl.name_);
             }
 
             yield return new WaitForSeconds(0.1f);
@@ -276,11 +286,23 @@ public class VampireGirl : Character
         }
 
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2.5f, 2), 0, Vector2.right * pl.facing, 0.9f), pl);
+        var targetMob = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2.5f, 2), 0, Vector2.right * pl.facing, 0.9f));
 
         
 
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
+
+            if (i == 0) {
+                pl.Damage(10, null, false);
+            }
+
+            target.Damage(20, pl.name_);
+            target.Knockback(Vector2.right * pl.facing * 4 + Vector2.up * 2);
+        }
+
+        for (int i = 0; i < targetMob.Count; i++) {
+            var target = targetMob[i];
 
             if (i == 0) {
                 pl.Damage(10, null, false);
@@ -328,10 +350,15 @@ public class VampireGirl : Character
         pl.stopMove = 1f;
 
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(5f, 3), 0, Vector2.right * pl.facing, 0.9f), pl);
+        var targetMob = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(5f, 3), 0, Vector2.right * pl.facing, 0.9f));
 
         animator.SetBool("inSuper", true);
 
         SoundManager.Instance.PlayToDist("vampire_girl_eat", transform.position, 15);
+
+        foreach (Monster target in targetMob) {
+            target.Damage(120, pl.name_);
+        }
 
         if (targets.Count > 0) {
             CamManager.main.CloseUp(3f, 0, 0.1f);

@@ -40,7 +40,6 @@ public class SoundManager : MonoBehaviour
     [PunRPC]
     public void Play(string musicId, bool seper = false)
     {
-        Debug.Log("Play");
         Sound sound = Array.Find(Sounds, v => v.id == musicId);
         if (sound == null) return;
 
