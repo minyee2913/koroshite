@@ -188,8 +188,8 @@ MonoBehaviour:
   defaultScale: {x: 0, y: 0, z: 0}
   icon: {fileID: 21300000, guid: 5e4d4008aa956be4bb43115c2654ffa9, type: 3}
   state: 
-  slash1: {fileID: 1294101409476956, guid: 231e3be01ac50c047bb16d07fd8d2ba5, type: 3}
-  slash2: {fileID: 1919708242137258, guid: e60d36cff17a1ce4db49ef54f9e72f61, type: 3}
+  slash1: {fileID: 3153472991145048103, guid: 3407e378c048bb5438424b28c7740b48, type: 3}
+  slash2: {fileID: 3153472991145048103, guid: 3407e378c048bb5438424b28c7740b48, type: 3}
   crit: {fileID: 6823302871133167919, guid: 3138a83bedbd6ad4481ba0b061da2eb6, type: 3}
   explode: {fileID: 358637981425055526, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
 --- !u!95 &8573323755643458747

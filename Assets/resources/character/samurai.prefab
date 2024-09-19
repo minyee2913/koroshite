@@ -111,9 +111,9 @@ MonoBehaviour:
   defaultScale: {x: 0, y: 0, z: 0}
   icon: {fileID: 0}
   state: 
-  swordSlash: {fileID: 1872147318604286, guid: 5bea49531fc500c408823a2e2863106f, type: 3}
-  swordStrike: {fileID: 7699698589382392644, guid: ce614ff6f5639fb4ab201b6b5b437127, type: 3}
-  spatial: {fileID: 6810844234100877735, guid: 88dd9c4a8854b804186fda4318305ba0, type: 3}
+  swordSlash: {fileID: 1171201465392465800, guid: 4aa9f30a28a77224ba84b2a2c334c71b, type: 3}
+  swordStrike: {fileID: 1171201465392465800, guid: 4aa9f30a28a77224ba84b2a2c334c71b, type: 3}
+  spatial: {fileID: 100000, guid: b10f0a773262b9c478542ff2d1a04863, type: 3}
 --- !u!95 &9064639451040775392
 Animator:
   serializedVersion: 5

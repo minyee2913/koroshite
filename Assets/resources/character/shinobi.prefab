@@ -5037,7 +5037,7 @@ MonoBehaviour:
   defaultScale: {x: 0, y: 0, z: 0}
   icon: {fileID: 0}
   state: 
-  slash1: {fileID: 198741542255655676, guid: 5bea49531fc500c408823a2e2863106f, type: 3}
-  slash2: {fileID: 1236453127613114, guid: bfbc37d0bc0e8ff4082a8b2894b3a486, type: 3}
+  slash1: {fileID: 1379504315796101638, guid: 3407e378c048bb5438424b28c7740b48, type: 3}
+  slash2: {fileID: 1758473627833946668, guid: 9b21333b068a5084ba09535839bee3c8, type: 3}
   sparks: {fileID: 5017488834418990367}
   mist: {fileID: 1758473627833946668, guid: 9b21333b068a5084ba09535839bee3c8, type: 3}

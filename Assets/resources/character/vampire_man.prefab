@@ -207,7 +207,7 @@ MonoBehaviour:
   defaultScale: {x: 0, y: 0, z: 0}
   icon: {fileID: 0}
   state: 
-  swordStrike: {fileID: 1872147318604286, guid: 5bea49531fc500c408823a2e2863106f, type: 3}
+  swordStrike: {fileID: 2060900179291159282, guid: ca6705a3f9070d14d819d179493bcfa0, type: 3}
   speedAura: {fileID: 1809671640333991560}
   crit: {fileID: 4924508274929071776, guid: 0edef91621bb6b34384ccc9dbb98729c, type: 3}
   speedEnd: {fileID: 2708598583397607911, guid: 0f4f883ec75d3744fb1b28d7e89ffcdc, type: 3}

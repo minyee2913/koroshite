@@ -91,7 +91,7 @@ public class Fighter : Character
     public void SkEffect() {
         var slash = Instantiate(strike, pl.transform);
         slash.AddComponent<SetLayer>().sortingLayer = "particle";
-        slash.transform.position = pl.transform.position + new Vector3(-2f * pl.facing, -1);
+        slash.transform.position = pl.transform.position + new Vector3(2f * pl.facing, 1);
         slash.transform.rotation = Quaternion.Euler((pl.facing == -1) ? 210 : -30, 90, 90);
 
         Destroy(slash, 1);

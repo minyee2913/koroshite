@@ -67,8 +67,8 @@ public class Shinobi : Character
         slash.transform.position = pl.transform.position + new Vector3(0.5f * pl.facing, 1);
         slash.transform.rotation = Quaternion.Euler(15, 0, (pl.facing == 1) ? 0 : 180);
 
-        slash.transform.Find("Hit").gameObject.SetActive(false);
-        slash.transform.Find("Sparks").gameObject.SetActive(false);
+        // slash.transform.Find("Hit").gameObject.SetActive(false);
+        // slash.transform.Find("Sparks").gameObject.SetActive(false);
 
         Destroy(slash.gameObject, 1);
     }
@@ -81,8 +81,8 @@ public class Shinobi : Character
         slash.transform.position = pl.transform.position + new Vector3(0.25f * pl.facing, 1);
         slash.transform.rotation = Quaternion.Euler(0, 0, (pl.facing == -1) ? 0 : 180);
 
-        slash.transform.Find("Hit").gameObject.SetActive(false);
-        slash.transform.Find("Sparks").gameObject.SetActive(false);
+        // slash.transform.Find("Hit").gameObject.SetActive(false);
+        // slash.transform.Find("Sparks").gameObject.SetActive(false);
 
         Destroy(slash.gameObject, 1);
     }
