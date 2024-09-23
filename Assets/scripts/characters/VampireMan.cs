@@ -10,7 +10,9 @@ public class VampireMan : Character
     bool running;
     public GameObject swordStrike, speedAura, crit, speedEnd;
     List<Player> targets = new();
+    List<Monster> targetMob = new();
     List<Player> tt;
+    List<Monster> tm;
     Cooldown skillCool = new(1f);
     Cooldown superCool = new(3f);
     bool inSuper;
@@ -165,6 +167,7 @@ public class VampireMan : Character
                 pl.moveSpeed = pl.moveSpeedDef * 3f;
 
                 tt = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(1.5f, 2.2f), 0, Vector2.right, 0f), pl);
+                tm = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(1.5f, 2.2f), 0, Vector2.right, 0f));
 
                 foreach (Player p in tt) {
                     p.vman_mark.SetActive(true);
@@ -176,6 +179,19 @@ public class VampireMan : Character
                         SoundManager.Instance.Play("vampire_man_mark");
 
                         targets.Add(p);
+                    }
+                }
+
+                foreach (Monster p in tm) {
+                    p.vman_mark.SetActive(true);
+
+                    if (!targetMob.Contains(p)) {
+                        p.vman_mark.transform.rotation = Quaternion.Euler(0, 0, 0);
+                        p.vman_mark.transform.DOLocalRotate(new Vector3(0, 0, 45), 0.3f).SetEase(Ease.OutCubic);
+
+                        SoundManager.Instance.Play("vampire_man_mark");
+
+                        targetMob.Add(p);
                     }
                 }
 
@@ -232,7 +248,21 @@ public class VampireMan : Character
             SendCrit(p.transform.position);
         }
 
+        foreach (Monster p in targetMob) {
+            p.vman_mark.SetActive(false);
+
+            float dist = Vector2.Distance(p.transform.position, pl.transform.position);
+
+            if (dist > 10) dist = 10f;
+
+            p.Damage(60 + (int)(60f * (dist / 10)), pl.name_);
+            p.Knockback(Vector2.up * 2);
+
+            SendCrit(p.transform.position);
+        }
+
         targets.Clear();
+        targetMob.Clear();
     }
 
     IEnumerator _attack() {
@@ -258,6 +288,7 @@ public class VampireMan : Character
         yield return new WaitForSeconds(0.2f);
         pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(4, 2), 0, Vector2.right * pl.facing, 2f), pl);
+        var targetMob = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(4, 2), 0, Vector2.right * pl.facing, 2f));
 
         CamManager.main.Shake();
 
@@ -266,6 +297,17 @@ public class VampireMan : Character
 
             if (i == 0) {
                 pl.energy += 2;
+                pl.shield += 20;
+            }
+
+            target.Damage(25, pl.name_);
+            target.Knockback(Vector2.right * pl.facing * 4 + Vector2.up * 2);
+        }
+
+        for (int i = 0; i < targetMob.Count; i++) {
+            var target = targetMob[i];
+
+            if (i == 0) {
                 pl.shield += 20;
             }
 
@@ -312,6 +354,7 @@ public class VampireMan : Character
         SoundManager.Instance.PlayToAll("vampire_man_run");
 
         targets.Clear();
+        targetMob.Clear();
 
         Vector2 lastPos = pl.transform.position;
 
@@ -329,6 +372,10 @@ public class VampireMan : Character
                 target.SetPos(lastPos);
 
                 target.CallCancel();
+            }
+
+            foreach (Monster target in targetMob) {
+                target.Damage(20, pl.name_);
             }
 
             if (tt.Count > 0) {

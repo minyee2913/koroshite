@@ -26,6 +26,7 @@ public abstract class Monster : MonoBehaviour, IPunObservable
     public int facing, health, maxHealth;
     public Player target;
     Color hpColor;
+    public GameObject vman_mark;
 
     public static List<Monster> Convert(RaycastHit2D[] casts, Monster not = null) {
         List<Monster> result = new();
