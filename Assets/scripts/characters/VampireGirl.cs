@@ -302,7 +302,7 @@ public class VampireGirl : Character
     }
 
     IEnumerator super() {
-        if (superCool.IsIn() || !EnergySystem.CheckNWarn(pl, 80)) {
+        if (superCool.IsIn() || !EnergySystem.CheckNWarn(pl, 100)) {
             yield break;
         }
 
