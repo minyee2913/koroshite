@@ -10,6 +10,8 @@ public enum GameMode {
     BattleRoyal,
     FreeAllKill,
     Dual,
+    Defense,
+    Raid
 }
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -95,11 +97,25 @@ public class GameManager : MonoBehaviourPunCallbacks
     IEnumerator stgm() {
         SetState("starting");
         SetSudden(false);
+        SetMode(mode);
         SoundManager.Instance.StopToAll(4);
 
+        MapManager.Instance.SelectByMod(mode);
+
+        int count = 0;
         foreach (Player pl in Player.players) {
             pl.SetState("ready");
             if (pl.isSpectator) continue;
+
+            if (mode == GameMode.Dual) {
+                if (count > 2) {
+                    pl.SetSpectator(true);
+
+                    continue;
+                }
+
+                count++;
+            }
             
             pl.SetEnergy(0);
             pl.SetShield(0);
@@ -113,7 +129,9 @@ public class GameManager : MonoBehaviourPunCallbacks
             pl.CallRevive();
         }
 
-        List<Vector2> poses = spawnPoses;
+        SetTitle("<color=\"grey\">맵</color>\n<color=\"green\">" + MapManager.Instance.selectedMap.Name + "</color>");
+
+        List<Vector2> poses = MapManager.Instance.selectedMap.spawnPos;
         var shuffled = poses.OrderBy( x => UnityEngine.Random.value ).ToList( );
 
         for (int i = 0; i < shuffled.Count; i++) {
@@ -132,7 +150,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(1f);
         }
 
-        SetTitle("<color=\"green\">GameStart!</color>");
+        SetTitle("<color=\"yellow\">GameStart!</color>");
 
         foreach (Player pl in Player.players) {
             pl.SetState("ingame");
@@ -148,6 +166,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 StartFAK();
                 break;
             case GameMode.Dual:
+                StartDual();
                 break;
             default:
                 break;
@@ -164,6 +183,49 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void StartRoyale() {
         ChatManager.Instance.SendComment("<color=\"orange\">준비 단계가 시작되었습니다. 다른 참가자들을 처치하면 금화를 획득합니다.</color>");
+    }
+
+    void endDual() {
+        StartCoroutine(edu());
+    }
+
+    IEnumerator edu(){
+        var players = Player.players;
+        players.Sort((a, b)=>b.kill - a.kill);
+
+        SetTitle(players[0].name_ + " WIN!");
+
+        yield return new WaitForSeconds(1.5f);
+
+        SetTitle("");
+
+        GameEnd();
+    }
+
+    void StartDual() {
+        SetTimer(2 * 60);
+
+        ChatManager.Instance.SendComment("<color=\"orange\">상대 플레이어를 처치하면 승리합니다! 최대체력이 50%% 증가합니다.</color>");
+
+        foreach (Player pl in Player.players) {
+            if (pl.isSpectator) {
+                continue;
+            }
+
+            pl.SetMaxHp((int)(pl.maxHealth * 1.5f));
+        }
+
+        float soundCount = 3;
+
+        int rd = UnityEngine.Random.Range(0, 100);
+
+        if (rd <= 100 / soundCount) {
+            SoundManager.Instance.PlayToAll("crashingOut");
+        } else if (rd <= 200 / soundCount) {
+            SoundManager.Instance.PlayToAll("meltdown");
+        } else {
+            SoundManager.Instance.PlayToAll("cavern");
+        }
     }
 
     void StartFAK() {
@@ -220,7 +282,15 @@ public class GameManager : MonoBehaviourPunCallbacks
         SetState("none");
     }
 
+    public void ForcePhaseEnd() {
+        pv.RpcSecure("phaseEnd", RpcTarget.All, true);
+    }
+
+    [PunRPC]
     void phaseEnd() {
+        if (!PhotonNetwork.IsMasterClient) {
+            return;
+        }
         switch (mode) {
             case GameMode.BattleRoyal:
                 break;
@@ -228,6 +298,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 pv.RpcSecure("FAKEnd", RpcTarget.All, true);
                 break;
             case GameMode.Dual:
+                endDual();
                 break;
             default:
                 break;
