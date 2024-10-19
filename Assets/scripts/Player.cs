@@ -23,10 +23,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public Image background;
     public Text nametag;
     private Vector3 curPos;
-    [SerializeField]
-    private Vector2 center;
-    [SerializeField]
-    Vector2 mapSize;
 
     [SerializeField]
     public float cameraMoveSpeed;
@@ -545,6 +541,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    public void SetMaxHp(int val) {
+        pv.RPC("smhp", RpcTarget.All, new object[]{val});
+    }
+
+    [PunRPC]
+    void smhp(int val) {
+        maxHealth = val;
+        health = val;
+    }
+
     public void Heal(int val) {
         pv.RPC("heal", RpcTarget.All, new object[]{val});
     }
@@ -601,6 +607,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (health <= 0 && !isDeath && this == Local) {
             death++;
             ch.ForceCANCEL();
+            OnDeath();
         } else StartCoroutine(hurtEff());
     }
 
@@ -644,12 +651,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (health <= 0 && !isDeath && this == Local) {
             death++;
             ch.ForceCANCEL();
+            OnDeath();
 
             if (attacker != null) {
                 attacker.AddCoin(10);
                 attacker.AddKill(1);
             }
         } else StartCoroutine(hurtEff());
+    }
+
+    void OnDeath() {
+        if (GameManager.Instance.mode == GameMode.Dual) {
+            GameManager.Instance.ForcePhaseEnd();
+        }
     }
 
     IEnumerator hurtEff() {
@@ -887,24 +901,26 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     void LimitedCamera() {
+        if (MapManager.Instance == null) {
+            return;
+        }
+        var map = MapManager.Instance.selectedMap;
+
         CamManager.main.transform.position = Vector3.Lerp(CamManager.main.transform.position, 
                                           transform.position, 
                                           Time.deltaTime * cameraMoveSpeed);
 
-        float lx = mapSize.x - width;
-        float clampX = Mathf.Clamp(CamManager.main.transform.position.x, -lx + center.x, lx + center.x);
+        float lx = map.mapSize.x - width;
+        float clampX = Mathf.Clamp(CamManager.main.transform.position.x, -lx + map.center.x, lx + map.center.x);
 
-        float ly = mapSize.y - height;
-        float clampY = Mathf.Clamp(CamManager.main.transform.position.y, -ly + center.y, ly + center.y);
+        float ly = map.mapSize.y - height;
+        float clampY = Mathf.Clamp(CamManager.main.transform.position.y, -ly + map.center.y, ly + map.center.y);
 
         CamManager.main.transform.position = new Vector3(clampX, clampY, -10f);
     }
 
     private void OnDrawGizmos()
     {
-        //map size
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(center, mapSize * 2);
 
         Gizmos.color = Color.red;
 

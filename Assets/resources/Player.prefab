@@ -63,8 +63,6 @@ MonoBehaviour:
   shieldRate: {fileID: 4983777220743317800}
   background: {fileID: 4602946195238979550}
   nametag: {fileID: 8463001533537437398}
-  center: {x: -2.2, y: -11.1}
-  mapSize: {x: 29.92, y: 15.8}
   cameraMoveSpeed: 4
   vman_mark: {fileID: 2571195165101115675}
   isMoving: 0

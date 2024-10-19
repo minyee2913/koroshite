@@ -20,10 +20,16 @@ public class SelectMode : MonoBehaviour
     void Update() {
         btn.SetActive(PhotonNetwork.IsMasterClient);
 
+        UpdateText();
+    }
+
+    void UpdateText() {
         if (GameManager.Instance.mode == GameMode.FreeAllKill) {
             display.text = "> DEATH MATCH <";
         } else if (GameManager.Instance.mode == GameMode.BattleRoyal) {
             display.text = "> BATTLE ROYALE <";
+        } else if (GameManager.Instance.mode == GameMode.Dual) {
+            display.text = "> DUAL <";
         }
     }
 
@@ -44,9 +50,15 @@ public class SelectMode : MonoBehaviour
                 GameManager.Instance.SetMode(GameMode.BattleRoyal);
                 
                 break;
+            case "dual":
+                GameManager.Instance.SetMode(GameMode.Dual);
+                
+                break;
 
 
         }
+
+        UpdateText();
 
         Close();
     }
