@@ -140,7 +140,7 @@ public class VampireMan : Character
 
     public override void OnDash() {
         if (running) {
-            pl.rb.velocity = Vector2.zero;
+            pl.rb.linearVelocity = Vector2.zero;
         }
 
         SkillEnd();
@@ -283,10 +283,10 @@ public class VampireMan : Character
 
         pl.CallChFunc("atk");
 
-        pl.rb.velocity = new Vector2(4 * pl.facing, pl.rb.velocity.y);
+        pl.rb.linearVelocity = new Vector2(4 * pl.facing, pl.rb.linearVelocity.y);
 
         yield return new WaitForSeconds(0.2f);
-        pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+        pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(4, 2), 0, Vector2.right * pl.facing, 2f), pl);
         var targetMob = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(4, 2), 0, Vector2.right * pl.facing, 2f));
 

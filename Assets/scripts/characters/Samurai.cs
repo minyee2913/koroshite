@@ -65,7 +65,7 @@ public class Samurai : Character
         shieldSuccess = true;
 
         yield return new WaitForSeconds(0.2f);
-        attacker.rb.velocity /= 2;
+        attacker.rb.linearVelocity /= 2;
 
         yield return new WaitForSeconds(0.3f);
 
@@ -98,7 +98,7 @@ public class Samurai : Character
         shieldSuccess = true;
 
         yield return new WaitForSeconds(0.2f);
-        attacker.rb.velocity /= 2;
+        attacker.rb.linearVelocity /= 2;
 
         yield return new WaitForSeconds(0.3f);
 
@@ -310,14 +310,14 @@ public class Samurai : Character
 
         CamManager.main.CloseUp(4.9f, 0, 0.1f);
 
-        pl.rb.velocity = new Vector2(-16 * pl.facing, pl.rb.velocity.y);
+        pl.rb.linearVelocity = new Vector2(-16 * pl.facing, pl.rb.linearVelocity.y);
         pl.SetFacing(-pl.facing);
 
         pl.CallChFunc("atkSP");
 
         yield return new WaitForSeconds(0.2f);
 
-        pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+        pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
 
         targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 1f), new Vector2(14, 3), 0, Vector2.right, 0), pl);
 
@@ -368,10 +368,10 @@ public class Samurai : Character
 
             pl.CallChFunc("atk1");
 
-            pl.rb.velocity = new Vector2(6 * pl.facing, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(6 * pl.facing, pl.rb.linearVelocity.y);
 
             yield return new WaitForSeconds(0.2f);
-            pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
         } else {
             pl.RpcAnimateTrigger("attack2");
 
@@ -382,10 +382,10 @@ public class Samurai : Character
 
             pl.CallChFunc("atk2");
 
-            pl.rb.velocity = new Vector2(10 * pl.facing, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(10 * pl.facing, pl.rb.linearVelocity.y);
 
             yield return new WaitForSeconds(0.2f);
-            pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
         }
 
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(2, 2), 0, Vector2.right * pl.facing, 1), pl);
@@ -429,10 +429,10 @@ public class Samurai : Character
         
         pl.CallChFunc("JA");
 
-        pl.rb.velocity = new Vector2(30 * pl.facing, -20);
+        pl.rb.linearVelocity = new Vector2(30 * pl.facing, -20);
 
         yield return new WaitForSeconds(0.2f);
-        pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+        pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
 
         var targets = Player.Convert(Physics2D.BoxCastAll((p1 + pl.transform.position) / 2, new Vector2(Mathf.Abs(pl.transform.position.x - p1.x), Mathf.Abs(pl.transform.position.y - p1.y)), 0, Vector2.zero), pl);
 

@@ -298,13 +298,13 @@ public abstract class Monster : MonoBehaviour, IPunObservable
 
     [PunRPC]
     public void _knockback(Vector2 force) {
-        rb.velocity += force;
+        rb.linearVelocity += force;
 
         Invoke("afterKnock", 0.3f);
     }
 
     void afterKnock() {
-        rb.velocity = new Vector2(rb.velocity.x / 2, rb.velocity.y / 2);
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x / 2, rb.linearVelocity.y / 2);
     }
 
     private void OnDrawGizmos()
