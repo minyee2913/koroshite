@@ -231,11 +231,11 @@ public class VampireGirl : Character
                 pl.stopMove = 0.2f;
                 atkCool = 0.2f;
 
-                float y = pl.rb.velocity.y;
+                float y = pl.rb.linearVelocity.y;
 
                 if (y > 1f) y = 1f;
 
-                pl.rb.velocity = new Vector2(0, y);
+                pl.rb.linearVelocity = new Vector2(0, y);
             }
         }
     }
@@ -261,10 +261,10 @@ public class VampireGirl : Character
 
             pl.CallChFunc("atk1");
 
-            pl.rb.velocity = new Vector2(2 * pl.facing, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(2 * pl.facing, pl.rb.linearVelocity.y);
 
             yield return new WaitForSeconds(0.2f);
-            pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
         } else {
             pl.RpcAnimateTrigger("attack2");
 
@@ -275,10 +275,10 @@ public class VampireGirl : Character
 
             pl.CallChFunc("atk2");
 
-            pl.rb.velocity = new Vector2(4 * pl.facing, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(4 * pl.facing, pl.rb.linearVelocity.y);
 
             yield return new WaitForSeconds(0.2f);
-            pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
 
             skillOn = true;
 
@@ -339,10 +339,10 @@ public class VampireGirl : Character
 
         pl.preventInput = 1f;
 
-        pl.rb.velocity = new Vector2(10 * pl.facing, pl.rb.velocity.y);
+        pl.rb.linearVelocity = new Vector2(10 * pl.facing, pl.rb.linearVelocity.y);
 
         yield return new WaitForSeconds(0.2f);
-        pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+        pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
 
         yield return new WaitForSeconds(0.4f);
 

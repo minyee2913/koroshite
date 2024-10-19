@@ -128,7 +128,7 @@ public class Shinobi : Character
             invCool.Start();
 
             pl.Dash();
-            pl.rb.velocity = new Vector2(-12 * pl.facing, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(-12 * pl.facing, pl.rb.linearVelocity.y);
 
             pl.CallChFunc("_inv");
 
@@ -233,10 +233,10 @@ public class Shinobi : Character
 
             pl.CallChFunc("atk1");
 
-            pl.rb.velocity = new Vector2(8 * pl.facing, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(8 * pl.facing, pl.rb.linearVelocity.y);
 
             yield return new WaitForSeconds(0.2f);
-            pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
 
             targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(1, 2), 0, Vector2.right * pl.facing, 0.5f), pl);
 
@@ -268,10 +268,10 @@ public class Shinobi : Character
 
             pl.CallChFunc("atk2");
 
-            pl.rb.velocity = new Vector2(-16 * pl.facing, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(-16 * pl.facing, pl.rb.linearVelocity.y);
 
             yield return new WaitForSeconds(0.2f);
-            pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
 
             CamManager.main.Shake(2);
 
@@ -306,7 +306,7 @@ public class Shinobi : Character
 
         atkType = 0;
 
-        pl.rb.velocity = new Vector2(20 * pl.facing, -10);
+        pl.rb.linearVelocity = new Vector2(20 * pl.facing, -10);
 
         pl.SetChScale(Vector3.zero);
 
@@ -316,7 +316,7 @@ public class Shinobi : Character
 
         pl.RpcAnimateTrigger("attack3");
 
-        pl.rb.velocity = new Vector2(40 * pl.facing, pl.rb.velocity.y);
+        pl.rb.linearVelocity = new Vector2(40 * pl.facing, pl.rb.linearVelocity.y);
 
         CamManager.main.CloseUp(4.2f, -pl.facing * 2, 0.1f);
 
@@ -348,7 +348,7 @@ public class Shinobi : Character
             target.Knockback(Vector2.right * pl.facing * -3 + Vector2.up * 8);
         }
 
-        pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+        pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
 
         yield return new WaitForSeconds(0.4f);
 

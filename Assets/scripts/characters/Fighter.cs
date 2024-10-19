@@ -332,10 +332,10 @@ public class Fighter : Character
 
             pl.CallChFunc("atk1");
 
-            pl.rb.velocity = new Vector2(6 * pl.facing, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(6 * pl.facing, pl.rb.linearVelocity.y);
 
             yield return new WaitForSeconds(0.2f);
-            pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
         } else {
             pl.RpcAnimateTrigger("attack2");
 
@@ -346,10 +346,10 @@ public class Fighter : Character
 
             pl.CallChFunc("atk2");
 
-            pl.rb.velocity = new Vector2(12 * pl.facing, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(12 * pl.facing, pl.rb.linearVelocity.y);
 
             yield return new WaitForSeconds(0.2f);
-            pl.rb.velocity = new Vector2(0, pl.rb.velocity.y);
+            pl.rb.linearVelocity = new Vector2(0, pl.rb.linearVelocity.y);
         }
 
         var targets = Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(1, 2), 0, Vector2.right * pl.facing, 0.5f), pl);

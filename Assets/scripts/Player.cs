@@ -292,13 +292,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [PunRPC]
     void _knockback(Vector2 force) {
-        rb.velocity += force;
+        rb.linearVelocity += force;
 
         Invoke("afterKnock", 0.3f);
     }
 
     void afterKnock() {
-        rb.velocity = new Vector2(rb.velocity.x / 2, rb.velocity.y / 2);
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x / 2, rb.linearVelocity.y / 2);
     }
 
     public void CallChFunc(string method) {
@@ -449,7 +449,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     if (dashTime <= 0) {
                         dashing = false;
 
-                        rb.velocity = new Vector2(0, rb.velocity.y);
+                        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
                         CamManager.main.CloseOut(0.25f);
                     }
                 }
@@ -474,7 +474,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
                 if (InLadder()) {
                     rb.gravityScale = 0;
-                    rb.velocity = new Vector2(rb.velocity.x, 0);
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
 
                     bool up = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space);
                     bool down = Input.GetKey(KeyCode.S);
@@ -498,7 +498,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 ch.animator.SetBool("isDead", isDeath);
             }else {
                 rb.gravityScale = 0;
-                rb.velocity = Vector2.zero;
+                rb.linearVelocity = Vector2.zero;
             }
 
             hprate.value = (float)health / maxHealth;
@@ -753,7 +753,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         ch.animator.SetBool("isRunning", true);
 
-        rb.velocity = new Vector2(facing * 14, 0);
+        rb.linearVelocity = new Vector2(facing * 14, 0);
 
         SoundManager.Instance.Play("dash");
 
@@ -808,9 +808,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         
         if (jumpCount <= 2) {
             if (jumpCount == 1) {
-                rb.velocity = new Vector2(rb.velocity.x, 8);
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 8);
             } else if (jumpCount == 2) {
-                rb.velocity = new Vector2(rb.velocity.x, 10);
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 10);
             }
 
             RpcAnimateTrigger("jump");
