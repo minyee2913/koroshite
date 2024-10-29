@@ -11,7 +11,7 @@ public class OutChat : MonoBehaviour
     const float FadeOutTime = 1;
     public ChatManager chat;
     Image img;
-    TMP_Text txt;
+    Text txt;
     float defaultAlpha;
 
     float alpha;
@@ -21,7 +21,7 @@ public class OutChat : MonoBehaviour
     {
         if (img == null) {
             img = GetComponent<Image>();
-            txt = GetComponentInChildren<TMP_Text>();
+            txt = GetComponentInChildren<Text>();
             defaultAlpha = img.color.a;
         }
 

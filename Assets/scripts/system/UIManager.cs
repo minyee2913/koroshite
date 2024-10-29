@@ -32,7 +32,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] TMP_Text spectortxb;
     [SerializeField] SpectatorIcon spectatorIcon;
     [SerializeField] Transform spectatorGroup;
-    [SerializeField] TMP_Text fps;
     [SerializeField] GameObject state;
     [SerializeField] TMP_Text inAuto;
     public Dictionary<Player, SpectatorIcon> specs = new();
@@ -50,14 +49,12 @@ public class UIManager : MonoBehaviour
     }
 
     void FixedUpdate() {
-        spectortxb.text = spectortxt.text;
-
-        fps.text = ((int)(1 / Time.fixedDeltaTime)).ToString() + "FPS";
+        //spectortxb.text = spectortxt.text;
 
         if (Player.Local != null) {
             spectatorGroup.gameObject.SetActive(Player.Local.isSpectator && Player.Local.state != "room");
             if (Player.Local.isSpectator) {
-                spectortxt.text = "관전취소";
+                //spectortxt.text = "관전취소";
                 state.SetActive(false);
 
                 if (CamManager.main.autoSpector) {
@@ -87,7 +84,7 @@ public class UIManager : MonoBehaviour
                     specWait = 0;
                 }
             } else {
-                spectortxt.text = "관전하기";
+                //spectortxt.text = "관전하기";
                 state.SetActive(true);
             }
 

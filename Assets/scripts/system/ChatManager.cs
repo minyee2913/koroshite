@@ -15,7 +15,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
     [SerializeField]
     ScrollRect view;
     [SerializeField]
-    TMP_Text textData;
+    GameObject tData;
     [SerializeField]
     GameObject outTextData;
     [SerializeField]
@@ -49,8 +49,8 @@ public class ChatManager : MonoBehaviourPunCallbacks
         for (int i = 0; i < messages.Count; i++) {
             var msg = messages[i];
 
-            GameObject txt_obj = Instantiate(textData.gameObject, canvas.transform);
-            TMP_Text txt = txt_obj.GetComponent<TMP_Text>();
+            GameObject txt_obj = Instantiate(tData, canvas.transform);
+            Text txt = txt_obj.GetComponentInChildren<Text>();
             txt.text = msg;
 
             txt_obj.transform.localPosition = Vector2.zero;
@@ -109,7 +109,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
 
     public void SendOutChat(string text) {
         GameObject txt_obj = Instantiate(outTextData, canvas.transform);
-        TMP_Text txt = txt_obj.GetComponentInChildren<TMP_Text>();
+        Text txt = txt_obj.GetComponentInChildren<Text>();
         txt.text = text;
 
         txt_obj.transform.localPosition = Vector2.zero;

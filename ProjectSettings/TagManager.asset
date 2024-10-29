@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags:
   - Shield
   - AttackCollider
@@ -17,7 +17,7 @@ TagManager:
   - ground
   - ladder
   - monster
-  - 
+  - lava
   - 
   - 
   - 
@@ -46,6 +46,12 @@ TagManager:
   - name: tile
     uniqueID: 1665429581
     locked: 0
+  - name: wall
+    uniqueID: 3049656621
+    locked: 0
+  - name: lava
+    uniqueID: 132750265
+    locked: 0
   - name: monster
     uniqueID: 2540954265
     locked: 0
@@ -61,3 +67,5 @@ TagManager:
   - name: ui
     uniqueID: 3298739479
     locked: 0
+  m_RenderingLayers:
+  - Default
