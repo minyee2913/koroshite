@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class ListPlayer : MonoBehaviour
 {
     public Text nametag, blockTx;
-    public Image profile;
+    public Image profile, crown;
     public Button giveMaster, block, kick;
     public string userId;
     public int actorNumber;

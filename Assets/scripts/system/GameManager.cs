@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text timerText;
     bool inSudden;
     float suddenTime;
+    public bool firstSpawn;
+
     void Start()
     {
         pv = GetComponent<PhotonView>();
@@ -268,6 +270,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     public void Spawn() {
+        firstSpawn = true;
         PhotonNetwork.Instantiate("Player", spawnPos, quaternion.identity);
 
         SoundManager.Instance.Play("super_spiffy");

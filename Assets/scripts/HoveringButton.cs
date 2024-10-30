@@ -8,10 +8,11 @@ public class HoveringButton : MonoBehaviour
     Vector2 defaultvec;
     public Vector2 before;
     public Vector2 after;
+    public Vector2 scaleVal = new Vector2(1.25f, 1.25f);
     void Awake() {
         defaultvec = transform.localScale;
         before = defaultvec;
-        after = defaultvec * 1.25f;
+        after = defaultvec * scaleVal;
     }
     public void OnHover()
     {

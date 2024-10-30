@@ -41,10 +41,15 @@ public class UIManager : MonoBehaviourPunCallbacks
     public ListPlayer listPl;
     public GameObject Gsection, Gsection_animate;
     bool GsectionOpened;
+    public GameObject beforeCOnn, COnnCover;
+    public Text COnnText, mapText;
+    public GameObject detail;
 
     public static UIManager Instance {get; private set;}
     void Awake() {
         Instance = this;
+
+        LoadingAnim();
     }
 
     public void ChangeSpectator() {
@@ -67,6 +72,41 @@ public class UIManager : MonoBehaviourPunCallbacks
         Gsection.SetActive(false);
     }
 
+    public void LoadingAnim() {
+        StartCoroutine(loadingAnim());
+    }
+
+    IEnumerator loadingAnim() {
+        beforeCOnn.SetActive(true);
+        COnnCover.SetActive(true);
+
+        yield return new WaitForSeconds(0.2f);
+
+        COnnCover.SetActive(false);
+        COnnText.text = "";
+
+        yield return new WaitForSeconds(0.5f);
+
+        string msg = "좀 더 기다려.";
+
+        for (int i = 0; i < msg.Length; i++) {
+            COnnText.text += msg[i];
+
+            if (msg[i] == ' ') {
+                yield return new WaitForSeconds(0.2f);
+            } else {
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        while (!GameManager.Instance.firstSpawn) {
+            beforeCOnn.transform.localPosition = new Vector3(Random.Range(-8f, 8f), Random.Range(-8f, 8f));
+            yield return null;
+        }
+
+        beforeCOnn.SetActive(false);
+    }
+
     public void UpdatePlayerList() {
         foreach (Transform child in listSection) {
             Destroy(child.gameObject);
@@ -79,6 +119,13 @@ public class UIManager : MonoBehaviourPunCallbacks
             pl.profile.sprite = p.ch.icon;
             pl.userId = p.pv.Owner.UserId;
             pl.actorNumber = p.pv.Owner.ActorNumber;
+
+            pl.crown.gameObject.SetActive(p.pv.Owner.IsMasterClient);
+
+            if (p.isSpectator) {
+                pl.nametag.text += " <color=\"grey\">[관전]</color>";
+                pl.profile.color = Color.black;
+            }
 
             if (p.blocked) {
                 pl.blockTx.text = "차단해제";
@@ -123,7 +170,17 @@ public class UIManager : MonoBehaviourPunCallbacks
             if (Input.GetKeyDown(KeyCode.Escape)) {
                 CloseGameSection();
             }
+
+            if (MapManager.Instance.selectedMap != null) {
+                mapText.text = MapManager.Instance.selectedMap.Name;
+            }
+
+            if (Player.Local.state != "room") {
+                CloseGameSection();
+            }
         }
+
+        detail.SetActive(Player.Local.state == "room");
 
         if (Player.Local != null) {
             spectatorGroup.gameObject.SetActive(Player.Local.isSpectator && Player.Local.state != "room");

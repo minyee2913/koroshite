@@ -101,7 +101,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void comment(string text, string sender) {
+    public void comment(string text, string sender = "") {
         if (sender != "") {
             Player p = Player.players.Find((v)=>v.pv.Owner.UserId == sender);
             if (p != null) {
@@ -110,7 +110,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
                 }
             }
         }
-        
+
         messages.Add(text);
         SendOutChat(text);
 

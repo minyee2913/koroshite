@@ -30,8 +30,6 @@ public class StartManager : MonoBehaviourPunCallbacks
     [SerializeField] RoomBtn btn;
 
     [SerializeField] NetworkManager network;
-    [SerializeField] DigitalGlitch digital;
-    [SerializeField] AnalogGlitch analog;
 
     void Awake() {
         loading.SetActive(false);
@@ -120,34 +118,16 @@ public class StartManager : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(0.3f);
 
-        analog.colorDrift = 0.5f;
-        yield return new WaitForSeconds(0.1f);
-        titleO.SetActive(true);
-        yield return new WaitForSeconds(0.1f);
-        analog.colorDrift = 0;
-
-        yield return new WaitForSeconds(0.3f);
-
-        analog.colorDrift = 1f;
-        yield return new WaitForSeconds(0.1f);
-        titleH.SetActive(true);
-        yield return new WaitForSeconds(0.1f);
-        analog.colorDrift = 0;
-
-        yield return new WaitForSeconds(0.3f);
-        digital.intensity = 0.3f;
-        analog.colorDrift = 0.1f;
-
         title.transform.position = pos;
         title.transform.DOScale(Vector2.one, 0.3f).SetEase(Ease.Linear);
         left_bottom.transform.DOScale(Vector2.one, 0.3f).SetEase(Ease.Linear);
         right_bottom.transform.DOScale(Vector2.one, 0.3f).SetEase(Ease.Linear);
         right_top.transform.DOScale(Vector2.one, 0.3f).SetEase(Ease.Linear);
 
-        yield return new WaitForSeconds(0.2f);
+        titleO.SetActive(true);
+        titleH.SetActive(true);
 
-        digital.intensity = 0;
-        analog.colorDrift = 0;
+        yield return new WaitForSeconds(0.2f);
 
         loading.SetActive(true);
 
