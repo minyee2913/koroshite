@@ -11,7 +11,7 @@ public class SelectMode : MonoBehaviour
 
     public GameObject panel;
     public GameObject btn;
-    public TMP_Text display;
+    public Text display;
 
     void Start() {
         Instance = this;
@@ -25,11 +25,11 @@ public class SelectMode : MonoBehaviour
 
     void UpdateText() {
         if (GameManager.Instance.mode == GameMode.FreeAllKill) {
-            display.text = "> DEATH MATCH <";
+            display.text = "DEATH MATCH";
         } else if (GameManager.Instance.mode == GameMode.BattleRoyal) {
-            display.text = "> BATTLE ROYALE <";
+            display.text = "BATTLE ROYALE";
         } else if (GameManager.Instance.mode == GameMode.Dual) {
-            display.text = "> DUAL <";
+            display.text = "DUAL";
         }
     }
 

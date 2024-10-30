@@ -83,6 +83,7 @@ MonoBehaviour:
   balloon: {fileID: 6539094335617867682}
   balloon_Text: {fileID: 9210060167477984137}
   balloon_time: 0
+  blocked: 0
   maxHealth: 500
   health: 0
   coin: 0

@@ -41,6 +41,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private Text balloon_Text;
     [SerializeField]
     private float balloon_time;
+    public bool blocked;
 
     public int maxHealth, health, coin, energy, kill, death;
     public float shield;
@@ -245,7 +246,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             SetCharacter("samurai");
 
-            ChatManager.Instance.SendComment("<color=\"green\">" + name_ + "님이 게임에 접속했습니다.");
+            ChatManager.Instance.SendComment("<color=\"green\">" + name_ + "님이 게임에 접속했습니다.</color>");
         }
 
         moveSpeedDef = moveSpeed;

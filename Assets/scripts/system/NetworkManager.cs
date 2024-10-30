@@ -21,6 +21,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
 
+        PhotonNetwork.EnableCloseConnection = true;
+
         DontDestroyOnLoad(this.gameObject);
 
         Lobby();
@@ -96,8 +98,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         gm.Spawn();
     }
 
+    public override void OnLeftRoom()
+    {
+        Player.players.Clear();
+        Player.Local = null;
+        state = 0;
+
+        LoadingController.LoadScene("StartScene");
+    }
+
     public override void OnDisconnected(DisconnectCause cause)
     {
+        Player.players.Clear();
+        Player.Local = null;
         state = 0;
 
         LoadingController.LoadScene("StartScene");

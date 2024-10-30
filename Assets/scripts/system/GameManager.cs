@@ -189,6 +189,20 @@ public class GameManager : MonoBehaviourPunCallbacks
         StartCoroutine(edu());
     }
 
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        var p = Player.players.Find((v)=>v.pv.Owner.UserId == otherPlayer.UserId);
+
+        if (p != null) {
+            Player.players.Remove(p);
+        }
+    }
+
+    public override void OnLeftRoom()
+    {
+       ChatManager.Instance.SendComment("<color=\"yellow\">" + PhotonNetwork.NickName + "님이 게임을 떠났습니다.</color>");
+    }
+
     IEnumerator edu(){
         var players = Player.players;
         players.Sort((a, b)=>b.kill - a.kill);

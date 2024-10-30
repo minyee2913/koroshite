@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class UIManager : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     GameObject roomUI;
@@ -24,12 +24,11 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     TMP_Text deathCount;
     public Image face;
-    public TMP_Text sectionTitle;
+    public Text sectionTitle;
     [SerializeField] Button gameStart;
     [SerializeField] TMP_Text killDeath;
     [SerializeField] Button spectorBtn;
     [SerializeField] TMP_Text spectortxt;
-    [SerializeField] TMP_Text spectortxb;
     [SerializeField] SpectatorIcon spectatorIcon;
     [SerializeField] Transform spectatorGroup;
     [SerializeField] GameObject state;
@@ -38,6 +37,10 @@ public class UIManager : MonoBehaviour
     float dCount = 0, specWait, specAuto, specAutoWait;
     List<Player> autoPlayers = new();
     Player RandPl;
+    public Transform listSection;
+    public ListPlayer listPl;
+    public GameObject Gsection, Gsection_animate;
+    bool GsectionOpened;
 
     public static UIManager Instance {get; private set;}
     void Awake() {
@@ -48,13 +51,84 @@ public class UIManager : MonoBehaviour
         Player.Local.SetSpectator(!Player.Local.isSpectator);
     }
 
+    public void OpenGameSection() {
+        GsectionOpened = true;
+
+        Gsection.SetActive(true);
+        Gsection_animate.transform.localScale = new Vector3(0.8f, 0.8f);
+        Gsection_animate.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic);
+
+        UpdatePlayerList();
+    }
+
+    public void CloseGameSection() {
+        GsectionOpened = false;
+
+        Gsection.SetActive(false);
+    }
+
+    public void UpdatePlayerList() {
+        foreach (Transform child in listSection) {
+            Destroy(child.gameObject);
+        }
+
+        foreach (Player p in Player.players) {
+            ListPlayer pl = Instantiate(listPl, listSection);
+            pl.nametag.text = p.nametag.text;
+
+            pl.profile.sprite = p.ch.icon;
+            pl.userId = p.pv.Owner.UserId;
+            pl.actorNumber = p.pv.Owner.ActorNumber;
+
+            if (p.blocked) {
+                pl.blockTx.text = "차단해제";
+            } else {
+                pl.blockTx.text = "차단";
+            }
+
+            if (p != Player.Local) {
+                pl.block.gameObject.SetActive(true);
+                
+                if (PhotonNetwork.IsMasterClient) {
+                    pl.kick.gameObject.SetActive(true);
+                    pl.giveMaster.gameObject.SetActive(true);
+                } else {
+                    pl.kick.gameObject.SetActive(false);
+                    pl.giveMaster.gameObject.SetActive(false);
+                }
+            } else {
+                pl.block.gameObject.SetActive(false);
+                pl.kick.gameObject.SetActive(false);
+                pl.giveMaster.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
+    {
+        if (GsectionOpened) {
+            UpdatePlayerList();
+        }
+    }
+
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        if (GsectionOpened) {
+            UpdatePlayerList();
+        }
+    }
+
     void FixedUpdate() {
-        //spectortxb.text = spectortxt.text;
+        if (GsectionOpened) {
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                CloseGameSection();
+            }
+        }
 
         if (Player.Local != null) {
             spectatorGroup.gameObject.SetActive(Player.Local.isSpectator && Player.Local.state != "room");
             if (Player.Local.isSpectator) {
-                //spectortxt.text = "관전취소";
+                spectortxt.text = "관전취소";
                 state.SetActive(false);
 
                 if (CamManager.main.autoSpector) {
@@ -84,7 +158,7 @@ public class UIManager : MonoBehaviour
                     specWait = 0;
                 }
             } else {
-                //spectortxt.text = "관전하기";
+                spectortxt.text = "관전하기";
                 state.SetActive(true);
             }
 
@@ -107,8 +181,6 @@ public class UIManager : MonoBehaviour
             hp.value = (float)Player.Local.health / Player.Local.maxHealth;
             energy.value = (float)Player.Local.energy / 100;
             coin.text = Player.Local.coin.ToString() + "G";
-
-            gameStart.gameObject.SetActive(PhotonNetwork.IsMasterClient && GameManager.Instance.state == "none");
 
             if (Player.Local.isDeath) {
                 if (Player.Local.state == "ingame") {

@@ -82,7 +82,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
             return;
         }
         
-        SendComment(Player.Local.GetName() + ": " + inp.text);
+        SendComment(Player.Local.nametag.text + ": " + inp.text, Player.Local.pv.Owner.UserId);
 
         Player.Local.SetBalloon(inp.text);
 
@@ -91,16 +91,26 @@ public class ChatManager : MonoBehaviourPunCallbacks
         inp.ActivateInputField();
     }
 
-    public void SendComment(string text) {
+    public void SendComment(string text, string sender = "") {
         object[] param = {
-            text
+            text,
+            sender
         };
 
         pv.RPC("comment", RpcTarget.All, param);
     }
 
     [PunRPC]
-    public void comment(string text) {
+    public void comment(string text, string sender) {
+        if (sender != "") {
+            Player p = Player.players.Find((v)=>v.pv.Owner.UserId == sender);
+            if (p != null) {
+                if (p.blocked) {
+                    return;
+                }
+            }
+        }
+        
         messages.Add(text);
         SendOutChat(text);
 

@@ -36,7 +36,9 @@ public class StartManager : MonoBehaviourPunCallbacks
     void Awake() {
         loading.SetActive(false);
 
-        StartCoroutine(anim());
+        if (NetworkManager.instance == null) {
+            StartCoroutine(anim());
+        }
     }
 
     IEnumerator anim() {
@@ -184,16 +186,17 @@ public class StartManager : MonoBehaviourPunCallbacks
             Destroy(child.gameObject);
         }
         foreach (RoomInfo rm in rooms) {
+            var cp = rm.CustomProperties;
             RoomBtn btnn = Instantiate(btn, scroll.content);
             btnn.countShadow.text = btnn.playerCount.text = "(" + rm.PlayerCount + "/" + rm.MaxPlayers + ")";
             btnn.mainName.text = btnn.nameShadow.text = rm.Name;
-            btnn.owner.text = "집주인: " + rm.CustomProperties["owner"];
+            btnn.owner.text = "집주인: " + cp["owner"];
         }
     }
 
     public void CreateRoom() {
         PhotonNetwork.NickName = nametag.text;
-        PhotonNetwork.CreateRoom(roomName.text, new RoomOptions { MaxPlayers = 8 }, null);
+        PhotonNetwork.CreateRoom(roomName.text, new RoomOptions { MaxPlayers = 8, PublishUserId=true }, null);
 
         LoadingController.LoadScene("GameScene");
     }
