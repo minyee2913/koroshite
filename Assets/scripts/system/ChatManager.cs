@@ -24,7 +24,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
     Transform outChat;
     private PhotonView pv;
 
-    bool inChat;
+    public bool inChat;
     public bool scrollTo;
 
     private List<string> messages = new();

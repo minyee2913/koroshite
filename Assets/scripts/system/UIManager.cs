@@ -44,6 +44,13 @@ public class UIManager : MonoBehaviourPunCallbacks
     public GameObject beforeCOnn, COnnCover;
     public Text COnnText, mapText;
     public GameObject detail;
+    public Slider timerRate;
+    [Header("pause Screen")]
+    [SerializeField] GameObject pause_main;
+    [SerializeField] Transform pause_playerlist;
+    [SerializeField] GameObject pause_game;
+    [SerializeField] GameObject pause_setting;
+    bool inPause;
 
     public static UIManager Instance {get; private set;}
     void Awake() {
@@ -70,6 +77,36 @@ public class UIManager : MonoBehaviourPunCallbacks
         GsectionOpened = false;
 
         Gsection.SetActive(false);
+    }
+
+    public void OpenPause() {
+        inPause = true;
+
+        pause_main.SetActive(true);
+        pause_game.SetActive(true);
+        pause_setting.SetActive(false);
+
+        pause_game.transform.localScale = new Vector3(0.8f, 0.8f);
+        pause_game.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic);
+
+        UpdatePlayerList(pause_playerlist);
+    }
+
+    public void OpenSetting() {
+        inPause = true;
+
+        pause_main.SetActive(true);
+        pause_game.SetActive(false);
+        pause_setting.SetActive(true);
+
+        pause_setting.transform.localScale = new Vector3(0.8f, 0.8f);
+        pause_setting.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic);
+    }
+
+    public void ClosePause() {
+        inPause = false;
+
+        pause_main.SetActive(false);
     }
 
     public void LoadingAnim() {
@@ -107,13 +144,16 @@ public class UIManager : MonoBehaviourPunCallbacks
         beforeCOnn.SetActive(false);
     }
 
-    public void UpdatePlayerList() {
-        foreach (Transform child in listSection) {
+    public void UpdatePlayerList(Transform list = null) {
+        if (list == null) {
+            list = listSection;
+        }
+        foreach (Transform child in list) {
             Destroy(child.gameObject);
         }
 
         foreach (Player p in Player.players) {
-            ListPlayer pl = Instantiate(listPl, listSection);
+            ListPlayer pl = Instantiate(listPl, list);
             pl.nametag.text = p.nametag.text;
 
             pl.profile.sprite = p.ch.icon;
@@ -165,6 +205,15 @@ public class UIManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public void ExitRoom() {
+        PhotonNetwork.LeaveRoom();
+    }
+
+    public void ExitGame() {
+        PhotonNetwork.Disconnect();
+        Application.Quit();
+    }
+
     void FixedUpdate() {
         if (GsectionOpened) {
             if (Input.GetKeyDown(KeyCode.Escape)) {
@@ -180,9 +229,20 @@ public class UIManager : MonoBehaviourPunCallbacks
             }
         }
 
-        detail.SetActive(Player.Local.state == "room");
+        if (inPause) {
+                if (Input.GetKeyDown(KeyCode.Escape)) {
+                    ClosePause();
+                }
+        } else {
+            if (!GsectionOpened && !ChatManager.Instance.inChat) {
+                if (Input.GetKeyDown(KeyCode.Escape)) {
+                    OpenPause();
+                }
+            }
+        }
 
         if (Player.Local != null) {
+            detail.SetActive(Player.Local.state == "room");
             spectatorGroup.gameObject.SetActive(Player.Local.isSpectator && Player.Local.state != "room");
             if (Player.Local.isSpectator) {
                 spectortxt.text = "관전취소";

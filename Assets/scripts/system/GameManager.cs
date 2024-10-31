@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public readonly Vector3 spawnPos = new(-55.73f, -19.55f);
     [SerializeField] DamageInfo damInfo;
     List<Player> removedPlayer = new();
-    public float timer, updateTick;
+    public float timer, maxTimer, updateTick;
     public int timeCash;
     public GameObject rankPanel;
     public TMP_Text rankData;
@@ -94,6 +94,17 @@ public class GameManager : MonoBehaviourPunCallbacks
     void setTimer(float time) {
         timer = time;
         timeCash = (int)time - 60;
+    }
+
+    public void SetMaxTimer(float time) {
+        object[] obj = {
+            time,
+        };
+        pv.RPC("setMTimer", RpcTarget.All, obj);
+    }
+    [PunRPC]
+    void setMTimer(float time) {
+        maxTimer = time;
     }
 
     IEnumerator stgm() {
@@ -220,6 +231,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void StartDual() {
         SetTimer(2 * 60);
+        SetMaxTimer(2 * 60);
 
         ChatManager.Instance.SendComment("<color=\"orange\">상대 플레이어를 처치하면 승리합니다! 최대체력이 50%% 증가합니다.</color>");
 
@@ -246,6 +258,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void StartFAK() {
         SetTimer(5 * 60);
+        SetMaxTimer(5 * 60);
         ChatManager.Instance.SendComment("<color=\"orange\">제한 시간 내에 가장 많은 플레이어를 처치하세요!</color>");
         ChatManager.Instance.SendComment("<color=\"white\">데스매치에서는 [F]플레이어 변경 사용 가능</color>");
 
@@ -280,6 +293,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient) {
             GameEnd();
         }
+
+        UIManager.Instance.ClosePause();
     }
 
     public void GameEnd() {
@@ -465,6 +480,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
 
+        UIManager.Instance.timerRate.value = timer / maxTimer;
         timerText.text = ((timer / 60 < 10) ? "0" + ((int)(timer / 60)) : ((int)(timer / 60)).ToString()) + ":" + ((timer % 60 < 10) ? "0" + ((int)timer % 60) : ((int)timer % 60).ToString());
     }
 

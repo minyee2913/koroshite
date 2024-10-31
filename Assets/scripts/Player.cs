@@ -51,6 +51,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     Cooldown dashCool = new(1);
     public Canvas infos;
     bool flip;
+    float lavaTime;
+    Color spriteCol;
 
     public static List<Player> Convert(RaycastHit2D[] casts, Player not = null) {
         List<Player> result = new();
@@ -473,9 +475,29 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     preventInput -= Time.deltaTime;
                 }
 
-                if (InLadder()) {
-                    rb.gravityScale = 0;
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
+                bool inLava = InLava();
+
+                if (!inLava)
+                    lavaTime = 0;
+
+                if (inLava) {
+                    if (jumping) {
+                        rb.linearVelocityY = 0;
+                    }
+                    bool up = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space);
+
+                    if (up) 
+                        transform.Translate(Vector2.up * 3 * Time.deltaTime);
+
+                    lavaTime += Time.deltaTime;
+
+                    if (!isDeath && lavaTime > 0.3f) {
+                        hurt((int)(maxHealth * 0.05f), null, true);
+
+                        lavaTime = 0;
+                    }
+                } else if (InLadder()) {
+                    rb.linearVelocityY = 0;
 
                     bool up = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space);
                     bool down = Input.GetKey(KeyCode.S);
@@ -671,10 +693,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         var img = hprate.transform.Find("Fill Area").Find("Fill").GetComponent<Image>();
         
         img.color = Color.white;
+        if (ch != null) {
+            ch.render.color = Color.red;
+        }
 
         yield return new WaitForSeconds(0.2f);
 
         img.color = hpColor;
+
+        if (ch != null) {
+            ch.render.color = ch.defaultColor;
+        }
     }
 
     [PunRPC]
@@ -823,6 +852,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public bool InLadder() {
         RaycastHit2D cast = Physics2D.BoxCast(transform.position, new Vector2(0.5f, 0.5f), 0, Vector2.down, 0.5f, LayerMask.GetMask("ladder"));
+
+        return cast;
+    }
+
+    public bool InLava() {
+        RaycastHit2D cast = Physics2D.BoxCast(transform.position, new Vector2(0.5f, 0.5f), 0, Vector2.down, 0.5f, LayerMask.GetMask("lava"));
 
         return cast;
     }

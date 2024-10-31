@@ -16,6 +16,7 @@ public abstract class Character : MonoBehaviour
     public float atkCool = 0;
     public bool atkCooling = false;
     public Vector3 defaultScale;
+    public Color defaultColor;
     public Sprite icon;
     string ownerName = "";
     public string state = null;
@@ -31,6 +32,7 @@ public abstract class Character : MonoBehaviour
         render = GetComponent<SpriteRenderer>();
 
         defaultScale = transform.localScale;
+        defaultColor = render.color;
 
         if (icon == null) {
             icon = render.sprite;
