@@ -88,6 +88,7 @@ MonoBehaviour:
   - smhp
   - phaseEnd
   - setMTimer
+  - selectById
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -62,6 +62,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void setMode(int mod) {
         mode = (GameMode)mod;
+
+        MapManager.Instance.SelectByMod(mode);
     }
     public void SetTitle(string str) {
         object[] obj = {
@@ -112,8 +114,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         SetSudden(false);
         SetMode(mode);
         SoundManager.Instance.StopToAll(4);
-
-        MapManager.Instance.SelectByMod(mode);
 
         int count = 0;
         foreach (Player pl in Player.players) {

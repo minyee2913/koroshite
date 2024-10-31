@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 [System.Serializable]
@@ -13,10 +14,11 @@ public class MapData {
     public List<GameMode> modes;
 
 }
-public class MapManager : MonoBehaviour
+public class MapManager : MonoBehaviourPun
 {
     public static MapManager Instance {get; private set;}
     public List<MapData> maps;
+    public PhotonView pv;
     public string selectedId;
     [HideInInspector]
     public MapData selectedMap;
@@ -24,10 +26,16 @@ public class MapManager : MonoBehaviour
     void Awake() {
         Instance = this;
 
-        SelectById(selectedId);
+        pv = GetComponent<PhotonView>();
+
+        selectById(selectedId);
     }
 
     public void SelectById(string id) {
+        pv.RPC("selectById", RpcTarget.All, new object[]{id});
+    }
+    [PunRPC]
+    public void selectById(string id) {
         var map = Get(id);
 
         if (map != null) {
@@ -39,7 +47,7 @@ public class MapManager : MonoBehaviour
         var map_ = maps.FindAll((v)=>v.modes.Contains(mode));
 
         if (maps.Count > 0) {
-            Select(map_[Mathf.FloorToInt(UnityEngine.Random.Range(0f, map_.Count))]);
+            SelectById(map_[Mathf.FloorToInt(UnityEngine.Random.Range(0f, map_.Count))].id);
         }
     }
 
