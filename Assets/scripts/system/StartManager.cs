@@ -30,6 +30,7 @@ public class StartManager : MonoBehaviourPunCallbacks
     [SerializeField] RoomBtn btn;
 
     [SerializeField] NetworkManager network;
+    [SerializeField] GameObject startBtn;
 
     void Awake() {
         loading.SetActive(false);
@@ -149,7 +150,11 @@ public class StartManager : MonoBehaviourPunCallbacks
     public void Connected() {
         loading.SetActive(false);
 
-        roomPanel.SetActive(true);
+        startBtn.SetActive(true);
+    }
+
+    public void GoToLobby() {
+        LoadingController.LoadScene("Lobby");
     }
 
     public void CloseRoomInput() {

@@ -8,7 +8,7 @@ public abstract class Monster : MonoBehaviour, IPunObservable
 {
     public static List<Monster> monsters = new();
     [SerializeField]
-    MonsterState state;
+    public MonsterState state;
     public PhotonView pv;
     public Animator animator;
     public Rigidbody2D rb;

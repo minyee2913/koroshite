@@ -6,6 +6,7 @@ using Photon;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -52,7 +53,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public Canvas infos;
     bool flip;
     float lavaTime;
-    Color spriteCol;
+    public Material WhiteFlash;
 
     public static List<Player> Convert(RaycastHit2D[] casts, Player not = null) {
         List<Player> result = new();
@@ -692,17 +693,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     IEnumerator hurtEff() {
         var img = hprate.transform.Find("Fill Area").Find("Fill").GetComponent<Image>();
         
-        img.color = Color.white;
+        img.color = Color.gray;
         if (ch != null) {
-            ch.render.color = Color.red;
+            ch.render.material = WhiteFlash;
         }
+
+        img.transform.DOScale(new Vector3(1.1f, 1.1f), 0.2f);
 
         yield return new WaitForSeconds(0.2f);
 
         img.color = hpColor;
 
+        img.transform.DOScale(Vector3.one, 0.2f);
+
         if (ch != null) {
-            ch.render.color = ch.defaultColor;
+            ch.render.material = ch.defaultMat;
         }
     }
 

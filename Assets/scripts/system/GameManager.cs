@@ -294,7 +294,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             GameEnd();
         }
 
-        UIManager.Instance.ClosePause();
+        Pause.Instance.ClosePause();
     }
 
     public void GameEnd() {

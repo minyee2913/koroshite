@@ -93,6 +93,7 @@ MonoBehaviour:
   hpColor: {r: 1, g: 0, b: 0, a: 1}
   state: room
   infos: {fileID: 0}
+  WhiteFlash: {fileID: 0}
 --- !u!50 &6644328224278150471
 Rigidbody2D:
   serializedVersion: 5
