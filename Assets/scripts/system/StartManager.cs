@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using ExitGames.Client.Photon;
-using Kino;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class StartManager : MonoBehaviourPunCallbacks
@@ -23,6 +22,7 @@ public class StartManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject roomPanel;
     [SerializeField] GameObject inputPanel;
     [SerializeField] GameObject loading;
+    [SerializeField] GameObject cover_1, cover_2, cover;
     public InputField nametag;
     [SerializeField] InputField roomName;
     [SerializeField] TMP_Text error;
@@ -31,6 +31,10 @@ public class StartManager : MonoBehaviourPunCallbacks
 
     [SerializeField] NetworkManager network;
     [SerializeField] GameObject startBtn;
+    [SerializeField] Image dead;
+    [SerializeField] Sprite dead_sp;
+    [SerializeField] Volume vol;
+    [SerializeField] GameObject afterConnected;
 
     void Awake() {
         loading.SetActive(false);
@@ -119,20 +123,20 @@ public class StartManager : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(0.3f);
 
-        title.transform.position = pos;
-        title.transform.DOScale(Vector2.one, 0.3f).SetEase(Ease.Linear);
-        left_bottom.transform.DOScale(Vector2.one, 0.3f).SetEase(Ease.Linear);
-        right_bottom.transform.DOScale(Vector2.one, 0.3f).SetEase(Ease.Linear);
-        right_top.transform.DOScale(Vector2.one, 0.3f).SetEase(Ease.Linear);
+        title.transform.position = def + new Vector2(-1, 1);
+        title.transform.DOScale(Vector2.one, 0.3f).SetEase(Ease.OutCubic);
+        left_bottom.SetActive(false);
+        right_bottom.SetActive(false);
+        right_top.SetActive(false);
 
         titleO.SetActive(true);
         titleH.SetActive(true);
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(1f);
 
         loading.SetActive(true);
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         network.gameObject.SetActive(true);
     }
@@ -150,7 +154,37 @@ public class StartManager : MonoBehaviourPunCallbacks
     public void Connected() {
         loading.SetActive(false);
 
-        startBtn.SetActive(true);
+        StartCoroutine(connected());
+    }
+
+    IEnumerator connected() {
+        yield return new WaitForSeconds(1f);
+        dead.gameObject.SetActive(true);
+        vol.weight = 0;
+
+        cover_2.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        cover_1.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        cover.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+
+        dead.sprite = dead_sp;
+        Vector2 dPos = dead.transform.localPosition;
+        for (int i = 0; i < 10; i++) {
+            dead.transform.localPosition = dPos + new Vector2(Random.Range(10f, -10f), Random.Range(10f, -10f));
+            yield return new WaitForSeconds(0.01f);
+        }
+        
+
+        yield return new WaitForSeconds(1f);
+
+        afterConnected.transform.position = afterConnected.transform.position + new Vector3(0, -200);
+        afterConnected.SetActive(true);
+
+        yield return new WaitForSeconds(0.1f);
+
+        afterConnected.transform.DOMoveY(0, 0.5f).SetEase(Ease.InSine);
     }
 
     public void GoToLobby() {
