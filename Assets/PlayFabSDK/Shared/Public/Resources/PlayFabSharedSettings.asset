@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 093286084a3d1994a9c28281a1c38b1d, type: 3}
   m_Name: PlayFabSharedSettings
   m_EditorClassIdentifier: 
-  TitleId: koroshite
+  TitleId: 67823
   DeveloperSecretKey: T93DDN5TZ4K147OXPMHAUEW6A1R8DKR8GIWC4EOTT4U5PQ8MJ3
   ProductionEnvironmentUrl: 
   RequestType: 0

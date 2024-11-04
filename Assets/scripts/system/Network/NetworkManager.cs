@@ -24,7 +24,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.EnableCloseConnection = true;
 
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
 
         Lobby();
     }

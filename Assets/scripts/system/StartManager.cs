@@ -34,7 +34,7 @@ public class StartManager : MonoBehaviourPunCallbacks
     [SerializeField] Image dead;
     [SerializeField] Sprite dead_sp;
     [SerializeField] Volume vol;
-    [SerializeField] GameObject afterConnected;
+    public GameObject afterConnected, afterLogin;
 
     void Awake() {
         loading.SetActive(false);
@@ -185,6 +185,11 @@ public class StartManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(0.1f);
 
         afterConnected.transform.DOMoveY(0, 0.5f).SetEase(Ease.InSine);
+    }
+
+    public void AfterLogin(){
+        afterConnected.SetActive(false);
+        afterLogin.SetActive(true);
     }
 
     public void GoToLobby() {
