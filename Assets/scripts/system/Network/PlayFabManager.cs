@@ -3,12 +3,17 @@ using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine.UI;
 using Photon.Pun;
+using System.Collections.Generic;
 
 public class PlayFabManager : MonoBehaviour
 {
     public static bool login = false;
     public static string playfabId;
+    public static bool tutorialEnded;
+    [Header("titleScene")]
     [SerializeField] InputField nameField;
+    [SerializeField] InputField registerName, registerEmail, registerPw, loginEmail, loginPw;
+    [SerializeField] GameObject registerPanel, loginPanel;
     void Start(){
         // string login_type = PlayerPrefs.GetString("login_type");
         // string login_id = PlayerPrefs.GetString("login_id");
@@ -18,9 +23,104 @@ public class PlayFabManager : MonoBehaviour
         // }
     }
 
+    public StartManager GetStartManager() {
+        var obj = GameObject.Find("StartManager");
+        if (obj != null) {
+            var manager = obj.GetComponent<StartManager>();
 
+            if (manager != null) {
+                return manager;
+            }
+        }
 
-    public void LoginQuest() {
+        return null;
+    }
+
+    public void OpenLogin() {
+        var manager = GetStartManager();
+        if (manager != null) manager.afterConnected.SetActive(false);
+
+        loginPanel.SetActive(true);
+        loginEmail.text = loginPw.text = "";
+    }
+
+    public void OpenRegister() {
+        var manager = GetStartManager();
+        if (manager != null) manager.afterConnected.SetActive(false);
+
+        registerPanel.SetActive(true);
+        registerEmail.text = registerName.text = registerPw.text = registerName.text = "";
+    }
+
+    public void Login() {
+        if (loginEmail.text.Length <= 0 || loginPw.text.Length <= 0) {
+            return;
+        }
+
+        PlayFabClientAPI.LoginWithEmailAddress(new LoginWithEmailAddressRequest(){
+            Email = loginEmail.text,
+            Password = loginPw.text,
+        }, loginSuccess, DisplayPlayfabError);
+    }
+    public static void SetTutorialEnded() {
+        PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest{
+            Data = new Dictionary<string, string>(){
+                {"tutorialEnd", "true"}
+            },
+        }, success => {}, DisplayPlayfabError);
+    }
+
+    public static void CheckTutorialEnded() {
+        PlayFabClientAPI.GetUserData(new GetUserDataRequest(){
+            PlayFabId = playfabId,
+        }, success => {
+            if (success.Data.ContainsKey("tutorialEnd")) {
+                if (success.Data["tutorialEnd"].Value == "true") {
+                    tutorialEnded = true;
+                } else {
+                    tutorialEnded = false;
+                }
+            } else {
+                tutorialEnded = false;
+            }
+        }, DisplayPlayfabError);
+    }
+
+    public void Register() {
+        if (registerEmail.text.Length <= 0 || registerName.text.Length <= 0 || registerPw.text.Length <= 0) {
+            return;
+        }
+        PlayFabClientAPI.RegisterPlayFabUser(new RegisterPlayFabUserRequest(){
+            Email = registerEmail.text,
+            Password = registerPw.text,
+            DisplayName = registerName.text,
+            RequireBothUsernameAndEmail = false,
+        }, success => {
+            registerPanel.SetActive(false);
+
+            var manager = GetStartManager();
+            if (manager != null) manager.AfterLogin();
+
+            PhotonNetwork.NickName = registerName.text;
+        }, DisplayPlayfabError);
+    }
+
+    public void ReturnToConnected() {
+        registerPanel.SetActive(false);
+        nameField.gameObject.SetActive(false);
+        
+        var obj = GameObject.Find("StartManager");
+        if (obj != null) {
+            var manager = obj.GetComponent<StartManager>();
+
+            if (manager != null) {
+                manager.afterConnected.SetActive(true);
+                manager.afterLogin.SetActive(false);
+            }
+        }
+    }
+
+    public void LoginGuest() {
         PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest(){
             CreateAccount = true,
             CustomId = PlayFabSettings.DeviceUniqueIdentifier,
@@ -32,6 +132,12 @@ public class PlayFabManager : MonoBehaviour
     public void EnterName() {
         string name = nameField.text;
 
+        if (name == "") {
+            return;
+        }
+
+        nameField.gameObject.SetActive(false);
+
         PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest
         {
             DisplayName = name
@@ -40,7 +146,9 @@ public class PlayFabManager : MonoBehaviour
         {
             Debug.Log("Update User NickName : " + result.DisplayName);
 
-            var obj = GameObject.Find("startManager");
+            NetworkManager.instance.playerName = name;
+
+            var obj = GameObject.Find("StartManager");
             if (obj != null) {
                 var manager = obj.GetComponent<StartManager>();
 
@@ -59,19 +167,31 @@ public class PlayFabManager : MonoBehaviour
 
         playfabId = success.PlayFabId;
 
+        loginPanel.SetActive(false);
+
+        Debug.Log("NewlyCreated : " + success.NewlyCreated);
+
         if (success.NewlyCreated) {
             Debug.Log("새로 생성됨");
 
             startEntering();
         } else {
             GetDisplayName();
+            CheckTutorialEnded();
 
-            startEntering();
+            var obj = GameObject.Find("StartManager");
+            if (obj != null) {
+                var manager = obj.GetComponent<StartManager>();
+
+                if (manager != null) {
+                    manager.AfterLogin();
+                }
+            }
         }
     }
 
     void startEntering() {
-        var obj = GameObject.Find("startManager");
+        var obj = GameObject.Find("StartManager");
         if (obj != null) {
             var manager = obj.GetComponent<StartManager>();
 
@@ -89,7 +209,7 @@ public class PlayFabManager : MonoBehaviour
         Debug.Log(fail.ErrorMessage);
     }
 
-    private void DisplayPlayfabError(PlayFabError error) => Debug.LogError("error : " + error.GenerateErrorReport());
+    private static void DisplayPlayfabError(PlayFabError error) => Debug.LogError("error : " + error.GenerateErrorReport());
  
     public void GetDisplayName()
     {
@@ -103,7 +223,8 @@ public class PlayFabManager : MonoBehaviour
         },
         (result) =>
         {
-            PhotonNetwork.NickName = result.PlayerProfile.DisplayName;
+            NetworkManager.instance.playerName = result.PlayerProfile.DisplayName;
+            Debug.Log(NetworkManager.instance.playerName);
         },
         DisplayPlayfabError);
     }

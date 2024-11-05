@@ -32,9 +32,12 @@ public class StartManager : MonoBehaviourPunCallbacks
     [SerializeField] NetworkManager network;
     [SerializeField] GameObject startBtn;
     [SerializeField] Image dead;
-    [SerializeField] Sprite dead_sp;
+    [SerializeField] Sprite dead_sp, dead_sp1, dead_sp2;
     [SerializeField] Volume vol;
-    public GameObject afterConnected, afterLogin;
+    [SerializeField] Text comment;
+    public GameObject afterConnected, afterLogin, emitter;
+    bool SINEing;
+    float sineTime;
 
     void Awake() {
         loading.SetActive(false);
@@ -193,7 +196,92 @@ public class StartManager : MonoBehaviourPunCallbacks
     }
 
     public void GoToLobby() {
+        if (PlayFabManager.tutorialEnded) {
+            LoadingController.LoadScene("Lobby");
+        } else {
+            StartCoroutine(GoToTuto());
+        }
+    }
+
+    IEnumerator GoToTuto() {
+        afterLogin.SetActive(false);
+        comment.gameObject.SetActive(true);
+        comment.text = "";
+
+        dead.transform.DOScaleY(-1f, 0.5f);
+        dead.transform.DOLocalMoveY(-525.68f, 0.5f);
+        yield return new WaitForSeconds(0.5f);
+
+        Vector2 dPos = dead.transform.localPosition;
+        for (int i = 0; i < 10; i++) {
+            dead.transform.localPosition = dPos + new Vector2(Random.Range(10f, -10f), Random.Range(10f, -10f));
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        dead.transform.DOScaleY(-1f, 1f).SetEase(Ease.OutCubic);
+
+        dead.transform.DOLocalMoveY(0f, 0.1f).SetEase(Ease.OutCubic);
+
+        yield return new WaitForSeconds(0.2f);
+
+        dead.sprite = dead_sp1;
+
+        yield return new WaitForSeconds(0.2f);
+
+        dead.sprite = dead_sp2;
+
+        sineTime = 0;
+        SINEing = true;
+
+        emitter.SetActive(true);
+
+        yield return new WaitForSeconds(4f);
+
+        comment.text = "우주에는 다양한 세계가 있고";
+
+        yield return new WaitForSeconds(2f);
+
+        comment.text = "세계에는 각기 다른 시대의 영웅들이 있다.";
+
+        yield return new WaitForSeconds(2.5f);
+
+        comment.text = "";
+
+        yield return new WaitForSeconds(2f);
+
+        comment.text = "그들은 각자의 사명에 살아가고";
+
+        yield return new WaitForSeconds(2f);
+
+        comment.text = "사명을 위해 자신의 모든 것을 불태우지.";
+
+        yield return new WaitForSeconds(2.5f);
+
+        comment.text = "";
+
+        yield return new WaitForSeconds(2f);
+
+
+        comment.text = "만약, 이 영웅들이 한번 사명을 잊게 된다면";
+
+        yield return new WaitForSeconds(3f);
+
+        comment.text = "다시 사명을 주었을때 그들은 사명을 어떻게 받아들일까..?";
+
+        yield return new WaitForSeconds(3f);
+
+        comment.text = "";
+
+        yield return new WaitForSeconds(2f);
+
         LoadingController.LoadScene("Lobby");
+    }
+
+    void Update() {
+        if (SINEing) {
+            sineTime += Time.deltaTime;
+            dead.transform.localPosition = new Vector3(0, Mathf.Sin(sineTime) * 40);
+        }
     }
 
     public void CloseRoomInput() {

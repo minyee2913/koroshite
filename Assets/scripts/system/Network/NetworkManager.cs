@@ -13,6 +13,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public Vector2 roomPos;
     public int state = 0;
     public string savedRoom;
+    public string playerName;
     private void Awake() {
         if (instance != null) {
             Destroy(this.gameObject);

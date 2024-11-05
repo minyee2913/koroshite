@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 
@@ -10,10 +11,9 @@ public class RoomBtn : MonoBehaviour
     public TMP_Text playerCount, countShadow;
 
     public void CallJoinRoom() {
-        if (NetworkManager.instance.SetNickName()) {
-            NetworkManager.instance.savedRoom = mainName.text;
+        PhotonNetwork.NickName = NetworkManager.instance.playerName;
+        NetworkManager.instance.savedRoom = mainName.text;
 
-            LoadingController.LoadScene("GameScene");
-        }
+        LoadingController.LoadScene("GameScene");
     }
 }

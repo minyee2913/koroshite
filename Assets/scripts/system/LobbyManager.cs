@@ -68,19 +68,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     public InputField nametag;
     public void CreateRoom() {
-        PhotonNetwork.NickName = nametag.text;
+        PhotonNetwork.NickName = NetworkManager.instance.playerName;
         PhotonNetwork.CreateRoom(roomName.text, new RoomOptions { MaxPlayers = 8, PublishUserId=true }, null);
 
         LoadingController.LoadScene("GameScene");
     }
 
     public void AddRoom() {
-        if (nametag.text.Length <= 0) {
-            Error("이름을 먼저 입력하세요!");
-
-            return;
-        }
-
         inputPanel.SetActive(true);
     }
 }

@@ -245,7 +245,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             hprate.transform.Find("Fill Area").GetComponentInChildren<Image>().color = hpColor = new Color(85/256f, 255/256f, 11/256f);
 
-            SetName(PhotonNetwork.LocalPlayer.NickName);
+            SetName(PhotonNetwork.NickName);
 
             SetCharacter("samurai");
 
