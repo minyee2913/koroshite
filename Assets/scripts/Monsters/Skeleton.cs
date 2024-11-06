@@ -48,7 +48,7 @@ public class Skeleton : Monster
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
 
-            target.DamageByMob(100, uniqueId);
+            target.DamageByMob(attackDamage, uniqueId);
             target.Knockback(Vector2.right * facing * 4 + Vector2.up * 2);
         }
     }

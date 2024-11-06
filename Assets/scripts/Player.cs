@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -54,6 +55,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     bool flip;
     float lavaTime;
     public Material WhiteFlash;
+    public bool ForceWhite;
+    bool forceWhited;
 
     public static List<Player> Convert(RaycastHit2D[] casts, Player not = null) {
         List<Player> result = new();
@@ -81,7 +84,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public string GetName() {
         return name_;
     }
-        public void SetSpectator(bool val) {
+    public void SetSpectator(bool val) {
         object[] obj = {
             val
         };
@@ -95,7 +98,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         object[] obj = {
             pos
         };
-        pv.RPC("setPos", RpcTarget.All, obj);
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("setPos", RpcTarget.All, obj);
+        } else {
+            setPos(pos);
+        }
     }
     [PunRPC]
     void setPos(Vector2 pos) {
@@ -125,7 +132,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         object[] obj = {
             val
         };
-        pv.RPC("addKill", RpcTarget.All, obj);
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("addKill", RpcTarget.All, obj);
+        } else {
+            addKill(val);
+        }
     }
     [PunRPC]
     void addKill(int val) {
@@ -145,7 +156,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         object[] obj = {
             val
         };
-        pv.RPC("setPrevent", RpcTarget.All, obj);
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("setPrevent", RpcTarget.All, obj);
+        } else {
+            setPrevent(val);
+        }
     }
     [PunRPC]
     void setPrevent(float val) {
@@ -155,7 +170,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         object[] obj = {
             val
         };
-        pv.RPC("setStopMove", RpcTarget.All, obj);
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("setStopMove", RpcTarget.All, obj);
+        } else {
+            setStopMove(val);
+        }
     }
     [PunRPC]
     void setStopMove(float val) {
@@ -213,7 +232,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         object[] obj = {
             scale.x, scale.y, scale.z,
         };
-        pv.RpcSecure("setChScale", RpcTarget.All, true, obj);
+        if (UtilManager.CheckPhoton()) {
+            pv.RpcSecure("setChScale", RpcTarget.All, true, obj);
+        } else {
+            setChScale(scale.x, scale.y, scale.z);
+        }
     }
     [PunRPC]
     void setChScale(float x, float y, float z) {
@@ -245,11 +268,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             hprate.transform.Find("Fill Area").GetComponentInChildren<Image>().color = hpColor = new Color(85/256f, 255/256f, 11/256f);
 
-            SetName(PhotonNetwork.NickName);
+            if (SceneManager.GetActiveScene().name == "GameScene") {
+                SetName(PhotonNetwork.NickName);
 
-            SetCharacter("samurai");
-
-            ChatManager.Instance.SendComment("<color=\"green\">" + name_ + "님이 게임에 접속했습니다.</color>");
+                SetCharacter("samurai");
+                ChatManager.Instance.SendComment("<color=\"green\">" + name_ + "님이 게임에 접속했습니다.</color>");
+            }
         }
 
         moveSpeedDef = moveSpeed;
@@ -276,7 +300,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             name,
         };
 
-        pv.RpcSecure("_animTrig", RpcTarget.All, true, param);
+        if (UtilManager.CheckPhoton()) {
+            pv.RpcSecure("_animTrig", RpcTarget.All, true, param);
+        } else {
+            _animTrig(name);
+        }
     }
 
     [PunRPC]
@@ -291,7 +319,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             force,
         };
 
-        pv.RPC("_knockback", RpcTarget.All, param);
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("_knockback", RpcTarget.All, param);
+        } else {
+            _knockback(force);
+        }
     }
 
     [PunRPC]
@@ -306,7 +338,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void CallChFunc(string method) {
-        pv.RpcSecure("ccf", RpcTarget.All, true, new object[]{method});
+        if (UtilManager.CheckPhoton()) {
+            pv.RpcSecure("ccf", RpcTarget.All, true, new object[]{method});
+        } else {
+            ccf(method);
+        }
     }
 
     [PunRPC]
@@ -317,7 +353,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void SetFacing(int facing) {
-        pv.RpcSecure("setFac", RpcTarget.All, true, new object[]{facing});
+        if (UtilManager.CheckPhoton()) {
+            pv.RpcSecure("setFac", RpcTarget.All, true, new object[]{facing});
+        } else {
+            SetFacing(facing);
+        }
     }
     [PunRPC]
     void setFac(int facing) {
@@ -326,7 +366,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void SetEnergy(int val) {
-        pv.RPC("setEne", RpcTarget.All, new object[]{val});
+        if (UtilManager.CheckPhoton()) {
+            pv.RpcSecure("setEne", RpcTarget.All, true, new object[]{val});
+        } else {
+            setEne(val);
+        }
     }
     [PunRPC]
     void setEne(int val) {
@@ -337,7 +381,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
     public void SetShield(int val) {
-        pv.RPC("setShi", RpcTarget.All, new object[]{val});
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("setShi", RpcTarget.All, new object[]{val});
+        } else {
+            setShi(val);
+        }
     }
     [PunRPC]
     void setShi(int val) {
@@ -358,6 +406,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 }
                 isMoving = false;
 
+                if (ForceWhite != forceWhited) {
+                    if (ForceWhite) {
+                        ch.render.material = WhiteFlash;
+                    } else {
+                        ch.render.material = ch.defaultMat;
+                    }
+
+                    forceWhited = ForceWhite;
+                }
+
                 if (state == "room")
                     energy = 100;
 
@@ -370,7 +428,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     isMoving = false;
                     dashing = false;
 
-                    UIManager.Instance.ShowDeathScreen();
+                    if (SceneManager.GetActiveScene().name == "GameScene") {
+                        UIManager.Instance.ShowDeathScreen();
+                    }
                 }
 
                 bool left = Input.GetKey(KeyCode.A);
@@ -382,26 +442,28 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     speed *= 1.6f;
                 }
 
-                if (!GameManager.Instance.applyPlayerInput || isDeath || state == "ready") {
+                if (GameManager.Instance != null && !GameManager.Instance.applyPlayerInput || isDeath || state == "ready") {
                     speed *= 0;
                 }
 
-                if (left) {
-                    if (!right) {
+                if (preventInput <= 0) {
+                    if (left) {
+                        if (!right) {
+                            isMoving = true;
+                            facing = -1;
+
+                            ch.render.flipX = true;
+
+                            if (stopMove <= 0 && !HasObstacle(Vector2.left)) transform.Translate(new Vector3(-speed * Time.deltaTime, 0));
+                        }
+                    } else if (right) {
                         isMoving = true;
-                        facing = -1;
+                        facing = 1;
 
-                        ch.render.flipX = true;
+                        ch.render.flipX = false;
 
-                        if (stopMove <= 0 && !HasObstacle(Vector2.left)) transform.Translate(new Vector3(-speed * Time.deltaTime, 0));
+                        if (stopMove <= 0 && !HasObstacle(Vector2.right)) transform.Translate(new Vector3(speed * Time.deltaTime, 0));
                     }
-                } else if (right) {
-                    isMoving = true;
-                    facing = 1;
-
-                    ch.render.flipX = false;
-
-                    if (stopMove <= 0 && !HasObstacle(Vector2.right)) transform.Translate(new Vector3(speed * Time.deltaTime, 0));
                 }
 
                 onGround = OnGround();
@@ -417,7 +479,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     }
                 }
 
-                if (GameManager.Instance.applyPlayerInput && !isDeath && state != "ready" && preventInput <= 0) {
+                if ((GameManager.Instance == null || GameManager.Instance.applyPlayerInput) && !isDeath && state != "ready" && preventInput <= 0) {
                     if (Input.GetKeyDown(KeyCode.Space)) {
                         Jump();
                     }
@@ -538,7 +600,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 float dashD = Mathf.Floor(dashTime * 100) / 100;
                 if (dashD != dashData) {
                     if (dashD % 0.02f == 0 && dashD != 0) {
-                        pv.RPC("dashEffect", RpcTarget.All, null);
+                        if (UtilManager.CheckPhoton()) {
+                            pv.RPC("dashEffect", RpcTarget.All, null);
+                        } else {
+                            dashEffect();
+                        }
                     } 
                     dashData = dashD;
                 }
@@ -566,7 +632,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void SetMaxHp(int val) {
-        pv.RPC("smhp", RpcTarget.All, new object[]{val});
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("smhp", RpcTarget.All, new object[]{val});
+        } else {
+            smhp(val);
+        }
     }
 
     [PunRPC]
@@ -576,7 +646,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void Heal(int val) {
-        pv.RPC("heal", RpcTarget.All, new object[]{val});
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("heal", RpcTarget.All, new object[]{val});
+        } else {
+            heal(val);
+        }
     }
 
     
@@ -585,18 +659,26 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void heal(int val) {
         health += val;
 
-        GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), val, Color.green);
+        UtilManager.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), val, Color.green);
 
         if (health > maxHealth)
             health = maxHealth;
     }
 
     public void Damage(int damage, string plName = null, bool display = true) {
-        pv.RPC("hurt", RpcTarget.All, new object[]{damage, plName, display});
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("hurt", RpcTarget.All, new object[]{damage, plName, display});
+        } else {
+            hurt(damage, plName, display);
+        }
     }
 
     public void DamageByMob(int damage, int uniqueId, bool display = true) {
-        pv.RPC("hurtByMob", RpcTarget.All, new object[]{damage, uniqueId, display});
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("hurtByMob", RpcTarget.All, new object[]{damage, uniqueId, display});
+        } else {
+            hurtByMob(damage, uniqueId, display);
+        }
     }
 
         [PunRPC]
@@ -624,7 +706,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (display) {
             if (this == Local) {
-                GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.red);
+                UtilManager.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.red);
             }
         }
 
@@ -664,11 +746,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (display) {
             if (this == Local) {
-                GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.red);
+                UtilManager.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.red);
             } else if (attacker == Local) {
-                GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.white);
+                UtilManager.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.white);
             } else {
-                GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.gray);
+                UtilManager.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.gray);
             }
         }
 
@@ -684,9 +766,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         } else StartCoroutine(hurtEff());
     }
 
+
     void OnDeath() {
-        if (GameManager.Instance.mode == GameMode.Dual) {
-            GameManager.Instance.ForcePhaseEnd();
+        if (GameManager.Instance != null) {
+            if (GameManager.Instance.mode == GameMode.Dual) {
+                GameManager.Instance.ForcePhaseEnd();
+            }
         }
     }
 
@@ -694,7 +779,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         var img = hprate.transform.Find("Fill Area").Find("Fill").GetComponent<Image>();
         
         img.color = Color.gray;
-        if (ch != null) {
+        if (ch != null && !ForceWhite) {
             ch.render.material = WhiteFlash;
         }
 
@@ -706,7 +791,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         img.transform.DOScale(Vector3.one, 0.2f);
 
-        if (ch != null) {
+        if (ch != null && !ForceWhite) {
             ch.render.material = ch.defaultMat;
         }
     }
@@ -721,6 +806,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         obj.pl = null;
 
         obj.animator.SetBool("isRunning", true);
+
+        obj.render.material = WhiteFlash;
 
         obj.animator.speed = 0.1f;
         Color col = obj.render.color;
@@ -805,11 +892,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void CallRevive() {
-        pv.RPC("Revive", RpcTarget.All);
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("Revive", RpcTarget.All);
+        } else {
+            Revive();
+        }
+        
     }
 
     public void CallCancel() {
-        pv.RPC("cancel", RpcTarget.All);
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("cancel", RpcTarget.All);
+        } else {
+            cancel();
+        }
     }
     [PunRPC]
     void cancel() {
@@ -819,7 +915,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void CallCancelF() {
-        pv.RPC("cancelf", RpcTarget.All);
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("cancelf", RpcTarget.All);
+        } else {
+            cancelf();
+        }
     }
 
     [PunRPC]

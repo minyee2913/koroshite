@@ -52,6 +52,11 @@ public class CamManager : MonoBehaviour
                     }
                 }
             }
+
+            if (Player.Local.state == "singlePlay") {
+                var lerp = Vector2.Lerp(transform.position, new Vector3(Player.Local.transform.position.x, Player.Local.transform.position.y, -10), Time.smoothDeltaTime * 10);
+                transform.position = new Vector3(lerp.x, lerp.y, -10);
+            }
         }
     }
 

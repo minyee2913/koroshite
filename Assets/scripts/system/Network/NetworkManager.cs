@@ -106,7 +106,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Player.Local = null;
         state = 0;
 
-        LoadingController.LoadScene("StartScene");
+        LoadingController.LoadScene("Lobby");
     }
 
     public override void OnDisconnected(DisconnectCause cause)

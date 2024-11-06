@@ -274,7 +274,7 @@ public class StartManager : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(2f);
 
-        LoadingController.LoadScene("Lobby");
+        LoadingController.LoadScene("Tutorial");
     }
 
     void Update() {

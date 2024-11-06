@@ -16,6 +16,7 @@ public abstract class Monster : MonoBehaviour, IPunObservable
     public SpriteRenderer render;
     public int uniqueId;
     public float speed;
+    public int attackDamage;
     public abstract float stateY {get;}
     public abstract string Name {get;}
     public bool onGround, isMoving, isDeath;
@@ -26,6 +27,7 @@ public abstract class Monster : MonoBehaviour, IPunObservable
     public int facing, health, maxHealth;
     public Player target;
     Color hpColor;
+    public bool HideName;
     public GameObject vman_mark;
 
     public static List<Monster> Convert(RaycastHit2D[] casts, Monster not = null) {
@@ -65,6 +67,10 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         state = Instantiate(state, transform);
         state.transform.localPosition = new Vector3(0, stateY);
 
+        if (HideName) {
+            state.nametag.gameObject.SetActive(false);
+        }
+
         state.Name = Name;
         health = maxHealth;
 
@@ -81,6 +87,8 @@ public abstract class Monster : MonoBehaviour, IPunObservable
             if (atkCool > 0) {
                 atkCool -= Time.deltaTime;
             }
+
+            animator.SetBool("death", isDeath);
 
             if (action == "idle") {
                 idleState();
@@ -166,7 +174,11 @@ public abstract class Monster : MonoBehaviour, IPunObservable
             name,
         };
 
-        pv.RpcSecure("_animTrigg", RpcTarget.All, true, param);
+        if (UtilManager.CheckPhoton()) {
+            pv.RpcSecure("_animTrigg", RpcTarget.All, true, param);
+        } else {
+            _animTrigg(name);
+        }
     }
 
     [PunRPC]
@@ -255,7 +267,11 @@ public abstract class Monster : MonoBehaviour, IPunObservable
     }
 
     public void Damage(int damage, string plName = null, bool display = true) {
-        pv.RPC("hurt", RpcTarget.All, new object[]{damage, plName, display});
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("hurt", RpcTarget.All, new object[]{damage, plName, display});
+        } else {
+            hurt(damage, plName, display);
+        }
     }
 
     
@@ -271,12 +287,33 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         health -= damage;
 
         if (display) {
-            GameManager.Instance.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.white);
+            UtilManager.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.white);
         }
 
         if (health <= 0 && !isDeath) {
+            StartCoroutine(Death());
         } else StartCoroutine(hurtEff());
     }
+
+    IEnumerator Death() {
+        isDeath = true;
+        animator.SetBool("death", true);
+
+        action = "death";
+
+        yield return new WaitForSeconds(1);
+
+        monsters.Remove(this);
+
+        if (UtilManager.CheckPhoton()) {
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.Destroy(gameObject);
+        } else {
+            Destroy(gameObject);
+        }
+    }
+
+
 
     IEnumerator hurtEff() {
         var img = state.hprate.transform.Find("Fill Area").Find("Fill").GetComponent<Image>();
@@ -293,7 +330,11 @@ public abstract class Monster : MonoBehaviour, IPunObservable
             force,
         };
 
-        pv.RPC("_knockback", RpcTarget.All, param);
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("_knockback", RpcTarget.All, param);
+        } else {
+            _knockback(force);
+        }
     }
 
     [PunRPC]

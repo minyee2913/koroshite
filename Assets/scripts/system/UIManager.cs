@@ -5,6 +5,7 @@ using DG.Tweening;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviourPunCallbacks
@@ -31,7 +32,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text spectortxt;
     [SerializeField] SpectatorIcon spectatorIcon;
     [SerializeField] Transform spectatorGroup;
-    [SerializeField] GameObject state;
+    public GameObject state;
     [SerializeField] TMP_Text inAuto;
     public Dictionary<Player, SpectatorIcon> specs = new();
     float dCount = 0, specWait, specAuto, specAutoWait;
@@ -50,7 +51,9 @@ public class UIManager : MonoBehaviourPunCallbacks
     void Awake() {
         Instance = this;
 
-        LoadingAnim();
+        if (SceneManager.GetActiveScene().name == "GameScene") {
+            LoadingAnim();
+        }
     }
 
     public void ChangeSpectator() {
@@ -186,88 +189,90 @@ public class UIManager : MonoBehaviourPunCallbacks
     }
 
     void FixedUpdate() {
-        if (Player.Local != null) {
-            detail.SetActive(Player.Local.state == "room");
-            spectatorGroup.gameObject.SetActive(Player.Local.isSpectator && Player.Local.state != "room");
-            if (Player.Local.isSpectator) {
-                spectortxt.text = "관전취소";
-                state.SetActive(false);
+        hp.value = (float)Player.Local.health / Player.Local.maxHealth;
+        energy.value = (float)Player.Local.energy / 100;
+        coin.text = Player.Local.coin.ToString() + "G";
 
-                if (CamManager.main.autoSpector) {
-                    inAuto.color = Color.cyan;
+        if (SceneManager.GetActiveScene().name == "GameScene") {
+            if (Player.Local != null) {
+                detail.SetActive(Player.Local.state == "room");
+                spectatorGroup.gameObject.SetActive(Player.Local.isSpectator && Player.Local.state != "room");
+                if (Player.Local.isSpectator) {
+                    spectortxt.text = "관전취소";
+                    state.SetActive(false);
 
-                    specAuto += Time.fixedDeltaTime;
+                    if (CamManager.main.autoSpector) {
+                        inAuto.color = Color.cyan;
 
-                    if (specAuto > specAutoWait) {
-                        specAutoWait = Random.Range(5, 8);
-                        specAuto = 0;
+                        specAuto += Time.fixedDeltaTime;
 
-                        autoPlayers.Clear();
+                        if (specAuto > specAutoWait) {
+                            specAutoWait = Random.Range(5, 8);
+                            specAuto = 0;
 
-                        autoPlayers = Player.players.FindAll((p)=>!p.isSpectator && p != RandPl);
+                            autoPlayers.Clear();
 
-                        CamManager.main.spectatorTarget = autoPlayers[Mathf.RoundToInt(Random.Range(0f, autoPlayers.Count-1))];
+                            autoPlayers = Player.players.FindAll((p)=>!p.isSpectator && p != RandPl);
+
+                            CamManager.main.spectatorTarget = autoPlayers[Mathf.RoundToInt(Random.Range(0f, autoPlayers.Count-1))];
+                        }
+                    } else {
+                        inAuto.color = Color.white;
+                    }
+
+                    specWait += Time.fixedDeltaTime;
+
+                    if (specWait > 5) {
+                        UpdateSpectator();
+
+                        specWait = 0;
                     }
                 } else {
-                    inAuto.color = Color.white;
+                    spectortxt.text = "관전하기";
+                    state.SetActive(true);
                 }
 
-                specWait += Time.fixedDeltaTime;
+                roomUI.SetActive(Player.Local.state == "room");
 
-                if (specWait > 5) {
-                    UpdateSpectator();
-
-                    specWait = 0;
+                if (Player.Local.state == "room") {
+                    sectionTitle.text = "대기중 - " + PhotonNetwork.CurrentRoom.Name + "\n(" + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + ")";
                 }
-            } else {
-                spectortxt.text = "관전하기";
-                state.SetActive(true);
-            }
 
-            roomUI.SetActive(Player.Local.state == "room");
-
-            if (Player.Local.state == "room") {
-                sectionTitle.text = "대기중 - " + PhotonNetwork.CurrentRoom.Name + "\n(" + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + ")";
-            }
-
-            if (GameManager.Instance.mode == GameMode.FreeAllKill) {
-                if (Player.Local.state == "ingame") {
-                    sectionTitle.text = "데스매치 - " + PhotonNetwork.CurrentRoom.Name + "\n(" + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + ")";
+                if (GameManager.Instance.mode == GameMode.FreeAllKill) {
+                    if (Player.Local.state == "ingame") {
+                        sectionTitle.text = "데스매치 - " + PhotonNetwork.CurrentRoom.Name + "\n(" + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + ")";
+                    }
+                } else if (GameManager.Instance.mode == GameMode.BattleRoyal) {
+                    if (Player.Local.state == "ingame") {
+                        sectionTitle.text = "파밍 라운드 - " + PhotonNetwork.CurrentRoom.Name + "\n(" + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + ")";
+                    }
                 }
-            } else if (GameManager.Instance.mode == GameMode.BattleRoyal) {
-                if (Player.Local.state == "ingame") {
-                    sectionTitle.text = "파밍 라운드 - " + PhotonNetwork.CurrentRoom.Name + "\n(" + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + ")";
-                }
-            }
 
-            hp.value = (float)Player.Local.health / Player.Local.maxHealth;
-            energy.value = (float)Player.Local.energy / 100;
-            coin.text = Player.Local.coin.ToString() + "G";
+                if (Player.Local.isDeath) {
+                    if (Player.Local.state == "ingame") {
+                        dCount += Time.deltaTime;
 
-            if (Player.Local.isDeath) {
-                if (Player.Local.state == "ingame") {
-                    dCount += Time.deltaTime;
+                        deathCount.text = "부활까지...\n" + (5 - (int)dCount).ToString();
 
-                    deathCount.text = "부활까지...\n" + (5 - (int)dCount).ToString();
+                        if (dCount > 5) {
+                            dCount = 0;
 
-                    if (dCount > 5) {
-                        dCount = 0;
+                            Player.Local.Revive();
 
+                            Vector2 pos = GameManager.Instance.spawnPoses[Random.Range(0, GameManager.Instance.spawnPoses.Count - 1)];
+
+                            Player.Local.SetPos(pos);
+
+                            deathPanel.SetActive(false);
+                        }
+                    } else {
                         Player.Local.Revive();
-
-                        Vector2 pos = GameManager.Instance.spawnPoses[Random.Range(0, GameManager.Instance.spawnPoses.Count - 1)];
-
-                        Player.Local.SetPos(pos);
-
                         deathPanel.SetActive(false);
                     }
-                } else {
-                    Player.Local.Revive();
-                    deathPanel.SetActive(false);
                 }
-            }
 
-            killDeath.text = Player.Local.kill.ToString() + "/" + Player.Local.death.ToString();
+                killDeath.text = Player.Local.kill.ToString() + "/" + Player.Local.death.ToString();
+            }
         }
     }
 
