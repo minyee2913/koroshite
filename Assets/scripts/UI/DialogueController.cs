@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +26,10 @@ public class DialogueController : MonoBehaviour
     public string displayName;
     public Sprite face;
     public bool opened;
+    public bool typing;
+    float typingTime;
+
+    IEnumerator lastRoutine = null;
 
     public static DialogueController Instance {get; private set;}
 
@@ -55,8 +60,32 @@ public class DialogueController : MonoBehaviour
             Instance.displayName = content.name;
             Instance.direction = content.direction;
             Instance.message = content.msg;
+            Instance.msg.text = "";
+            Instance.typing = true;
+            Instance.typingTime = 1.5f;
             Instance.face = content.face;
+
+            if (Instance.lastRoutine != null) {
+                Instance.StopCoroutine(Instance.lastRoutine);
+            }
+
+            Instance.lastRoutine = Instance.typingMsg();
+
+            Instance.StartCoroutine(Instance.lastRoutine);
         }
+    }
+
+    IEnumerator typingMsg() {
+        string msg_ = "";
+        for (int i = 0; i < message.Length; i++) {
+            msg_ += message[i];
+            msg.text = msg_;
+            
+            yield return new WaitForSeconds(typingTime / message.Length);
+        }
+
+        typing = false;
+        lastRoutine = null;
     }
 
     public static void Hide() {
@@ -81,15 +110,28 @@ public class DialogueController : MonoBehaviour
             rightText.text = leftText.text = displayName;
             rightCh.sprite = leftCh.sprite = face;
 
-            msg.text = message;
+            if (typing) {
+                if (Input.GetMouseButtonDown(0)) {
+                    if (Instance.lastRoutine != null) {
+                        Instance.StopCoroutine(Instance.lastRoutine);
 
-            if (Input.GetMouseButtonDown(0)) {
-                if (now+1 < contents.Count) {
-                    Show(now+1);
-                } else {
-                    Hide();
+                        Instance.lastRoutine = null;
+                    }
+
+                    msg.text = message;
+                    typing = false;
+                }
+            } else {
+                if (Input.GetMouseButtonDown(0)) {
+                    if (now+1 < contents.Count) {
+                        Show(now+1);
+                    } else {
+                        Hide();
+                    }
                 }
             }
+
+            
         }
     }
 }

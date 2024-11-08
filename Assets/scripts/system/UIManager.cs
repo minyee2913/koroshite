@@ -189,9 +189,11 @@ public class UIManager : MonoBehaviourPunCallbacks
     }
 
     void FixedUpdate() {
-        hp.value = (float)Player.Local.health / Player.Local.maxHealth;
-        energy.value = (float)Player.Local.energy / 100;
-        coin.text = Player.Local.coin.ToString() + "G";
+        if (Player.Local != null) {
+            hp.value = (float)Player.Local.health / Player.Local.maxHealth;
+            energy.value = (float)Player.Local.energy / 100;
+            coin.text = Player.Local.coin.ToString() + "G";
+        }
 
         if (SceneManager.GetActiveScene().name == "GameScene") {
             if (Player.Local != null) {
