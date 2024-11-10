@@ -21,6 +21,8 @@ public class VampireGirl : Character
 
     public override string skill2Info => "전방에 있는 적 1명을 집어 삼켜서 행동 불능 상태로 만들고 <color=\"red\">100</color>의 피해를 7회 입히고 적을 뱉어내면서 추가로 <color=\"red\">100</color>의 피해를 입힙니다.";
 
+    public override string id => "vampire_girl";
+
     public override void Callfunc(string method)
     {
         if (method == "atk1") {

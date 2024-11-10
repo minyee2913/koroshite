@@ -2709,86 +2709,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SoundManager
       objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.size
-      value: 33
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[30].id
-      value: vampire_man_run
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[31].id
-      value: vampire_man_stop
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[32].id
-      value: vampire_man_super
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[30].audio
-      value: 
-      objectReference: {fileID: 8300000, guid: ea3338d94af8ab248bc8ee30851e08d0, type: 3}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[30].pitch
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[30].track
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[31].audio
-      value: 
-      objectReference: {fileID: 8300000, guid: e125f55b9069ba94da2c42efa0bddb5e, type: 3}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[31].pitch
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[31].track
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[32].audio
-      value: 
-      objectReference: {fileID: 8300000, guid: 3dcbcf553bb6f8e4d8602e1bbdf0cefb, type: 3}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[32].pitch
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[32].track
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[30].volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[31].volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[32].volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[30].startTime
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[31].startTime
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442405, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: Sounds.Array.data[32].startTime
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2363639698774442406, guid: f7a6815b83a93914281c9a745765acef, type: 3}
-      propertyPath: m_RootOrder
-      value: 13
-      objectReference: {fileID: 0}
     - target: {fileID: 2363639698774442406, guid: f7a6815b83a93914281c9a745765acef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.593546
@@ -2831,7 +2751,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2363639698774442407, guid: f7a6815b83a93914281c9a745765acef, type: 3}
       propertyPath: sceneViewId
-      value: 11
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

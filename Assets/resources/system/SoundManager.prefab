@@ -807,6 +807,46 @@ MonoBehaviour:
     startTime: 0.2
     track: 2
     loop: 0
+  - id: death
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 2e5326e9fe3d8f445ad26077b1f0d9f0, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0
+    track: 1
+    loop: 0
+  - id: explosion_1
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: cf64a28d0c7e519489d420758ad7d259, type: 3}
+    volume: 0.6
+    pitch: 1
+    startTime: 0
+    track: 1
+    loop: 0
+  - id: explosion_2
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: c8798848a342f5e42a5df1470443a85f, type: 3}
+    volume: 0.6
+    pitch: 1
+    startTime: 0
+    track: 1
+    loop: 0
+  - id: select
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 41af9a1026228ed48a156c212c44698d, type: 3}
+    volume: 1
+    pitch: 1
+    startTime: 0
+    track: 1
+    loop: 0
+  - id: typing
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 169cbb12399b5134a96c252529e68692, type: 3}
+    volume: 2
+    pitch: 1
+    startTime: 0
+    track: 1
+    loop: 0
   _tracks:
   - {fileID: 2363639697542510051}
   - {fileID: 2363639697281754276}

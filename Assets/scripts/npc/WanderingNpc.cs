@@ -1,16 +1,20 @@
 using UnityEngine;
 
-public class WonderingNpc : MonoBehaviour {
+public class WanderingNpc : MonoBehaviour {
     public Character ch;
     public string character;
     public BoxCollider2D col;
     public int facing = 1;
     public float speed;
-    public string action, actionInfo;
+    public string action = "idle", actionInfo;
     public float actionTime, stepTime;
-    void Awake() {
+    public Material WhiteFlash;
+    public bool ForceWhite;
+    bool forceWhited;
+    void Start() {
         col = GetComponent<BoxCollider2D>();
-        ch = CharacterManager.instance.Get(character);
+        ch = Instantiate(CharacterManager.instance.Get(character), transform);
+        ch.transform.localPosition = new Vector3(0, 1.36f);
     }
     public bool isMoving, onGround;
     bool HasObstacle(Vector2 direction) {
@@ -102,6 +106,16 @@ public class WonderingNpc : MonoBehaviour {
                 idleState();
             }
 
+            if (ForceWhite != forceWhited) {
+                if (ForceWhite) {
+                    ch.render.material = WhiteFlash;
+                } else {
+                    ch.render.material = ch.defaultMat;
+                }
+
+                forceWhited = ForceWhite;
+            }
+
             ch.animator.SetBool("isMoving", isMoving);
     }
 
@@ -139,7 +153,7 @@ public class WonderingNpc : MonoBehaviour {
                 actionInfo = "stay";
 
                 actionTime = 0;
-                stepTime = Random.Range(1f, 2f);
+                stepTime = Random.Range(1f, 5f);
 
                 isMoving = false;
             }

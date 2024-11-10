@@ -43,6 +43,7 @@ public class TutorialManager : MonoBehaviour
         foreach (SpriteRenderer render in maps) {
             yield return new WaitForSeconds(0.5f);
 
+            SoundManager.Instance.Play("explosion_1");
             render.color = Color.white;
             CamManager.main.Shake(10, 0.2f);
         }
@@ -52,6 +53,8 @@ public class TutorialManager : MonoBehaviour
         player._setBalloon("어..?");
 
         yield return new WaitForSeconds(3f);
+
+        SoundManager.Instance.Play("select");
 
         info.text = "[A] [D]를 눌러 좌우로 이동할 수 있습니다.";
 
@@ -66,6 +69,8 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(2);
 
+        SoundManager.Instance.Play("explosion_1");
+        
         whiteBack.SetActive(true);
 
         player.ForceWhite = false;
@@ -116,8 +121,10 @@ public class TutorialManager : MonoBehaviour
     
     void Update()
     {
+        Vector2 detectPos = new Vector2(player.transform.position.x, 0);
         if (action == "watingJumpPlace") {
-            if (Vector2.Distance(player.transform.position, new Vector2(15, -4)) <= 1.5f) {
+            if (Vector2.Distance(detectPos, new Vector2(15, 0)) <= 1.5f) {
+                SoundManager.Instance.Play("select");
                 info.text = "[SPACE]를 2번 눌러 높이 점프하세요!";
 
                 CamManager.main.Shake();
@@ -126,7 +133,8 @@ public class TutorialManager : MonoBehaviour
                 action = "watingJump";
             }
         } else if (action == "watingJump") {
-            if (Vector2.Distance(player.transform.position, new Vector2(23, -2)) <= 5f && player.OnGround()) {
+            if (Vector2.Distance(detectPos, new Vector2(23, 0)) <= 5f && player.OnGround()) {
+                SoundManager.Instance.Play("select");
                 info.text = "[SHIFT]를 눌러 이동 방향으로 대쉬할 수 있습니다.";
 
                 CamManager.main.Shake();
@@ -135,7 +143,7 @@ public class TutorialManager : MonoBehaviour
                 action = "training_dash";
             }
         } else if (action == "training_dash") {
-            if (Vector2.Distance(player.transform.position, new Vector2(80, -7)) <= 3f) {
+            if (Vector2.Distance(detectPos, new Vector2(80, 0)) <= 3f) {
                 battle1.SetActive(true);
 
                 CamManager.main.Shake(5, 0.2f);
@@ -151,6 +159,7 @@ public class TutorialManager : MonoBehaviour
                 action = "waiting_kill";
             }
         } else if (action == "waiting_kill") {
+            SoundManager.Instance.Play("select");
             info.text = "[J] 로 공격하여 모든 적들을 처치하세요!\n(" + (3 - Monster.monsters.Count).ToString() + "/3)";
 
             if (Monster.monsters.Count <= 0) {
@@ -162,7 +171,7 @@ public class TutorialManager : MonoBehaviour
         if (player.OnGround()) {
             savePoint = player.transform.position;
         } else {
-            if (player.transform.position.y < -50) {
+            if (player.transform.position.y < savePoint.y - 10) {
                 player.transform.position = savePoint;
             }
         }

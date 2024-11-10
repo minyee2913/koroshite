@@ -227,6 +227,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         balloon_Text.color = Color.black;
 
         balloon_Text.text = text;
+
+        SoundManager.Instance.Play("typing");
     }
     public void SetChScale(Vector3 scale) {
         object[] obj = {

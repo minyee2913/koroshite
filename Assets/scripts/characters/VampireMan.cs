@@ -27,6 +27,8 @@ public class VampireMan : Character
 
     public override string skill2Info => "더욱 빠르게 질주하며 스친 적들에게 표식을 남기고 표식이 남겨진 적들을 계속 끌어당깁니다.\n당겨진 적들에게 <color=\"red\">20</color>의 피해를 입히고\n자신의 체력을 80, 보호막을 100 회복합니다. 이것을 7회 반복하고 질주를 종료합니다.";
 
+    public override string id => "vampire_man";
+
     public override void Callfunc(string method)
     {
         if (method == "atk") {

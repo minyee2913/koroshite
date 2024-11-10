@@ -35,7 +35,8 @@ public class StartManager : MonoBehaviourPunCallbacks
     [SerializeField] Sprite dead_sp, dead_sp1, dead_sp2;
     [SerializeField] Volume vol;
     [SerializeField] Text comment;
-    public GameObject afterConnected, afterLogin, emitter;
+    [SerializeField] AudioSource introAudio, tutoAudio;
+    public GameObject afterConnected, afterLogin, emitter, skipBtn;
     bool SINEing;
     float sineTime;
 
@@ -161,19 +162,26 @@ public class StartManager : MonoBehaviourPunCallbacks
     }
 
     IEnumerator connected() {
+        introAudio.Stop();
         yield return new WaitForSeconds(1f);
         dead.gameObject.SetActive(true);
         vol.weight = 0;
 
         cover_2.SetActive(true);
-        yield return new WaitForSeconds(0.1f);
+        SoundManager.Instance.Play("select");
+        yield return new WaitForSeconds(0.2f);
         cover_1.SetActive(true);
-        yield return new WaitForSeconds(0.1f);
+        SoundManager.Instance.Play("select");
+        yield return new WaitForSeconds(0.2f);
         cover.SetActive(true);
+        SoundManager.Instance.Play("explosion_1");
         yield return new WaitForSeconds(1.5f);
 
         dead.sprite = dead_sp;
         Vector2 dPos = dead.transform.localPosition;
+
+        SoundManager.Instance.Play("death");
+
         for (int i = 0; i < 10; i++) {
             dead.transform.localPosition = dPos + new Vector2(Random.Range(10f, -10f), Random.Range(10f, -10f));
             yield return new WaitForSeconds(0.01f);
@@ -203,6 +211,10 @@ public class StartManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public void SkipTuto() {
+        LoadingController.LoadScene("Tutorial");
+    }
+
     IEnumerator GoToTuto() {
         afterLogin.SetActive(false);
         comment.gameObject.SetActive(true);
@@ -224,9 +236,15 @@ public class StartManager : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(0.2f);
 
+        skipBtn.SetActive(true);
+
         dead.sprite = dead_sp1;
 
+        SoundManager.Instance.Play("explosion_1");
+
         yield return new WaitForSeconds(0.2f);
+
+        tutoAudio.Play();
 
         dead.sprite = dead_sp2;
 

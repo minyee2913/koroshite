@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour
 {
-    public string id;
+    public abstract string id {get;}
     public Animator animator;
     public PhotonView pv;
     public SpriteRenderer render;

@@ -48,6 +48,8 @@ public class Fighter : Character
 
     public override string skill2Info => "<color=\"yellow\">특수 스택</color>을 얻습니다. 발차기를 가할 때마다 <color=\"yellow\">특수 스택</color>을 소모하여 최대 게이지의 발차기를 즉시 발동합니다. <color=\"yellow\">특수 스택</color>으로 발동한 발차기는 입히는 피해가 <color=\"red\">150</color>, 회복하는 HP가 15로 제한됩니다. <color=\"yellow\">특수 스택</color>을 모두 소모하면 오의 상태가 종료됩니다.";
 
+    public override string id => "fighter";
+
     public override void Callfunc(string method)
     {
         if (method == "atk1") {

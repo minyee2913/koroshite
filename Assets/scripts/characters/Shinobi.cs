@@ -33,6 +33,8 @@ public class Shinobi : Character
 
     public override string skill2Info => "쌍절곤을 휘두르며 넓은 범위의 적들에게 <color=\"red\">120</color>의 피해를 4번 입힙니다.";
 
+    public override string id => "shinobi";
+
     public override void Callfunc(string method)
     {
         if (method == "_inv") {

@@ -80,6 +80,7 @@ public class DialogueController : MonoBehaviour
         for (int i = 0; i < message.Length; i++) {
             msg_ += message[i];
             msg.text = msg_;
+            SoundManager.Instance.Play("typing", true);
             
             yield return new WaitForSeconds(typingTime / message.Length);
         }

@@ -22,6 +22,8 @@ public class Samurai : Character
 
     public override string skill2Info => "공간을 베어서 넓은 범위 내의 적들에게 <color=\"red\">80</color>의 피해를 4번 입히고 마지막 일격으로 <color=\"red\">120</color>의 피해를 추가로 입힙니다.";
 
+    public override string id => "samurai";
+
     public override void Attack()
     {
         routine = _attack();
