@@ -4,6 +4,7 @@ using PlayFab.ClientModels;
 using UnityEngine.UI;
 using Photon.Pun;
 using System.Collections.Generic;
+using System;
 
 public class PlayFabManager : MonoBehaviour
 {
@@ -67,6 +68,24 @@ public class PlayFabManager : MonoBehaviour
             Data = new Dictionary<string, string>(){
                 {"tutorialEnd", "true"}
             },
+        }, success => {}, DisplayPlayfabError);
+    }
+
+    public static void GetHasCharacter(Action<GetUserDataResult> callback, Action<PlayFabError> fail){
+        if (playfabId == "") {
+            return;
+        }
+
+        PlayFabClientAPI.GetUserData(new GetUserDataRequest(){
+            PlayFabId = playfabId,
+        }, success => {
+            callback(success);
+        }, fail);
+    }
+
+    public static void SetHasCharacter(Dictionary<string, string> data){
+        PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest{
+            Data = data,
         }, success => {}, DisplayPlayfabError);
     }
 
@@ -168,6 +187,8 @@ public class PlayFabManager : MonoBehaviour
         playfabId = success.PlayFabId;
 
         loginPanel.SetActive(false);
+
+        login = true;
 
         Debug.Log("NewlyCreated : " + success.NewlyCreated);
 

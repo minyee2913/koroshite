@@ -36,6 +36,13 @@ public class Skeleton : Monster
         }
     }
 
+    public override void OnHurt(Player attacker, int damage)
+    {
+        if (atkCool <= 0) {
+            atkCool = 0.5f;
+        }
+    }
+
     void Attack() {
         RpcAnimateTrigger("attack1");
 

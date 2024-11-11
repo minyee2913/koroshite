@@ -358,7 +358,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (UtilManager.CheckPhoton()) {
             pv.RpcSecure("setFac", RpcTarget.All, true, new object[]{facing});
         } else {
-            SetFacing(facing);
+            setFac(facing);
         }
     }
     [PunRPC]
@@ -809,10 +809,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         obj.animator.SetBool("isRunning", true);
 
-        obj.render.material = WhiteFlash;
-
         obj.animator.speed = 0.1f;
-        Color col = obj.render.color;
+        Color col = Color.black;
         col.a = 0.2f;
 
         obj.render.color = col;

@@ -284,6 +284,8 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         if (cancel)
             return;
 
+        OnHurt(attacker, damage);
+
         health -= damage;
 
         if (display) {
@@ -295,6 +297,8 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         } else StartCoroutine(hurtEff());
     }
 
+    public virtual void OnHurt(Player attacker, int damage){}
+
     IEnumerator Death() {
         isDeath = true;
         animator.SetBool("death", true);
@@ -302,8 +306,6 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         action = "death";
 
         yield return new WaitForSeconds(1);
-
-        monsters.Remove(this);
 
         if (UtilManager.CheckPhoton()) {
             if (PhotonNetwork.IsMasterClient)
@@ -313,7 +315,9 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         }
     }
 
-
+    public void OnDestroy() {
+        monsters.Remove(this);
+    }
 
     IEnumerator hurtEff() {
         var img = state.hprate.transform.Find("Fill Area").Find("Fill").GetComponent<Image>();

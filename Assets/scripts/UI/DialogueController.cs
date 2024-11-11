@@ -11,6 +11,7 @@ public struct DialogueContent {
     public string name, msg;
     public Sprite face;
     public DialogueDirection direction;
+    public float typing;
 
 }
 public class DialogueController : MonoBehaviour
@@ -38,13 +39,14 @@ public class DialogueController : MonoBehaviour
         Instance = this;
     }
 
-    public static void Add(string name, string msg, Sprite face, DialogueDirection direction = DialogueDirection.Right) {
+    public static void Add(string name, string msg, Sprite face, DialogueDirection direction = DialogueDirection.Right, float typing = 1.5f) {
         if (Instance != null) {
             Instance.contents.Add(new DialogueContent{
                 name = name,
                 direction = direction,
                 msg = msg,
                 face = face,
+                typing = typing,
             });
         }
     }
@@ -62,7 +64,7 @@ public class DialogueController : MonoBehaviour
             Instance.message = content.msg;
             Instance.msg.text = "";
             Instance.typing = true;
-            Instance.typingTime = 1.5f;
+            Instance.typingTime = content.typing;
             Instance.face = content.face;
 
             if (Instance.lastRoutine != null) {
@@ -84,6 +86,8 @@ public class DialogueController : MonoBehaviour
             
             yield return new WaitForSeconds(typingTime / message.Length);
         }
+
+        msg.text = message;
 
         typing = false;
         lastRoutine = null;

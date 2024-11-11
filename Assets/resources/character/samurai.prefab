@@ -103,7 +103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e69789de8479f4397cdf7e340b5de7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: samurai
   animator: {fileID: 0}
   pv: {fileID: 0}
   render: {fileID: 0}

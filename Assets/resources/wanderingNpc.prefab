@@ -169,5 +169,7 @@ MonoBehaviour:
   actionInfo: 
   actionTime: 0
   stepTime: 0
+  WhiteFlash: {fileID: 2100000, guid: 5f0493377b1c4a645a0ed47f50d7e840, type: 2}
+  ForceWhite: 0
   isMoving: 0
   onGround: 0

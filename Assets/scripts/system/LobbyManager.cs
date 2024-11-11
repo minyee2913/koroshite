@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using Photon.Pun;
@@ -13,9 +15,37 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] Text error;
     [SerializeField] ScrollRect scroll;
     [SerializeField] RoomBtn btn;
+    [SerializeField] WanderingNpc npc;
+    [SerializeField] PlayFabManager fabManager;
+    public List<WanderingNpc> npcs;
     void Start()
     {
-        
+        if (PlayFabManager.tutorialEnded || LobbyTutorial.afterTuto) {
+            GenerateNpc();
+        }
+    }
+
+    void GenerateNpc() {
+        StartCoroutine(genNpc());
+    }
+
+    IEnumerator genNpc() {
+        while (!CharacterManager.ownChecked) {
+            Debug.Log("waiting");
+            yield return null;
+        }
+
+        foreach (Character ch in CharacterManager.instance.list) {
+            Debug.Log(ch.id + " : " + CharacterManager.instance.IsOwn(ch));
+            if (CharacterManager.instance.IsOwn(ch)) {
+                var wn = Instantiate(npc, new Vector3(UnityEngine.Random.Range(-8f, 8f), -3.22f), Quaternion.identity);
+
+                wn.character = ch.id;
+                wn.ForceWhite = true;
+
+                npcs.Add(wn);
+            }
+        }
     }
 
     // Update is called once per frame

@@ -5,7 +5,7 @@ public class GlobalBalloon : MonoBehaviour
 {
     [SerializeField] GameObject TextBalloon;
     [SerializeField] Canvas canvas;
-    public void ShowBalloon(string text, Vector2 pos, float lifeTime) {
+    public GameObject ShowBalloon(string text, Vector2 pos, float lifeTime) {
         var balloon = Instantiate(TextBalloon, canvas.transform);
         balloon.SetActive(true);
         balloon.transform.localScale = Vector2.one * 100;
@@ -15,5 +15,7 @@ public class GlobalBalloon : MonoBehaviour
         balloon.transform.position = new Vector3(pos.x, pos.y, balloon.transform.position.z);
 
         Destroy(balloon, lifeTime);
+
+        return balloon;
     }
 }

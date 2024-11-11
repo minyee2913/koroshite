@@ -56,6 +56,8 @@ public class Samurai : Character
         attacker.Knockback(Vector2.right * pl.facing * 10 + Vector2.up * 5);
         
         pl.Knockback(Vector2.right * -pl.facing * 4);
+        pl.Heal(40);
+        pl.energy += 10;
 
         SoundManager.Instance.PlayToDist("samurai_shield", transform.position, 15);
 
