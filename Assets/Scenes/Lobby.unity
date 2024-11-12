@@ -4561,6 +4561,9 @@ MonoBehaviour:
   npc: {fileID: 6175054024239819358, guid: d94d20a75701db34b8653aa99ea72341, type: 3}
   fabManager: {fileID: 0}
   npcs: []
+  scroll_: 0
+  scrollSpeed: 6
+  spawned: 0
   nametag: {fileID: 8084652031958510453}
 --- !u!4 &2040725433
 Transform:

@@ -18,6 +18,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] WanderingNpc npc;
     [SerializeField] PlayFabManager fabManager;
     public List<WanderingNpc> npcs;
+    public float scroll_, scrollSpeed, nearDistance;
+    Transform selected;
+    public bool spawned;
+    Vector2 startPoint;
     void Start()
     {
         if (PlayFabManager.tutorialEnded || LobbyTutorial.afterTuto) {
@@ -37,7 +41,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         foreach (Character ch in CharacterManager.instance.list) {
             Debug.Log(ch.id + " : " + CharacterManager.instance.IsOwn(ch));
-            if (CharacterManager.instance.IsOwn(ch)) {
+            if (/*CharacterManager.instance.IsOwn(ch)*/true) {
                 var wn = Instantiate(npc, new Vector3(UnityEngine.Random.Range(-8f, 8f), -3.22f), Quaternion.identity);
 
                 wn.character = ch.id;
@@ -46,12 +50,48 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 npcs.Add(wn);
             }
         }
+
+        spawned = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (spawned) {
+            if (selected == null) {
+                float scroll = Input.GetAxis("Mouse ScrollWheel") * scrollSpeed;
+
+                scroll_ = Mathf.Clamp(scroll_ - scroll, -10, 10);
+
+                if (Input.GetMouseButton(1)) {
+                    Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                    scroll_ = Mathf.Clamp(mousePos.x, -10, 10);
+                }
+                if (Input.GetMouseButton(0)) {
+                    var clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    var hits = Physics2D.RaycastAll(clickPos, Vector2.zero);
+
+                    foreach (var hit in hits)
+                    {
+                        Vector2 dir = hit.transform.position - clickPos;
+                        if (nearDistance > dir.magnitude && hit.transform.tag == "npc")
+                        {
+                            nearDistance = dir.magnitude;
+                            selected = hit.transform;
+                        }
+                    }
+
+                    if (selected != null) {
+                        scroll_ = selected.transform.position.x;
+                        CamManager.main.CloseUp(5, 0, 0.2f);
+                        CamManager.main.Offset(new Vector2(0, 1), 0.2f);
+                    }
+                }
+            }
+
+            CamManager.main.transform.position = Vector3.Lerp(CamManager.main.transform.position, new Vector3(scroll_, CamManager.main.transform.position.y, CamManager.main.transform.position.z), 6 * Time.deltaTime);
+        }
     }
 
     public void OpenRooms() {
