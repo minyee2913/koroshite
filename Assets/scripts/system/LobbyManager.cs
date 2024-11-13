@@ -24,6 +24,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public GameObject chList;
     [SerializeField] Transform chListTr;
     [SerializeField] CharacterListBtn chBtn;
+    [SerializeField] GameObject showSk;
     void Start()
     {
         if (PlayFabManager.tutorialEnded || LobbyTutorial.afterTuto) {
@@ -35,9 +36,16 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         StartCoroutine(genNpc());
     }
 
+    public void OpenSelectedSkill() {
+        WanderingNpc wandNpc = selected.GetComponent<WanderingNpc>();
+
+        if (wandNpc != null) {
+            SkillInfo.Instance.Open(wandNpc.ch);
+        }
+    }
+
     IEnumerator genNpc() {
         while (!CharacterManager.ownChecked) {
-            Debug.Log("waiting");
             yield return null;
         }
 
@@ -58,6 +66,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
 
         spawned = true;
+
+        SoundManager.Instance.Play("lastdead");
     }
 
     // Update is called once per frame
@@ -83,12 +93,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                     foreach (var hit in hits)
                     {
                         float dir = Vector2.Distance(hit.transform.position, clickPos);
-                        Debug.Log(hit.transform.tag);
                         if (nearDistance > dir && hit.transform.tag == "npc")
                         {
                             nearDistance = dir;
                             selected = hit.transform;
-                            Debug.Log("checked!!!!!!!!");
                         }
                     }
 
@@ -99,6 +107,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             } else {
                 if (Input.GetKeyDown(KeyCode.Escape)) {
                     ReleaseNpc();
+                    SkillInfo.Instance.Close();
                 }
             }
 
@@ -107,6 +116,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
 
     public void OnSelectNpc(Transform transform) {
+        if (selected != null) {
+            ReleaseNpc(true);
+        }
+
+        Pause.Instance.gameObject.SetActive(false);
+
         scroll_ = transform.position.x;
         CamManager.main.CloseUp(3.6f, 0, 0.2f);
         CamManager.main.Offset(new Vector2(0, -1), 0.2f);
@@ -124,13 +139,16 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
 
         chList.SetActive(true);
+        showSk.SetActive(true);
     }
 
     public void OpenChList() {
         OnSelectNpc(npcs[0].transform);
+
+        SoundManager.Instance.Play("select");
     }
 
-    public void ReleaseNpc() {
+    public void ReleaseNpc(bool bySelect = false) {
         if (selected != null) {
             WanderingNpc wandNpc = selected.GetComponent<WanderingNpc>();
 
@@ -143,16 +161,23 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             }
         }
 
-        selected = null;
+        if (!bySelect) {
+            selected = null;
 
-        CamManager.main.CloseOut(0.2f);
-        CamManager.main.Offset(Vector2.zero, 0.2f);
+            CamManager.main.CloseOut(0.2f);
+            CamManager.main.Offset(Vector2.zero, 0.2f);
 
-        chList.SetActive(false);
+            Pause.Instance.gameObject.SetActive(true);
+
+            chList.SetActive(false);
+            showSk.SetActive(false);
+        }
     }
 
     public void OpenRooms() {
         roomPanel.SetActive(true);
+
+        SoundManager.Instance.Play("select");
 
         roomPanel.transform.localScale = new Vector3(0.8f, 0.8f);
         roomPanel.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic);
@@ -160,6 +185,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public void CloseRooms() {
         roomPanel.SetActive(false);
+
+        SoundManager.Instance.Play("typing");
     }
 
     public void CloseRoomInput() {

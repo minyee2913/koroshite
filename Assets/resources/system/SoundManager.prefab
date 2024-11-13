@@ -834,7 +834,7 @@ MonoBehaviour:
   - id: select
     audioIn: {fileID: 0}
     audio: {fileID: 8300000, guid: 41af9a1026228ed48a156c212c44698d, type: 3}
-    volume: 1
+    volume: 0.8
     pitch: 1
     startTime: 0
     track: 1
@@ -847,6 +847,14 @@ MonoBehaviour:
     startTime: 0
     track: 1
     loop: 0
+  - id: lastdead
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: e651249df71ef6742b2fd76f77461554, type: 3}
+    volume: 0.8
+    pitch: 1
+    startTime: 0
+    track: 4
+    loop: 1
   _tracks:
   - {fileID: 2363639697542510051}
   - {fileID: 2363639697281754276}

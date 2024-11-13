@@ -929,7 +929,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: StartManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
         m_MethodName: CreateRoom
         m_Mode: 1
         m_Arguments:
@@ -1133,8 +1133,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 97022335, guid: a7b296da335dfd840ae4d0abaa2bca2c, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 2193479657588290036, guid: c902e08bd83e04947b6e8d7f31f385be, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1142,7 +1142,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 22.33
 --- !u!114 &3370920184706751345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1164,8 +1164,8 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
+    m_NormalColor: {r: 0, g: 0, b: 0, a: 1}
+    m_HighlightedColor: {r: 0, g: 0.81089664, b: 0.9433962, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -1188,7 +1188,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: StartManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
         m_MethodName: AddRoom
         m_Mode: 1
         m_Arguments:
@@ -1582,7 +1582,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: StartManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
         m_MethodName: CloseRoomInput
         m_Mode: 1
         m_Arguments:
@@ -1674,7 +1674,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 05d512dac29205345a12944278a23e36, type: 3}
+    m_Font: {fileID: 12800000, guid: 5de2ed251f09fd24b83d8a3f8cf81e7c, type: 3}
     m_FontSize: 42
     m_FontStyle: 2
     m_BestFit: 0
@@ -1938,8 +1938,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 459.53, y: 0}
-  m_SizeDelta: {x: 919.07, y: 678.1}
+  m_AnchoredPosition: {x: 0.000061035, y: -166}
+  m_SizeDelta: {x: 763.28, y: 678.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2015583154481842661
 CanvasRenderer:
@@ -1978,7 +1978,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 7.94
+  m_PixelsPerUnitMultiplier: 24.58
 --- !u!1 &7002370630934788605
 GameObject:
   m_ObjectHideFlags: 0
@@ -2599,7 +2599,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -82.99, y: -54.19794}
+  m_AnchoredPosition: {x: -82.98999, y: -54.197937}
   m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4448438414271316507
@@ -2714,7 +2714,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5156161296027842244
 RectTransform:
   m_ObjectHideFlags: 0
