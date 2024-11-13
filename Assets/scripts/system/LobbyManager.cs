@@ -19,9 +19,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] PlayFabManager fabManager;
     public List<WanderingNpc> npcs;
     public float scroll_, scrollSpeed, nearDistance;
-    Transform selected;
+    public Transform selected;
     public bool spawned;
-    Vector2 startPoint;
+    public GameObject chList;
+    [SerializeField] Transform chListTr;
+    [SerializeField] CharacterListBtn chBtn;
     void Start()
     {
         if (PlayFabManager.tutorialEnded || LobbyTutorial.afterTuto) {
@@ -43,9 +45,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             Debug.Log(ch.id + " : " + CharacterManager.instance.IsOwn(ch));
             if (/*CharacterManager.instance.IsOwn(ch)*/true) {
                 var wn = Instantiate(npc, new Vector3(UnityEngine.Random.Range(-8f, 8f), -3.22f), Quaternion.identity);
+                var btn = Instantiate(chBtn, chListTr);
 
                 wn.character = ch.id;
                 wn.ForceWhite = true;
+
+                btn.target = wn;
+                btn.manager = this;
 
                 npcs.Add(wn);
             }
@@ -72,26 +78,77 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                     var clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     var hits = Physics2D.RaycastAll(clickPos, Vector2.zero);
 
+                    nearDistance = 10;
+
                     foreach (var hit in hits)
                     {
-                        Vector2 dir = hit.transform.position - clickPos;
-                        if (nearDistance > dir.magnitude && hit.transform.tag == "npc")
+                        float dir = Vector2.Distance(hit.transform.position, clickPos);
+                        Debug.Log(hit.transform.tag);
+                        if (nearDistance > dir && hit.transform.tag == "npc")
                         {
-                            nearDistance = dir.magnitude;
+                            nearDistance = dir;
                             selected = hit.transform;
+                            Debug.Log("checked!!!!!!!!");
                         }
                     }
 
                     if (selected != null) {
-                        scroll_ = selected.transform.position.x;
-                        CamManager.main.CloseUp(5, 0, 0.2f);
-                        CamManager.main.Offset(new Vector2(0, 1), 0.2f);
+                        OnSelectNpc(selected);
                     }
+                }
+            } else {
+                if (Input.GetKeyDown(KeyCode.Escape)) {
+                    ReleaseNpc();
                 }
             }
 
             CamManager.main.transform.position = Vector3.Lerp(CamManager.main.transform.position, new Vector3(scroll_, CamManager.main.transform.position.y, CamManager.main.transform.position.z), 6 * Time.deltaTime);
         }
+    }
+
+    public void OnSelectNpc(Transform transform) {
+        scroll_ = transform.position.x;
+        CamManager.main.CloseUp(3.6f, 0, 0.2f);
+        CamManager.main.Offset(new Vector2(0, -1), 0.2f);
+
+        selected = transform;
+
+        WanderingNpc wandNpc = transform.GetComponent<WanderingNpc>();
+
+        if (wandNpc != null) {
+            wandNpc.action = "selected";
+            wandNpc.isMoving = false;
+            wandNpc.ForceWhite = false;
+
+            wandNpc.ch.render.sortingOrder = 1;
+        }
+
+        chList.SetActive(true);
+    }
+
+    public void OpenChList() {
+        OnSelectNpc(npcs[0].transform);
+    }
+
+    public void ReleaseNpc() {
+        if (selected != null) {
+            WanderingNpc wandNpc = selected.GetComponent<WanderingNpc>();
+
+            if (wandNpc != null) {
+                wandNpc.action = "idle";
+                wandNpc.isMoving = false;
+                wandNpc.ForceWhite = true;
+
+                wandNpc.ch.render.sortingOrder = 0;
+            }
+        }
+
+        selected = null;
+
+        CamManager.main.CloseOut(0.2f);
+        CamManager.main.Offset(Vector2.zero, 0.2f);
+
+        chList.SetActive(false);
     }
 
     public void OpenRooms() {
