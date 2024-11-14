@@ -22,6 +22,7 @@ public class TutorialManager : MonoBehaviour
     }
 
     public void Skip() {
+        LobbyTutorial.afterTuto = false;
         LoadingController.LoadScene("Lobby");
     }
 
@@ -123,6 +124,7 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
+        LobbyTutorial.afterTuto = false;
         LoadingController.LoadScene("Lobby");
     }
     

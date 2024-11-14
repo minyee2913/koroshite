@@ -21,7 +21,7 @@ public abstract class Character : MonoBehaviour
     public Sprite icon;
     string ownerName = "";
     public string state = null;
-    int ownerCode = 0;
+    string ownerCode;
     public abstract string atkInfo {get;}
     public abstract string atk2Info {get;}
     public abstract string skill1Info {get;}
@@ -48,7 +48,7 @@ public abstract class Character : MonoBehaviour
             ownerName = (string)pv.InstantiationData[0];
 
             if (pv.InstantiationData.Length > 1) {
-                ownerCode = (int)pv.InstantiationData[1];
+                ownerCode = (string)pv.InstantiationData[1];
             }
         }
     }
@@ -82,7 +82,7 @@ public abstract class Character : MonoBehaviour
         }
 
         if (ownerName.Length > 0 && pl == null) {
-            Player pl = Player.players.Find((p)=>p.name_ == ownerName && p.uniqueCode == ownerCode);
+            Player pl = Player.players.Find((p)=>p.name_ == ownerName && p.pv.Owner.UserId == ownerCode);
 
             if (pl != null) {
                 pl._setCh(this);

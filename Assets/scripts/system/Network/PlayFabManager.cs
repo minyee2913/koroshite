@@ -71,6 +71,14 @@ public class PlayFabManager : MonoBehaviour
         }, success => {}, DisplayPlayfabError);
     }
 
+    public static void ResetData() {
+        PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest{
+            Data = new Dictionary<string, string>(){
+                {"tutorialEnd", ""}
+            },
+        }, success => {}, DisplayPlayfabError);
+    }
+
     public static void GetHasCharacter(Action<GetUserDataResult> callback, Action<PlayFabError> fail){
         if (playfabId == "") {
             return;

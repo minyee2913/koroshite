@@ -16,6 +16,8 @@ public class GlobalBalloon : MonoBehaviour
 
         Destroy(balloon, lifeTime);
 
+        SoundManager.Instance.Play("typing");
+
         return balloon;
     }
 }

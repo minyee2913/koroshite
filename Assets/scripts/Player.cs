@@ -1015,7 +1015,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public void SetCharacter(string id) {
         object[] data = {
             name_,
-            uniqueCode,
+            pv.Owner.UserId,
         };
         PhotonNetwork.Instantiate("character/" + id, transform.position, transform.rotation, 0, data);
     }

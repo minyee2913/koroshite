@@ -43,9 +43,7 @@ public class StartManager : MonoBehaviourPunCallbacks
     void Awake() {
         loading.SetActive(false);
 
-        if (NetworkManager.instance == null) {
-            StartCoroutine(anim());
-        }
+        StartCoroutine(anim());
     }
 
     IEnumerator anim() {
@@ -142,7 +140,11 @@ public class StartManager : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(1f);
 
-        network.gameObject.SetActive(true);
+        if (NetworkManager.instance != null) {
+            Connected();
+        } else {
+            network.gameObject.SetActive(true);
+        }
     }
 
     public void Error(string txt) {
@@ -300,6 +302,15 @@ public class StartManager : MonoBehaviourPunCallbacks
             sineTime += Time.deltaTime;
             dead.transform.localPosition = new Vector3(0, Mathf.Sin(sineTime) * 40);
         }
+    }
+
+    public void ResetData() {
+        PlayerPrefs.DeleteAll();
+        if (PlayFabManager.login) {
+            PlayFabManager.ResetData();
+        }
+
+        LoadingController.LoadScene("StartScene");
     }
 
     public void CloseRoomInput() {

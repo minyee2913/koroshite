@@ -13,12 +13,17 @@ public class LobbyTutorial : MonoBehaviour
     [SerializeField] GameObject skip;
     Samurai samuch;
     Fighter fightch;
-    public static bool afterTuto;
+    public static bool afterTuto, storyTuto;
     public bool force;
     void Awake()
     {
         if (force == true) {
             afterTuto = true;
+            force = false;
+        }
+        if (storyTuto) {
+            afterTuto = false;
+            storyTuto = false;
         }
         if (PlayFabManager.tutorialEnded || afterTuto) {
             afterTutorial.SetActive(true);

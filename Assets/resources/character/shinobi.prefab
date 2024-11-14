@@ -5051,7 +5051,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aee5d1b5f5f73f24dbeb294c19b5d6d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: shinobi
   animator: {fileID: 0}
   pv: {fileID: 0}
   render: {fileID: 0}

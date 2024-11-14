@@ -25,11 +25,17 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] Transform chListTr;
     [SerializeField] CharacterListBtn chBtn;
     [SerializeField] GameObject showSk;
+    [SerializeField] GameObject startBtn;
+    [SerializeField] GameObject storyPanel;
+    public bool storyOpened;
+    float updateRoomInterval;
     void Start()
     {
         if (PlayFabManager.tutorialEnded || LobbyTutorial.afterTuto) {
             GenerateNpc();
         }
+
+        UpdateRoom(NetworkManager.instance.rooms);
     }
 
     void GenerateNpc() {
@@ -38,6 +44,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public void OpenSelectedSkill() {
         WanderingNpc wandNpc = selected.GetComponent<WanderingNpc>();
+
+        SoundManager.Instance.Play("select");
 
         if (wandNpc != null) {
             SkillInfo.Instance.Open(wandNpc.ch);
@@ -74,7 +82,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     void Update()
     {
         if (spawned) {
-            if (selected == null) {
+            if (selected == null || !storyOpened || !roomPanel.activeSelf || !Pause.Instance.inPause) {
                 float scroll = Input.GetAxis("Mouse ScrollWheel") * scrollSpeed;
 
                 scroll_ = Mathf.Clamp(scroll_ - scroll, -10, 10);
@@ -101,14 +109,22 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                     }
 
                     if (selected != null) {
+                        SoundManager.Instance.Play("select");
                         OnSelectNpc(selected);
                     }
                 }
-            } else {
+            } else if (selected != null) {
                 if (Input.GetKeyDown(KeyCode.Escape)) {
                     ReleaseNpc();
                     SkillInfo.Instance.Close();
                 }
+            }
+
+            updateRoomInterval += Time.deltaTime;
+
+            if (updateRoomInterval > 10) {
+                updateRoomInterval = 0;
+                UpdateRoom(NetworkManager.instance.rooms);
             }
 
             CamManager.main.transform.position = Vector3.Lerp(CamManager.main.transform.position, new Vector3(scroll_, CamManager.main.transform.position.y, CamManager.main.transform.position.z), 6 * Time.deltaTime);
@@ -140,6 +156,27 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         chList.SetActive(true);
         showSk.SetActive(true);
+        startBtn.SetActive(false);
+        storyPanel.SetActive(false);
+    }
+
+    public void OpenStory() {
+        if (selected != null) {
+            ReleaseNpc();
+        }
+        startBtn.SetActive(false);
+        storyPanel.SetActive(true);
+        storyOpened = true;
+
+        SoundManager.Instance.Play("select");
+    }
+
+    public void CloseStory() {
+        startBtn.SetActive(true);
+        storyPanel.SetActive(false);
+        storyOpened = false;
+
+        SoundManager.Instance.Play("typing");
     }
 
     public void OpenChList() {
@@ -171,6 +208,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
             chList.SetActive(false);
             showSk.SetActive(false);
+            startBtn.SetActive(true);
         }
     }
 

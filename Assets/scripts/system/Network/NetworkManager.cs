@@ -6,6 +6,7 @@ using Photon.Realtime;
 using Unity.Mathematics;
 using UnityEngine;
 using PlayFab;
+using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -14,6 +15,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public int state = 0;
     public string savedRoom;
     public string playerName;
+    public List<RoomInfo> rooms = new();
+
     private void Awake() {
         if (instance != null) {
             Destroy(this.gameObject);
@@ -34,6 +37,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.ConnectUsingSettings();
     }
 
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        rooms = roomList;
+    }
+
     public override void OnConnectedToMaster() {
         GameObject startObj = GameObject.Find("StartManager");
 
@@ -43,7 +51,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             start.Connected();
 
             PhotonNetwork.JoinLobby();
-        } else {
+        }
+        if (SceneManager.GetActiveScene().name == "GameScene") {
             PhotonNetwork.NickName = "test" + UnityEngine.Random.Range(1, 1000);
             PhotonNetwork.JoinOrCreateRoom("그녀는 그녀를 그녀했어", new RoomOptions { MaxPlayers = 8 }, null);
         }
