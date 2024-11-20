@@ -29,6 +29,8 @@ public abstract class Monster : MonoBehaviour, IPunObservable
     Color hpColor;
     public bool HideName;
     public GameObject vman_mark;
+    public Vector3 groundOffset;
+    public float stopMove;
 
     public static List<Monster> Convert(RaycastHit2D[] casts, Monster not = null) {
         List<Monster> result = new();
@@ -80,7 +82,7 @@ public abstract class Monster : MonoBehaviour, IPunObservable
     void Update()
     {
         if (pv.IsMine) {
-            onGround = OnGround(transform.position);
+            onGround = OnGround(transform.position + groundOffset);
 
             MobUpdate();
 
@@ -98,6 +100,10 @@ public abstract class Monster : MonoBehaviour, IPunObservable
 
             if (target != null) {
                 range = Vector2.Distance(new Vector2(target.transform.position.x, 0), new Vector2(transform.position.x, 0));
+            }
+
+            if (stopMove > 0) {
+                stopMove -= Time.deltaTime;
             }
         }
 
@@ -148,20 +154,36 @@ public abstract class Monster : MonoBehaviour, IPunObservable
     }
 
     public List<Player> Search(float distance) {
-        return Player.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 0.5f), new Vector2(distance * 2, 2), 0, Vector2.zero, 0));
+        return Player.Convert(Physics2D.BoxCastAll(transform.position + groundOffset + new Vector3(0, 0.5f), new Vector2(distance * 2, 2), 0, Vector2.zero, 0));
+    }
+
+    public void FaceTo(Player target) {
+        if (transform.position.x < target.transform.position.x) {
+            render.flipX = false;
+
+            facing = 1;
+        } else {
+            render.flipX = true;
+
+            facing = -1;
+        }
     }
 
     public void Chase(Player target) {
+        if (stopMove > 0) {
+            return;
+        }
+
         isMoving = false;
         
         if (transform.position.x > target.transform.position.x) {
-            if (!HasObstacle(Vector2.left) && OnGround(transform.position + Vector3.left * speed * Time.deltaTime)) {
+            if (!HasObstacle(Vector2.left) && OnGround(transform.position + groundOffset + Vector3.left * speed * Time.deltaTime)) {
                 Move(Vector2.left);
 
                 isMoving = true;
             }
         } else if (transform.position.x < target.transform.position.x) {
-            if (!HasObstacle(Vector2.right) && OnGround(transform.position + Vector3.right * speed * Time.deltaTime)) {
+            if (!HasObstacle(Vector2.right) && OnGround(transform.position + groundOffset + Vector3.right * speed * Time.deltaTime)) {
                 Move(Vector2.right);
 
                 isMoving = true;
@@ -281,15 +303,22 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         Player attacker = Player.players.Find((p)=>p.name_ == plName);
         bool cancel = false;
 
+        OnHurt(attacker, damage, ref cancel);
+
         if (cancel)
             return;
 
-        OnHurt(attacker, damage);
-
         health -= damage;
 
+        float y = transform.position.y + 1;
+
+        if (attacker) {
+            y = attacker.transform.position.y + 1;
+        }
+
+
         if (display) {
-            UtilManager.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), damage, Color.white);
+            UtilManager.DisplayDamage(new Vector3(transform.position.x + Random.Range(-1f, 1f), Random.Range(0, 0.25f) + y), damage, Color.white);
         }
 
         if (health <= 0 && !isDeath) {
@@ -297,7 +326,7 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         } else StartCoroutine(hurtEff());
     }
 
-    public virtual void OnHurt(Player attacker, int damage){}
+    public virtual void OnHurt(Player attacker, int damage, ref bool cancel){}
 
     IEnumerator Death() {
         isDeath = true;
@@ -356,10 +385,10 @@ public abstract class Monster : MonoBehaviour, IPunObservable
     {
         Gizmos.color = Color.red;
 
-        Gizmos.DrawLine(transform.position + new Vector3(0, -1.8f), transform.position + new Vector3(0, -2f));
+        Gizmos.DrawLine(transform.position + groundOffset + new Vector3(0, -1.8f), transform.position + groundOffset + new Vector3(0, -2f));
 
-        Gizmos.DrawLine(transform.position + new Vector3(0.3f, -1.8f), transform.position + new Vector3(0.3f, -2f));
-        Gizmos.DrawLine(transform.position + new Vector3(-0.3f, -1.8f), transform.position + new Vector3(-0.3f, -2f));
+        Gizmos.DrawLine(transform.position + groundOffset + new Vector3(0.3f, -1.8f), transform.position + groundOffset + new Vector3(0.3f, -2f));
+        Gizmos.DrawLine(transform.position + groundOffset + new Vector3(-0.3f, -1.8f), transform.position + groundOffset + new Vector3(-0.3f, -2f));
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

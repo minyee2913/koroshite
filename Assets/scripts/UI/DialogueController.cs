@@ -39,7 +39,12 @@ public class DialogueController : MonoBehaviour
         Instance = this;
     }
 
-    public static void Add(string name, string msg, Sprite face, DialogueDirection direction = DialogueDirection.Right, float typing = 1.5f) {
+    public void SetChColor(Color col) {
+        rightCh.color = col;
+        leftCh.color = col;
+    }
+
+    public static DialogueController Init(string name, string msg, Sprite face, DialogueDirection direction = DialogueDirection.Right, float typing = 0.1f) {
         if (Instance != null) {
             Instance.contents.Add(new DialogueContent{
                 name = name,
@@ -48,33 +53,46 @@ public class DialogueController : MonoBehaviour
                 face = face,
                 typing = typing,
             });
+
         }
+
+        return Instance;
     }
 
-    public static void Show(int now = 0) {
-        if (Instance != null) {
-            Instance.opened = true;
-            Instance.now = now;
+    public DialogueController Add(string name, string msg, Sprite face, DialogueDirection direction = DialogueDirection.Right, float typing = 0.1f) {
+        contents.Add(new DialogueContent{
+            name = name,
+            direction = direction,
+            msg = msg,
+            face = face,
+            typing = typing,
+        });
 
-            var content = Instance.contents[now];
+        return Instance;
+    }
 
-            Instance.body.SetActive(true);
-            Instance.displayName = content.name;
-            Instance.direction = content.direction;
-            Instance.message = content.msg;
-            Instance.msg.text = "";
-            Instance.typing = true;
-            Instance.typingTime = content.typing;
-            Instance.face = content.face;
+    public void Show(int now = 0) {
+        opened = true;
+        this.now = now;
 
-            if (Instance.lastRoutine != null) {
-                Instance.StopCoroutine(Instance.lastRoutine);
-            }
+        var content = contents[now];
 
-            Instance.lastRoutine = Instance.typingMsg();
+        body.SetActive(true);
+        displayName = content.name;
+        direction = content.direction;
+        message = content.msg;
+        msg.text = "";
+        typing = true;
+        typingTime = content.typing;
+        face = content.face;
 
-            Instance.StartCoroutine(Instance.lastRoutine);
+        if (lastRoutine != null) {
+            StopCoroutine(lastRoutine);
         }
+
+        lastRoutine = typingMsg();
+
+        StartCoroutine(lastRoutine);
     }
 
     IEnumerator typingMsg() {
@@ -82,9 +100,13 @@ public class DialogueController : MonoBehaviour
         for (int i = 0; i < message.Length; i++) {
             msg_ += message[i];
             msg.text = msg_;
-            SoundManager.Instance.Play("typing", true);
+            if (typingTime / message.Length > 0.05) SoundManager.Instance.Play("typing", true);
+
+            if (i < message.Length-1 && (message[i] == '.' || message[i] == '?' || message[i] == '!')) {
+                yield return new WaitForSeconds(typingTime * 2);
+            }
             
-            yield return new WaitForSeconds(typingTime / message.Length);
+            yield return new WaitForSeconds(typingTime);
         }
 
         msg.text = message;
@@ -116,7 +138,7 @@ public class DialogueController : MonoBehaviour
             rightCh.sprite = leftCh.sprite = face;
 
             if (typing) {
-                if (Input.GetMouseButtonDown(0)) {
+                if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)) {
                     if (Instance.lastRoutine != null) {
                         Instance.StopCoroutine(Instance.lastRoutine);
 
@@ -127,7 +149,7 @@ public class DialogueController : MonoBehaviour
                     typing = false;
                 }
             } else {
-                if (Input.GetMouseButtonDown(0)) {
+                if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)) {
                     if (now+1 < contents.Count) {
                         Show(now+1);
                     } else {

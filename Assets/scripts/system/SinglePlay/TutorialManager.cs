@@ -95,20 +95,21 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
-        DialogueController.Add("#$X#", "환영합니다. 안타깝게 끝나버린 영웅님.", master.sprite, DialogueDirection.Left);
-        DialogueController.Add("#$X#", "저는 이곳 '시현'의 관리자 #$X#입니다.", master.sprite, DialogueDirection.Left);
-        DialogueController.Add("samurai", "'시현'..?", player.ch.render.sprite, DialogueDirection.Right, 0.5f);
-        DialogueController.Add("#$X#", "당신은 한 시대의 영웅으로써 사명을 실현하기 위해 힘썼지만", master.sprite, DialogueDirection.Left);
-        DialogueController.Add("#$X#", "결국 뜻을 이루지 못하고 처참하게 생을 마감하였고", master.sprite, DialogueDirection.Left);
-        DialogueController.Add("#$X#", "운 좋게 선택받아 이곳 '시현'에 오게 되었습니다.", master.sprite, DialogueDirection.Left);
-        DialogueController.Add("samurai", "...", player.ch.render.sprite, DialogueDirection.Right);
-        DialogueController.Add("#$X#", "이곳은 당신에게 다시 사명을 이룰 기회를 드릴겁니다.", master.sprite, DialogueDirection.Left);
-        DialogueController.Add("#$X#", "선택은 본인의 몫이니...", master.sprite, DialogueDirection.Left);
-        DialogueController.Add("#$X#", "쥐고 싶다면 <color=\"red\">끝없이 싸우세요</color>", master.sprite, DialogueDirection.Left, 0);
-        DialogueController.Add("samurai", "...", player.ch.render.sprite, DialogueDirection.Right);
-        DialogueController.Add("samurai", "왜 싸워야하죠?", player.ch.render.sprite, DialogueDirection.Right, 0.5f);
-        DialogueController.Add("#$X#", "...", master.sprite, DialogueDirection.Left);
-        DialogueController.Show();
+        DialogueController.Instance.SetChColor(Color.black);
+        DialogueController.Init("#$X#", "환영합니다. 안타깝게 끝나버린 영웅님.", master.sprite, DialogueDirection.Left).
+            Add("#$X#", "저는 이곳 '시현'의 관리자 #$X#입니다.", master.sprite, DialogueDirection.Left).
+            Add("samurai", "'시현'..?", player.ch.render.sprite, DialogueDirection.Right, 0.5f).
+            Add("#$X#", "당신은 한 시대의 영웅으로써 사명을 실현하기 위해 힘썼지만", master.sprite, DialogueDirection.Left).
+            Add("#$X#", "결국 뜻을 이루지 못하고 처참하게 생을 마감하였고", master.sprite, DialogueDirection.Left).
+            Add("#$X#", "운 좋게 선택받아 이곳 '시현'에 오게 되었습니다.", master.sprite, DialogueDirection.Left).
+            Add("samurai", "...", player.ch.render.sprite, DialogueDirection.Right).
+            Add("#$X#", "이곳은 당신에게 다시 사명을 이룰 기회를 드릴겁니다.", master.sprite, DialogueDirection.Left).
+            Add("#$X#", "선택은 본인의 몫이니...", master.sprite, DialogueDirection.Left).
+            Add("#$X#", "쥐고 싶다면 <color=\"red\">끝없이 싸우세요</color>", master.sprite, DialogueDirection.Left, 0).
+            Add("samurai", "...", player.ch.render.sprite, DialogueDirection.Right).
+            Add("samurai", "왜 싸워야하죠?", player.ch.render.sprite, DialogueDirection.Right, 0.5f).
+            Add("#$X#", "...", master.sprite, DialogueDirection.Left).
+            Show();
 
         while (DialogueController.Instance.opened) {
             yield return null;

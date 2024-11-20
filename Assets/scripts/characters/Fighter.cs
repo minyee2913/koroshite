@@ -174,7 +174,14 @@ public class Fighter : Character
         }
     }
 
-        public override void OnHurt(ref int damage, Transform attacker, ref bool cancel)
+    public override void OnSwitch()
+    {
+        Skill1();
+
+        shieldTime = 0.8f;
+    }
+
+    public override void OnHurt(ref int damage, Transform attacker, ref bool cancel)
     {
         if (shielding) {
             damage -= (int)Mathf.Round(damage * 0.4f);

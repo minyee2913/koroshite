@@ -52,6 +52,13 @@ public class Samurai : Character
         StartCoroutine(_shieldMob(attacker));
     }
 
+    public override void OnSwitch()
+    {
+        Skill1();
+
+        Invoke("Skill1Up", 0.5f);
+    }
+
     IEnumerator _shieldMob(Monster attacker) {
         attacker.Knockback(Vector2.right * pl.facing * 10 + Vector2.up * 5);
         
@@ -262,21 +269,19 @@ public class Samurai : Character
         superCool.Start();
 
         pl.stopMove = 0.5f;
-        pl.RpcAnimateTrigger("charge");
 
         CamManager.main.CloseUp(3f, 0, 0.1f);
 
         pl.CallChFunc("sp");
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
+        pl.RpcAnimateTrigger("charge");
 
         pl.SetChScale(Vector3.zero);
 
         CamManager.main.CloseUp(5f, 0, 0.1f);
 
         SoundManager.Instance.PlayToDist("samurai_super", transform.position, 15);
-
-        yield return new WaitForSeconds(0.3f);
 
         pl.stopMove = 1f;
 
@@ -289,8 +294,9 @@ public class Samurai : Character
                 target.Damage(80, pl.name_);
             }
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
         }
+        yield return new WaitForSeconds(0.6f);
 
         var targetMobs = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 2f), new Vector2(14, 5), 0, Vector2.right, 0));
 

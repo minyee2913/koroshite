@@ -1013,11 +1013,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public void SetCharacter(string id) {
-        object[] data = {
-            name_,
-            pv.Owner.UserId,
-        };
-        PhotonNetwork.Instantiate("character/" + id, transform.position, transform.rotation, 0, data);
+        if (UtilManager.CheckPhoton()) {
+            object[] data = {
+                name_,
+                pv.Owner.UserId,
+            };
+            PhotonNetwork.Instantiate("character/" + id, transform.position, transform.rotation, 0, data);
+        } else {
+            Character ch = Instantiate(Resources.Load<Character>("character/" + id), transform.position, transform.rotation);
+            _setCh(ch);
+        }
     }
 
     public void _setCh(Character chh) {
@@ -1032,9 +1037,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         chh.transform.SetParent(transform);
         chh.transform.localPosition = new Vector3(0, 1.36f);
 
-        float rate = health / maxHealth;
+        float rate = (float)health / maxHealth;
         maxHealth = chh.maxHealth;
         health = (int)(maxHealth * rate);
+
+        UIManager.Instance.face.sprite = ch.icon;
         
         chh.pl = this;
 

@@ -57,6 +57,7 @@ public abstract class Character : MonoBehaviour
     public virtual void OnJump(ref bool cancel) {}
     public virtual void OnDash() {}
     public virtual void Attack() {}
+    public virtual void OnSwitch() {}
     public virtual void Skill1() {}
     public virtual void Skill1Up() {}
     public virtual void Skill2() {}

@@ -10,6 +10,6 @@ public class StoryEvent : MonoBehaviour
         LoadingController.LoadScene("Lobby");
     }
     public void Tutorial2() {
-        LoadingController.LoadScene("Stage1");
+        LoadingController.LoadScene("StageTuto-1");
     }
 }

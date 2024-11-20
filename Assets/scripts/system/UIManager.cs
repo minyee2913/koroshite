@@ -24,6 +24,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     TMP_Text deathTitle;
     [SerializeField]
     TMP_Text deathCount;
+    public Bossbar bossbar;
     public Image face;
     public Text sectionTitle;
     [SerializeField] Button gameStart;

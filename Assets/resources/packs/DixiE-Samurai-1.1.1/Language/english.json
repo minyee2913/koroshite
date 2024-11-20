@@ -1,0 +1,37 @@
+{
+	"skill" : {
+		"samuraiZ" : {
+			"name" : "Oma Kugiuchi",
+			"description" : "Hit enemies with a slashing combo for <y>150% damage</c> per hit.\n<#444444>Patience makes the finest cuts.</c>"
+		},
+		"samuraiX" : {
+			"name" : "Shuriken",
+			"description" : "Throw a shuriken dealing <y>60% damage</c> and bleeding for an additional <y>4x35% damage</c>. Improved by getting <y>drunk</c>. <#444444>All the lights in the sky are stars.</c>"
+        },
+        "samuraiC" : {
+			"name" : "Flash",
+			"description" : "Parry attacks to deal <y>70% damage</c> and reset other skill cooldowns. Improved by getting <y>drunk</c>. <#444444>Does my blade thirst for your life, or...</c>"
+		},
+        "samuraiCAlt" : {
+			"name" : "Instant Flash",
+			"description" : "Parry attacks with a <y>tight window</c> to deal <y>120% damage</c> and reset other skill cooldowns. Improved by getting <y>drunk</c>. <#444444>Death leaves no beautiful corpses.</c>"
+		},
+		"samuraiV" : {
+			"name" : "Sip",
+			"description" : "Have a sip of sake, getting more <y>drunk</c> with each gulp. <#444444>The bottle is my friend. It is no less of a friend than you.</c>"
+		}
+	},
+
+	"survivor" : {
+		"samurai" : {
+			"endQuote" : "..and so he left, still not knowing how he got here to begin with.",
+			"description" : "<y>Samurai</c> doesn't belong on Petrichor V, but he will adapt. Cut your enemies with a <y>flash</c> of your blade for being predictable, and don't forget to relax with a <y>pleasant drink</c> every now and then.",
+			"name" :  "Samurai",
+			"nameUpper" : "SAMURAI",
+			"story" : "???",
+            "id" : "???",
+            "departure"  : "???",
+            "arrival" : "???"
+		}
+	}
+}

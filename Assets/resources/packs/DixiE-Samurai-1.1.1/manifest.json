@@ -1,0 +1,10 @@
+{
+	"name": "Samurai",
+	"version_number": "1.1.1",
+	"website_url": "https://gitlab.com/DixieDev/rorr-samurai",
+	"description": "A samurai pulled through time finds himself on Petrichor V",
+	"dependencies": [
+		"ReturnOfModding-ReturnOfModding-1.0.45",
+		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.1.21"
+	]
+}

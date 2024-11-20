@@ -35,7 +35,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             GenerateNpc();
         }
 
-        UpdateRoom(NetworkManager.instance.rooms);
+        if (NetworkManager.instance != null) {
+            UpdateRoom(NetworkManager.instance.rooms);
+        }
     }
 
     void GenerateNpc() {
@@ -124,7 +126,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
             if (updateRoomInterval > 10) {
                 updateRoomInterval = 0;
-                UpdateRoom(NetworkManager.instance.rooms);
+                if (NetworkManager.instance != null) {
+                    UpdateRoom(NetworkManager.instance.rooms);
+                }
             }
 
             CamManager.main.transform.position = Vector3.Lerp(CamManager.main.transform.position, new Vector3(scroll_, CamManager.main.transform.position.y, CamManager.main.transform.position.z), 6 * Time.deltaTime);

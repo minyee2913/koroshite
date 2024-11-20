@@ -36,7 +36,7 @@ public class Skeleton : Monster
         }
     }
 
-    public override void OnHurt(Player attacker, int damage)
+    public override void OnHurt(Player attacker, int damage, ref bool cancel)
     {
         if (atkCool <= 0) {
             atkCool = 0.5f;

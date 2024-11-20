@@ -97,11 +97,11 @@ public class CamManager : MonoBehaviour
         if (dur > 0) {
             float dSize = cam.Lens.OrthographicSize, dDutch = cam.Lens.Dutch;
 
-            for (int i = 1; i <= 30; i++) {
-                cam.Lens.OrthographicSize = dSize - (dSize - orSize) / 30 * i;
-                cam.Lens.Dutch = dDutch - (dDutch - dutch) / 30 * i;
+            for (int i = 1; i <= 20; i++) {
+                cam.Lens.OrthographicSize = dSize - (dSize - orSize) / 20 * i;
+                cam.Lens.Dutch = dDutch - (dDutch - dutch) / 20 * i;
 
-                yield return new WaitForSeconds(dur / 30);
+                yield return new WaitForSeconds(dur / 20);
             }
         }
 
@@ -115,11 +115,11 @@ public class CamManager : MonoBehaviour
         if (dur > 0) {
             float dSize = cam.Lens.OrthographicSize, dDutch = cam.Lens.Dutch;
 
-            for (int i = 1; i <= 30; i++) {
-                cam.Lens.OrthographicSize = dSize + (orSize_d - dSize) / 30 * i;
-                cam.Lens.Dutch = dDutch + (dutch_d - dDutch) / 30 * i;
+            for (int i = 1; i <= 20; i++) {
+                cam.Lens.OrthographicSize = dSize + (orSize_d - dSize) / 20 * i;
+                cam.Lens.Dutch = dDutch + (dutch_d - dDutch) / 20 * i;
 
-                yield return new WaitForSeconds(dur / 30);
+                yield return new WaitForSeconds(dur / 20);
             }
         }
         

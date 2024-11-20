@@ -21,7 +21,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Stages/Tutorial.unity
     guid: b5d7418e97f77ae459b71f8ac0051fdd
   - enabled: 1
-    path: Assets/Scenes/Stages/Stage1.unity
+    path: Assets/Scenes/Stages/StageTuto-1.unity
     guid: 6ab65c3d20e869149a7d6a68d9b50ca0
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

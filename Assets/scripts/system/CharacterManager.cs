@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
@@ -71,5 +72,21 @@ public class CharacterManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    public Sprite GetIcon(string id) {
+        var ch = Get(id);
+        if (!ch) {
+            return null;
+        }
+
+        if (ch.icon == null) {
+            SpriteRenderer render = ch.GetComponent<SpriteRenderer>();
+            if (render != null) {
+                return render.sprite;
+            }
+        }
+
+        return ch.icon;
     }
 }
