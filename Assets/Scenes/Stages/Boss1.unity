@@ -3409,6 +3409,10 @@ PrefabInstance:
       propertyPath: atkCool
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 8991729107768048697, guid: 06da55712bc71bb4f8ac9ccbab2f5e0c, type: 3}
+      propertyPath: maxHealth
+      value: 6000
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

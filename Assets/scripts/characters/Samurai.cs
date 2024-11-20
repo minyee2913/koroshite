@@ -64,7 +64,7 @@ public class Samurai : Character
         
         pl.Knockback(Vector2.right * -pl.facing * 4);
         pl.Heal(40);
-        pl.energy += 10;
+        pl.energy += 5;
 
         SoundManager.Instance.PlayToDist("samurai_shield", transform.position, 15);
 
@@ -99,7 +99,7 @@ public class Samurai : Character
         
         pl.Knockback(Vector2.right * -pl.facing * 4);
         pl.Heal(40);
-        pl.energy += 10;
+        pl.energy += 5;
 
         CamManager.main.CloseUp(3.2f, -10 * pl.facing, 0.01f);
         CamManager.main.Shake(3, 0.5f);
@@ -403,7 +403,7 @@ public class Samurai : Character
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
 
-            pl.energy += 5;
+            if (i == 0) pl.energy += 5;
 
             target.Damage(50, pl.name_);
             target.Knockback(Vector2.right * pl.facing * 6 + Vector2.up * 2);
@@ -413,6 +413,8 @@ public class Samurai : Character
 
         for (int i = 0; i < targetMobs.Count; i++) {
             var target = targetMobs[i];
+
+            if (i == 0) pl.energy += 7;
 
             target.Damage(50, pl.name_);
             target.Knockback(Vector2.right * pl.facing * 2 + Vector2.up * 2);
@@ -449,7 +451,7 @@ public class Samurai : Character
         for (int i = 0; i < targets.Count; i++) {
             var target = targets[i];
 
-            pl.energy += 7;
+            if (i == 0) pl.energy += 7;
 
             target.Damage(80, pl.name_);
         }
@@ -458,6 +460,8 @@ public class Samurai : Character
 
         for (int i = 0; i < targetMobs.Count; i++) {
             var target = targetMobs[i];
+
+            if (i == 0) pl.energy += 7;
 
             target.Damage(80, pl.name_);
         }

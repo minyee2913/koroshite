@@ -31,6 +31,7 @@ public class SSamurai_boss : Monster
         } else if (phase == 1) {
             Phase2Update();
         }
+
         if (action == "waiting") {
             isMoving = false;
         } else if (action == "idle") {
@@ -92,6 +93,10 @@ public class SSamurai_boss : Monster
 
                 Sk2();
             }
+        }
+
+        if ((float)health / maxHealth <= 0.5f) {
+            //phase = 1;
         }
     }
     void Phase2Update() {

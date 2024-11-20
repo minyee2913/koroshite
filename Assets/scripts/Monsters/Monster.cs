@@ -326,6 +326,26 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         } else StartCoroutine(hurtEff());
     }
 
+    public void Heal(int val) {
+        if (UtilManager.CheckPhoton()) {
+            pv.RPC("heal", RpcTarget.All, new object[]{val});
+        } else {
+            heal(val);
+        }
+    }
+
+    
+
+    [PunRPC]
+    public void heal(int val) {
+        health += val;
+
+        UtilManager.DisplayDamage(transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), 1 + UnityEngine.Random.Range(0, 1.25f)), val, Color.green);
+
+        if (health > maxHealth)
+            health = maxHealth;
+    }
+
     public virtual void OnHurt(Player attacker, int damage, ref bool cancel){}
 
     IEnumerator Death() {
