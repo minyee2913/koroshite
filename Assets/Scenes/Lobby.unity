@@ -2531,7 +2531,7 @@ MonoBehaviour:
   curse2: {fileID: 1172611000}
   curse3: {fileID: 236036740}
   skip: {fileID: 796405402}
-  force: 1
+  force: 0
 --- !u!4 &409900442
 Transform:
   m_ObjectHideFlags: 0

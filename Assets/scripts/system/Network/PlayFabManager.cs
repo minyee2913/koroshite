@@ -134,6 +134,7 @@ public class PlayFabManager : MonoBehaviour
 
     public void ReturnToConnected() {
         registerPanel.SetActive(false);
+        loginPanel.SetActive(false);
         nameField.gameObject.SetActive(false);
         
         var obj = GameObject.Find("StartManager");
