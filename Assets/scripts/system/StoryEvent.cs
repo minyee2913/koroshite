@@ -12,4 +12,8 @@ public class StoryEvent : MonoBehaviour
     public void Tutorial2() {
         LoadingController.LoadScene("StageTuto-1");
     }
+
+    public void Page1_1() {
+        LoadingController.LoadScene("Boss1");
+    }
 }

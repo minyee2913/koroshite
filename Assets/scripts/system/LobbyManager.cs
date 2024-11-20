@@ -31,6 +31,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     float updateRoomInterval;
     void Start()
     {
+        PlayFabManager.CheckTutorialEnded();
         if (PlayFabManager.tutorialEnded || LobbyTutorial.afterTuto) {
             GenerateNpc();
         }

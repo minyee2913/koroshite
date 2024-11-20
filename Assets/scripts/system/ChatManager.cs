@@ -26,6 +26,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
 
     public bool inChat;
     public bool scrollTo;
+    public bool CanOpen = true;
 
     private List<string> messages = new();
     public List<GameObject> outs = new();
@@ -72,7 +73,9 @@ public class ChatManager : MonoBehaviourPunCallbacks
         inp.ActivateInputField();
         inChat = true;
         
-        GameManager.Instance.applyPlayerInput = false;
+        if (GameManager.Instance != null) {
+            GameManager.Instance.applyPlayerInput = false;
+        }
 
         UpdateMsg(true);
     }
@@ -144,7 +147,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.T)) {
+        if (Input.GetKeyDown(KeyCode.T) && CanOpen) {
             if (inChat) {
                 ChatClose();
             } else {

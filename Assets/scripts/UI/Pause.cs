@@ -54,6 +54,8 @@ public class Pause : MonoBehaviour
             pause_setting.SetActive(true);
         }
 
+        Time.timeScale = 0;
+
         pause_game.transform.localScale = new Vector3(0.8f, 0.8f);
         pause_game.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic);
     }
@@ -126,6 +128,8 @@ public class Pause : MonoBehaviour
 
     public void ClosePause() {
         inPause = false;
+
+        Time.timeScale = 1;
 
         pause_main.SetActive(false);
     }

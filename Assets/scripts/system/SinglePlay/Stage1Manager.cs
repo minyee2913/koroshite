@@ -156,6 +156,9 @@ public class Stage1Manager : MonoBehaviour
 
         Player.Local.preventInput = 0;
 
+        PlayFabManager.SetTutorialEnded();
+        LobbyTutorial.afterTuto = true;
+
         LoadingController.LoadScene("Lobby");
     }
 

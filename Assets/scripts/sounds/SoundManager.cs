@@ -21,35 +21,35 @@ public class SoundManager : MonoBehaviour
         pv = GetComponent<PhotonView>();
     }
 
-    public void PlayToAll(string musicId, bool seper = false) {
+    public void PlayToAll(string musicId, bool seper = false, float pitch = 0) {
         if (UtilManager.CheckPhoton()) {
-            pv.RpcSecure("Play", RpcTarget.All, true, new object[]{musicId, seper});
+            pv.RpcSecure("Play", RpcTarget.All, true, new object[]{musicId, seper, pitch});
         } else {
-            Play(musicId, seper);
+            Play(musicId, seper, pitch);
         }
     }
 
-    public void PlayToDist(string musicId, Vector3 pos, float distance) {
+    public void PlayToDist(string musicId, Vector3 pos, float distance, float pitch = 0) {
         if (UtilManager.CheckPhoton()) {
-            pv.RpcSecure("playTo", RpcTarget.Others, true, new object[]{musicId, pos.x, pos.y, distance});
+            pv.RpcSecure("playTo", RpcTarget.Others, true, new object[]{musicId, pos.x, pos.y, distance, pitch});
         }
-        playTo(musicId, pos.x, pos.y, distance);
+        playTo(musicId, pos.x, pos.y, distance, pitch);
     }
 
     [PunRPC]
-    public void playTo(string musicId, float x, float y, float distance) {
+    public void playTo(string musicId, float x, float y, float distance, float pitch = 0) {
         if (Vector2.Distance(Player.Local.transform.position, new Vector2(x, y)) <= distance) {
-            Play(musicId, true);
+            Play(musicId, true, pitch);
         }
     }
 
     [PunRPC]
-    public void Play(string musicId, bool seper = false)
+    public void Play(string musicId, bool seper = false, float pitch = 0)
     {
         Sound sound = Array.Find(Sounds, v => v.id == musicId);
         if (sound == null) return;
 
-        StartCoroutine(OnPlay(sound, seper));
+        StartCoroutine(OnPlay(sound, seper, pitch));
     }
 
     public void StopToAll(int track) {
@@ -73,7 +73,7 @@ public class SoundManager : MonoBehaviour
         if (_tracks[track - 1]) _tracks[track - 1].UnPause();
     }
 
-    public IEnumerator OnPlay(Sound sound, bool seper)
+    public IEnumerator OnPlay(Sound sound, bool seper, float pitch)
     {
         if (sound.track == 4)
         {
@@ -94,6 +94,10 @@ public class SoundManager : MonoBehaviour
             _audio.volume = sound.volume;
             _audio.pitch = sound.pitch;
             _audio.time = sound.startTime;
+
+            if (pitch != 0) {
+                _audio.pitch = pitch;
+            }
             _audio.Play();
 
             while (true)
@@ -117,6 +121,11 @@ public class SoundManager : MonoBehaviour
             _audio.volume = sound.volume;
             _audio.pitch = sound.pitch;
             _audio.time = sound.startTime;
+
+            if (pitch != 0) {
+                _audio.pitch = pitch;
+            }
+            
             _audio.Play();
         }
     }

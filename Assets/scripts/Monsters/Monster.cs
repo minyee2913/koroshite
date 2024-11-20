@@ -322,6 +322,7 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         }
 
         if (health <= 0 && !isDeath) {
+            OnDeath(attacker);
             StartCoroutine(Death());
         } else StartCoroutine(hurtEff());
     }
@@ -347,6 +348,7 @@ public abstract class Monster : MonoBehaviour, IPunObservable
     }
 
     public virtual void OnHurt(Player attacker, int damage, ref bool cancel){}
+    public virtual void OnDeath(Player attacker){}
 
     IEnumerator Death() {
         isDeath = true;
@@ -392,10 +394,19 @@ public abstract class Monster : MonoBehaviour, IPunObservable
 
     [PunRPC]
     public void _knockback(Vector2 force) {
+        bool cancel = false;
+
+        OnKnockback(force, ref cancel);
+        if (cancel) {
+            return;
+        }
+        
         rb.linearVelocity += force;
 
         Invoke("afterKnock", 0.3f);
     }
+
+    public virtual void OnKnockback(Vector2 force, ref bool cancel) {}
 
     void afterKnock() {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x / 2, rb.linearVelocity.y / 2);

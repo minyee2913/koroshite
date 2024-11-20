@@ -222,7 +222,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      iSamuraiLoadout_PAL1_0: -1012791432612100089
+      iSamuraiLoadout_PAL1_1: -4487195453368968585
+      iSamuraiLoadout_PAL1_2: -7602755315876949421
+      iSamuraiLoadout_PAL1_3: -4443880159110754008
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

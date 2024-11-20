@@ -855,6 +855,14 @@ MonoBehaviour:
     startTime: 0
     track: 4
     loop: 1
+  - id: criticalTh
+    audioIn: {fileID: 0}
+    audio: {fileID: 8300000, guid: 294ce9a00f5d54048b1f92de511da0f2, type: 3}
+    volume: 0.8
+    pitch: 1
+    startTime: 0
+    track: 4
+    loop: 1
   _tracks:
   - {fileID: 2363639697542510051}
   - {fileID: 2363639697281754276}

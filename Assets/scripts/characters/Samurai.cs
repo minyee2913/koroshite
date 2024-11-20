@@ -136,6 +136,12 @@ public class Samurai : Character
             return;
         }
 
+        if (state == "super") {
+            cancel = true;
+            
+            return;
+        }
+
         if (shielding) {
             Player p = attacker.GetComponent<Player>();
             Monster m = attacker.GetComponent<Monster>();
@@ -274,14 +280,14 @@ public class Samurai : Character
 
         pl.CallChFunc("sp");
 
+        SoundManager.Instance.PlayToDist("samurai_super", transform.position, 15);
+
         yield return new WaitForSeconds(0.1f);
         pl.RpcAnimateTrigger("charge");
 
         pl.SetChScale(Vector3.zero);
 
         CamManager.main.CloseUp(5f, 0, 0.1f);
-
-        SoundManager.Instance.PlayToDist("samurai_super", transform.position, 15);
 
         pl.stopMove = 1f;
 
@@ -296,6 +302,7 @@ public class Samurai : Character
 
             yield return new WaitForSeconds(0.05f);
         }
+
         yield return new WaitForSeconds(0.6f);
 
         var targetMobs = Monster.Convert(Physics2D.BoxCastAll(transform.position + new Vector3(0, 2f), new Vector2(14, 5), 0, Vector2.right, 0));

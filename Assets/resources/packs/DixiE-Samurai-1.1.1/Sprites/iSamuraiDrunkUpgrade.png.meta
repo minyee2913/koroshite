@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      iSamuraiDrunkUpgrade_0: -6652479328521682633
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

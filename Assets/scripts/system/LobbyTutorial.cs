@@ -41,7 +41,7 @@ public class LobbyTutorial : MonoBehaviour
             afterTuto = true;
             LoadingController.LoadScene("Lobby");
         } else {
-            LoadingController.LoadScene("Stage1");
+            LoadingController.LoadScene("StageTuto-1");
         }
     }
 
@@ -206,7 +206,7 @@ public class LobbyTutorial : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        LoadingController.LoadScene("Stage1");
+        LoadingController.LoadScene("StageTuto-1");
     }
 
     IEnumerator shakeBody(Transform transform, float time) {
