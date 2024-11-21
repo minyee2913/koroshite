@@ -1,6 +1,7 @@
 using System.Collections;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
@@ -16,6 +17,7 @@ public class Boss1Manager : MonoBehaviour
     Text title;
     [SerializeField]
     Player player;
+    bool started;
     void Start()
     {
         StartCoroutine(starting());
@@ -53,12 +55,9 @@ public class Boss1Manager : MonoBehaviour
 
         CamManager.main.CloseOut(2f);
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(2.5f);
+
         tilemap.color = Color.white;
-
-        SoundManager.Instance.Play("explosion");
-
-        yield return new WaitForSeconds(1f);
 
         player.preventInput = 0;
 
@@ -80,11 +79,17 @@ public class Boss1Manager : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         title.text = "";
+
+        started = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (started) {
+            if (Monster.monsters.Count <= 0) {
+                LoadingController.LoadScene("Lobby");
+            }
+        }
     }
 }

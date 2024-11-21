@@ -263,6 +263,8 @@ public class Samurai : Character
         if (state == "super") {
             CamManager.main.CloseOut(0.1f);
             pl.SetChScale(defaultScale);
+
+            state = null;
         } 
     }
 

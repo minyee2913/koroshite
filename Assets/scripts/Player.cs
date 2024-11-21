@@ -418,6 +418,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     forceWhited = ForceWhite;
                 }
 
+                if (energy > 100) {
+                    energy = 100;
+                }
+
                 if (state == "room")
                     energy = 100;
 

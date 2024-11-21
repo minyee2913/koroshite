@@ -14,6 +14,13 @@ public class UtilManager : MonoBehaviour
     public static bool CheckPhoton() {
         return isConnected && inRoom;
     }
+    public static GameObject Instantiation(string path, Vector3 pos, Quaternion rotation) {
+        if (CheckPhoton()) {
+            return PhotonNetwork.Instantiate(path, pos, rotation);
+        }
+
+        return Instantiate(Resources.Load<GameObject>(path), pos, rotation);
+    }
 
     void Update() {
         isConnected = PhotonNetwork.IsConnected;

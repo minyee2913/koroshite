@@ -179,12 +179,12 @@ TextureImporter:
       name: sSamuraiDefendCounter_0
       rect:
         serializedVersion: 2
-        x: 288
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 14
+        width: 400
+        height: 82
+      alignment: 9
+      pivot: {x: 0.95, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -201,12 +201,12 @@ TextureImporter:
       name: sSamuraiDefendCounter_1
       rect:
         serializedVersion: 2
-        x: 384
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 400
+        y: 14
+        width: 400
+        height: 82
+      alignment: 9
+      pivot: {x: 0.95, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -223,12 +223,12 @@ TextureImporter:
       name: sSamuraiDefendCounter_2
       rect:
         serializedVersion: 2
-        x: 480
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 800
+        y: 14
+        width: 400
+        height: 82
+      alignment: 9
+      pivot: {x: 0.95, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -245,12 +245,12 @@ TextureImporter:
       name: sSamuraiDefendCounter_3
       rect:
         serializedVersion: 2
-        x: 576
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 1200
+        y: 14
+        width: 400
+        height: 82
+      alignment: 9
+      pivot: {x: 0.95, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -267,12 +267,12 @@ TextureImporter:
       name: sSamuraiDefendCounter_4
       rect:
         serializedVersion: 2
-        x: 768
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 1600
+        y: 14
+        width: 400
+        height: 82
+      alignment: 9
+      pivot: {x: 0.95, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -289,12 +289,12 @@ TextureImporter:
       name: sSamuraiDefendCounter_5
       rect:
         serializedVersion: 2
-        x: 864
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 2000
+        y: 14
+        width: 400
+        height: 82
+      alignment: 9
+      pivot: {x: 0.95, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -303,160 +303,6 @@ TextureImporter:
       bones: []
       spriteID: 296784380a0dc7aa0800000000000000
       internalID: -6161820802333772142
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sSamuraiDefendCounter_6
-      rect:
-        serializedVersion: 2
-        x: 960
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 42d7a8d346b994150800000000000000
-      internalID: 5857383645203561764
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sSamuraiDefendCounter_7
-      rect:
-        serializedVersion: 2
-        x: 1056
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 210be0ee8b99c6e90800000000000000
-      internalID: -7031075898685214702
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sSamuraiDefendCounter_8
-      rect:
-        serializedVersion: 2
-        x: 1152
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 47673813e45966810800000000000000
-      internalID: 1758256867605444212
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sSamuraiDefendCounter_9
-      rect:
-        serializedVersion: 2
-        x: 1440
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8dc6c75d6e31ddfd0800000000000000
-      internalID: -2315672751253459752
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sSamuraiDefendCounter_10
-      rect:
-        serializedVersion: 2
-        x: 1536
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d0bb37294f35456a0800000000000000
-      internalID: -6461447255475635443
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sSamuraiDefendCounter_11
-      rect:
-        serializedVersion: 2
-        x: 1920
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9deb20a4e9b3a5420800000000000000
-      internalID: 2619471684301930201
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: sSamuraiDefendCounter_12
-      rect:
-        serializedVersion: 2
-        x: 2304
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e9e093e9f9951c690800000000000000
-      internalID: -7583681755425993058
       vertices: []
       indices: 
       edges: []
@@ -477,17 +323,10 @@ TextureImporter:
     nameFileIdTable:
       sSamuraiDefendCounter_0: -6844719208754866157
       sSamuraiDefendCounter_1: -2737263987158361588
-      sSamuraiDefendCounter_10: -6461447255475635443
-      sSamuraiDefendCounter_11: 2619471684301930201
-      sSamuraiDefendCounter_12: -7583681755425993058
       sSamuraiDefendCounter_2: 5345865705378059690
       sSamuraiDefendCounter_3: -7812843810621334648
       sSamuraiDefendCounter_4: 4801903643607392522
       sSamuraiDefendCounter_5: -6161820802333772142
-      sSamuraiDefendCounter_6: 5857383645203561764
-      sSamuraiDefendCounter_7: -7031075898685214702
-      sSamuraiDefendCounter_8: 1758256867605444212
-      sSamuraiDefendCounter_9: -2315672751253459752
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

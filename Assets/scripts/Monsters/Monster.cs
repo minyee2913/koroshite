@@ -153,12 +153,38 @@ public abstract class Monster : MonoBehaviour, IPunObservable
         }
     }
 
+    public void SetScale(Vector3 scale) {
+        object[] obj = {
+            scale.x, scale.y, scale.z,
+        };
+        if (UtilManager.CheckPhoton()) {
+            pv.RpcSecure("setScale", RpcTarget.All, true, obj);
+        } else {
+            setScale(scale.x, scale.y, scale.z);
+        }
+    }
+    [PunRPC]
+    void setScale(float x, float y, float z) {
+        transform.localScale = new Vector3(x, y, z);
+    }
+
     public List<Player> Search(float distance) {
         return Player.Convert(Physics2D.BoxCastAll(transform.position + groundOffset + new Vector3(0, 0.5f), new Vector2(distance * 2, 2), 0, Vector2.zero, 0));
     }
 
     public void FaceTo(Player target) {
         if (transform.position.x < target.transform.position.x) {
+            render.flipX = false;
+
+            facing = 1;
+        } else {
+            render.flipX = true;
+
+            facing = -1;
+        }
+    }
+    public void FaceTo(Vector2 direction) {
+        if (direction == Vector2.right) {
             render.flipX = false;
 
             facing = 1;

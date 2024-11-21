@@ -89,6 +89,7 @@ MonoBehaviour:
   - phaseEnd
   - setMTimer
   - selectById
+  - setScale
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
