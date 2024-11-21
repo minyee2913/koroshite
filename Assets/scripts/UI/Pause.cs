@@ -1,3 +1,4 @@
+using System.Collections;
 using DG.Tweening;
 using Photon.Pun;
 using UnityEngine;
@@ -12,6 +13,7 @@ public class Pause : MonoBehaviour
     [SerializeField] GameObject pause_main;
     [SerializeField] Transform pause_playerlist;
     [SerializeField] GameObject pause_game;
+    [SerializeField] GameObject pause_single;
     [SerializeField] GameObject pause_setting;
     [Header("settings")]
     [SerializeField] AudioMixer mixer;
@@ -44,20 +46,31 @@ public class Pause : MonoBehaviour
     public void OpenPause() {
         inPause = true;
 
+        GameObject targetPanel = pause_game;
+
         pause_main.SetActive(true);
         if (SceneManager.GetActiveScene().name == "GameScene") {
             pause_game.SetActive(true);
             pause_setting.SetActive(false);
+            pause_single.SetActive(false);
 
             UpdatePlayerList();
         } else {
-            pause_setting.SetActive(true);
+            if (Player.Local != null && Player.Local.state == "singlePlay") {
+                targetPanel = pause_single;
+
+                pause_single.SetActive(true);
+                pause_setting.SetActive(false);
+                pause_game.SetActive(false);
+            } else {
+                pause_setting.SetActive(true);
+            }
         }
 
-        Time.timeScale = 0;
+        targetPanel.transform.localScale = new Vector3(0.8f, 0.8f);
+        targetPanel.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).SetUpdate(true);
 
-        pause_game.transform.localScale = new Vector3(0.8f, 0.8f);
-        pause_game.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic);
+        Time.timeScale = 0;
     }
 
     public void UpdatePlayerList(Transform list = null) {
@@ -113,9 +126,10 @@ public class Pause : MonoBehaviour
         pause_main.SetActive(true);
         pause_game.SetActive(false);
         pause_setting.SetActive(true);
+        pause_single.SetActive(false);
 
         pause_setting.transform.localScale = new Vector3(0.8f, 0.8f);
-        pause_setting.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic);
+        pause_setting.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).SetUpdate(true);
 
         float masterVol = PlayerPrefs.GetFloat("MasterVolume");
         float bgmVol = PlayerPrefs.GetFloat("BGMVolume");
@@ -163,7 +177,18 @@ public class Pause : MonoBehaviour
     }
 
     public void ExitRoom() {
+        Time.timeScale = 1;
         PhotonNetwork.LeaveRoom();
+    }
+
+    public void GoToLobby() {
+        Time.timeScale = 1;
+        LoadingController.LoadScene("Lobby");
+    }
+
+    public void Replay() {
+        Time.timeScale = 1;
+        LoadingController.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void ExitGame() {

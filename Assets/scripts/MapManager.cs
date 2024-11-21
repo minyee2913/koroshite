@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class MapData {
     public string id;
     public string Name;

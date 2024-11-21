@@ -7,7 +7,7 @@ public class Samurai : Character
 {
     bool shielding, shieldSuccess;
     float shieldTime;
-    Cooldown jumpAtkCool = new(0.6f);
+    Cooldown jumpAtkCool = new(1f);
     Cooldown superCool = new(3f);
     public GameObject swordSlash;
     public GameObject swordStrike;
@@ -64,7 +64,7 @@ public class Samurai : Character
         
         pl.Knockback(Vector2.right * -pl.facing * 4);
         pl.Heal(40);
-        pl.energy += 5;
+        pl.energy += 2;
 
         SoundManager.Instance.PlayToDist("samurai_shield", transform.position, 15);
 
@@ -423,7 +423,7 @@ public class Samurai : Character
         for (int i = 0; i < targetMobs.Count; i++) {
             var target = targetMobs[i];
 
-            if (i == 0) pl.energy += 7;
+            if (i == 0) pl.energy += 2;
 
             target.Damage(50, pl.name_);
             target.Knockback(Vector2.right * pl.facing * 2 + Vector2.up * 2);
@@ -470,7 +470,7 @@ public class Samurai : Character
         for (int i = 0; i < targetMobs.Count; i++) {
             var target = targetMobs[i];
 
-            if (i == 0) pl.energy += 7;
+            if (i == 0) pl.energy += 3;
 
             target.Damage(80, pl.name_);
         }

@@ -400,13 +400,12 @@ public class SSamurai_boss : Monster
 
         rb.linearVelocityX = 0;
 
-        Player pl;
         for (int i = 0; i < 176; i++) {
             foreach (Transform target in pj.targets) {
-                pl = target.GetComponent<Player>();
+                Player pl = target.GetComponent<Player>();
 
                 if (pl != null) {
-                    pl.DamageByMob(attackDamage / 3, -1);
+                    pl.DamageByMob(attackDamage / 3, 0, true);
 
                     if (pl.pv.IsMine) {
                         CamManager.main.Shake(3, 0.3f);
@@ -640,16 +639,14 @@ public class SSamurai_boss : Monster
             cancel = true;
         }
 
-        if (action == "idle" || action == "chase") {
-            if (Random.Range(0f, 1f) <= 0.1f) {
+        if (action == "waiting") {
+            if (Random.Range(0f, 100) <= 45) {
                 StartCoroutine(shield(attacker));
 
                 cancel = true;
             }
-        }
-
-        if (action == "waiting") {
-            if (Random.Range(0f, 1f) <= 0.4f) {
+        } else {
+            if (Random.Range(0f, 100) <= 15) {
                 StartCoroutine(shield(attacker));
 
                 cancel = true;

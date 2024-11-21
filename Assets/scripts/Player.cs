@@ -693,7 +693,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         bool cancel = false;
 
         if (ch != null) {
-            ch.OnHurt(ref damage, attacker.transform, ref cancel);
+            ch.OnHurt(ref damage, attacker?.transform, ref cancel);
         }
 
         if (cancel || state == "room" || isDeath)

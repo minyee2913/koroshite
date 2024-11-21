@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -27,6 +28,7 @@ public class LoadingController : MonoBehaviour
     IEnumerator SceneProcess()
     {
         loaded = false;
+
         AsyncOperation load = SceneManager.LoadSceneAsync(nextScene);
         load.allowSceneActivation = false;
 
